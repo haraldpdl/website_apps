@@ -30,11 +30,11 @@
         $Qrel->bindInt(':language_id', $data['language_id']);
         $Qrel->execute();
 
-        foreach ( $Qrel->fetchAll() as $rel ) {
-          $app['releases'][$rel['core_dep']][] = [ 'version' => $rel['app_version'],
-                                                   'date_added' => $rel['date_added'],
-                                                   'changelog' => $rel['changelog']
-                                                 ];
+        while ( $Qrel->fetch() ) {
+          $app['releases'][$Qrel->value('core_dep')][] = [ 'version' => $Qrel->value('app_version'),
+                                                           'date_added' => $Qrel->value('date_added'),
+                                                           'changelog' => $Qrel->value('changelog')
+                                                         ];
         }
 
         if ( isset($app['releases']) ) {

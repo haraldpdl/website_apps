@@ -12,6 +12,9 @@
 
   class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract {
     protected function initialize() {
+      if ( !OSCOM::isRPC() ) {
+        OSCOM::redirect('http://www.oscommerce.com');
+      }
     }
   }
 ?>

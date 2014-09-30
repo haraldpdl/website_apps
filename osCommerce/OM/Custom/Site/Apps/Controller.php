@@ -20,13 +20,12 @@
       Registry::set('Cache', new Cache());
       Registry::set('PDO', PDO::initialize());
 
-      if ( !OSCOM::isRPC() ) {
-        OSCOM::redirect('http://www.oscommerce.com');
-      }
+      $application = __NAMESPACE__ . '\\Application\\' . OSCOM::getSiteApplication() . '\\Controller';
+      Registry::set('Application', new $application());
     }
 
     public static function getDefaultApplication() {
-      return self::$_default_application;
+      return static::$_default_application;
     }
 
     public static function hasAccess($application) {

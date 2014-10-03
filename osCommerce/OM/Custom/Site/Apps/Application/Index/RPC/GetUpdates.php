@@ -44,7 +44,24 @@
         }
       }
 
-      echo json_encode($result);
+// for store installations without json_decode()
+      if ( isset($_GET['format']) && ($_GET['format'] == 'simple') ) {
+        $simple = [ 'rpcStatus' => $result['rpcStatus'] ];
+
+        if ( isset($result['app']['releases']) ) {
+          $v = [ ];
+
+          foreach ( $result['app']['releases'] as $rel ) {
+            $v[] = $rel['version'];
+          }
+
+          $simple['version'] = max($v);
+        }
+
+        echo http_build_query($simple);
+      } else {
+        echo json_encode($result);
+      }
     }
   }
 ?>

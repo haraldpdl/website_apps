@@ -13,6 +13,8 @@
 
   class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract {
     protected function initialize() {
+      header('X-Robots-Tag: none');
+
       $keys = array_keys($_GET);
       $req = array_slice($keys, array_search(OSCOM::getSiteApplication(), $keys) + 1);
 

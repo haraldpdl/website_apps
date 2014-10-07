@@ -13,6 +13,8 @@
   class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract {
     protected function initialize() {
       if ( !OSCOM::isRPC() ) {
+        header('X-Robots-Tag: none');
+
         OSCOM::redirect('http://www.oscommerce.com');
       }
     }

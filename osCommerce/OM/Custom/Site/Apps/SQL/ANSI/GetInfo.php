@@ -16,7 +16,7 @@
 
       $result = [ ];
 
-      $Qapp = $OSCOM_PDO->prepare('select a.id, ap.code as provider_code, ap.title as provider_title, a.code, ad.title, ad.description, a.partner_id from :table_website_apps_providers ap, :table_website_apps a, :table_website_apps_description ad where ap.code = :provider_code and ap.id = a.provider_id and a.code = :app_code and a.id = ad.app_id and ad.language_id = :language_id');
+      $Qapp = $OSCOM_PDO->prepare('select a.id, ap.code as provider_code, ap.title as provider_title, a.code, ad.title, ad.description, a.partner_id, a.legacy_addon_id from :table_website_apps_providers ap, :table_website_apps a, :table_website_apps_description ad where ap.code = :provider_code and ap.id = a.provider_id and a.code = :app_code and a.id = ad.app_id and ad.language_id = :language_id');
       $Qapp->bindValue(':provider_code', $data['provider']);
       $Qapp->bindValue(':app_code', $data['app']);
       $Qapp->bindInt(':language_id', $data['language_id']);

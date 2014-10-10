@@ -37,11 +37,11 @@
           foreach ( $info['releases'][$dep] as $file ) {
             if ( $file['version'] == $version ) {
               if ( $type == 'update' ) {
-                $filename = $version . '.phar' . ($with_compress === true ? '.gz' : '');
+                $filename = $version . '.osc' . ($with_compress === true ? '.gz' : '');
                 $filepath = OSCOM::getConfig('dir_fs_downloads', 'Apps') . $provider . '/' . $app . '/' . $dep . '/' . $filename;
 
                 if ( file_exists($filepath) ) {
-                  $dl_filename = $provider . '-' . $app . '-' . str_replace('.', '_', $version) . '.phar' . ($with_compress === true ? '.gz' : '');
+                  $dl_filename = $provider . '-' . $app . '-' . str_replace('.', '_', $version) . '.osc' . ($with_compress === true ? '.gz' : '');
 
                   header('Content-Description: File Transfer');
                   header('Content-Type: application/octet-stream');

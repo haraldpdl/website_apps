@@ -24,7 +24,6 @@
         $dep = number_format(str_replace('_', '.', HTML::sanitize(basename($req[2]))), 3);
         $version = number_format(str_replace('_', '.', HTML::sanitize(basename($req[3]))), 3);
         $type = isset($req[4]) && ($req[4] == 'update') ? 'update' : 'full';
-        $with_compress = ($type == 'update') && isset($req[5]) && ($req[5] == 'gz') ? true : false;
 
         $data = [ 'provider' => $provider,
                   'app' => $app,
@@ -36,25 +35,23 @@
         if ( (count($info) > 0) && isset($info['releases'][$dep]) ) {
           foreach ( $info['releases'][$dep] as $file ) {
             if ( $file['version'] == $version ) {
-              if ( $type == 'update' ) {
-                $filename = $version . '.osc' . ($with_compress === true ? '.gz' : '');
-                $filepath = OSCOM::getConfig('dir_fs_downloads', 'Apps') . $provider . '/' . $app . '/' . $dep . '/' . $filename;
+              $filename = $version . '-' . $type . '.zip';
+              $filepath = OSCOM::getConfig('dir_fs_downloads', 'Apps') . $provider . '/' . $app . '/' . $dep . '/' . $filename;
 
-                if ( file_exists($filepath) ) {
-                  $dl_filename = $provider . '-' . $app . '-' . str_replace('.', '_', $version) . '.osc' . ($with_compress === true ? '.gz' : '');
+              if ( file_exists($filepath) ) {
+                $dl_filename = $provider . '-' . $app . '-' . str_replace('.', '_', $version) . ($type == 'update' ? '-update' : '') . '.zip';
 
-                  header('Content-Description: File Transfer');
-                  header('Content-Type: application/octet-stream');
-                  header('Content-Disposition: attachment; filename=' . basename($dl_filename));
-                  header('Expires: 0');
-                  header('Cache-Control: must-revalidate');
-                  header('Pragma: public');
-                  header('Content-Length: ' . filesize($filepath));
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($dl_filename));
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($filepath));
 
-                  readfile($filepath);
+                readfile($filepath);
 
-                  exit;
-                }
+                exit;
               }
 
               break;

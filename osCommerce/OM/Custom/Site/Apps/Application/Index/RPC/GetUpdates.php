@@ -36,10 +36,18 @@
         if ( (count($info) > 0) && isset($info['releases'][$dep]) ) {
           $result['rpcStatus'] = RPC::STATUS_SUCCESS;
 
+          $base_id = null;
+
           foreach ( $info['releases'][$dep] as $file ) {
             if ( $file['version'] > $base_version ) {
               $result['app']['releases'][] = $file;
+            } elseif ( $file['version'] == $base_version ) {
+              $base_id = $file['id'];
             }
+          }
+
+          if ( is_numeric($base_id) && ($base_id > 0) ) {
+            OSCOM::callDB('Apps\LogGetUpdates', [ 'id' => $base_id, 'ip_address' => sprintf('%u', ip2long(OSCOM::getIPAddress())) ], 'Site');
           }
         }
       }

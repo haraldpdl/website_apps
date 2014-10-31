@@ -39,6 +39,8 @@
               $filepath = OSCOM::getConfig('dir_fs_downloads', 'Apps') . $provider . '/' . $app . '/' . $dep . '/' . $filename;
 
               if ( file_exists($filepath) ) {
+                OSCOM::callDB('Apps\LogDownload', [ 'id' => $file['id'], 'type' => $type, 'ip_address' => sprintf('%u', ip2long(OSCOM::getIPAddress())) ], 'Site');
+
                 $dl_filename = $provider . '-' . $app . '-' . str_replace('.', '_', $version) . ($type == 'update' ? '-update' : '') . '.zip';
 
                 header('Content-Description: File Transfer');

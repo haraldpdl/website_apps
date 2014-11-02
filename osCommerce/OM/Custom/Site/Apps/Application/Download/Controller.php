@@ -18,12 +18,21 @@
       $keys = array_keys($_GET);
       $req = array_slice($keys, array_search(OSCOM::getSiteApplication(), $keys) + 1);
 
-      if ( count($req) >= 4 ) {
+      if ( count($req) >= 3 ) {
+        $version = null;
+        $type = 'full';
+
         $provider = HTML::sanitize(basename($req[0]));
         $app = HTML::sanitize(basename($req[1]));
         $dep = number_format(str_replace('_', '.', HTML::sanitize(basename($req[2]))), 3);
-        $version = number_format(str_replace('_', '.', HTML::sanitize(basename($req[3]))), 3);
-        $type = isset($req[4]) && ($req[4] == 'update') ? 'update' : 'full';
+
+        if ( isset($req[3]) ) {
+          $version = number_format(str_replace('_', '.', HTML::sanitize(basename($req[3]))), 3);
+        }
+
+        if ( isset($req[4]) && ($req[4] == 'update') ) {
+          $type = 'update';
+        }
 
         $data = [ 'provider' => $provider,
                   'app' => $app,
@@ -33,6 +42,12 @@
         $info = OSCOM::callDB('Apps\GetInfo', $data, 'Site');
 
         if ( (count($info) > 0) && isset($info['releases'][$dep]) ) {
+          if ( !isset($version) ) {
+            foreach ( $info['releases'][$dep] as $file ) {
+              $version = max($version, $file['version']);
+            }
+          }
+
           foreach ( $info['releases'][$dep] as $file ) {
             if ( $file['version'] == $version ) {
               $filename = $version . '-' . $type . '.zip';

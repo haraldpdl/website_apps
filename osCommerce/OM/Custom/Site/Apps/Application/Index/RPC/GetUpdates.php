@@ -26,7 +26,11 @@
         $dep = str_replace('_', '.', HTML::sanitize(basename($req[2])));
         $base_version = str_replace('_', '.', HTML::sanitize(basename($req[3])));
 
+        $legacy = false;
+
         if (preg_match('/([0-9])\.([0-9])([0-9]{2})?/', $dep, $matches)) {
+          $legacy = true;
+
           $minor = 0;
 
           if (isset($matches[3])) {
@@ -68,6 +72,12 @@
 
           foreach ( $info['releases'][$dep] as $file ) {
             if ( version_compare($file['version'], $base_version, '>') ) {
+              if ($legacy === true) {
+                $file['version'] = $file['legacy_version'];
+              }
+
+              unset($file['legacy_version']);
+
               $result['app']['releases'][] = $file;
             } elseif ( $file['version'] == $base_version ) {
               $base_id = $file['id'];

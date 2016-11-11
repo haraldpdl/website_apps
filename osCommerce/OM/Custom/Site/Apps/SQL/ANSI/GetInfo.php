@@ -25,7 +25,7 @@
       $app = $Qapp->fetch();
 
       if ( !empty($app) ) {
-        $Qrel = $OSCOM_PDO->prepare('select af.id, af.ver_major as vmajor, af.ver_minor as vminor, af.ver_patch as vpatch, rv.major_ver as cmajor, rv.minor_ver as cminor, rv.patch_ver as cpatch, unix_timestamp(af.date_added) as date_added, ac.changelog from :table_website_apps_files af, :table_website_release_versions rv, :table_website_apps_files_changelog ac where af.app_id = :app_id and af.release_version_id = rv.id and af.id = ac.file_id and ac.language_id = :language_id order by cmajor, cminor, cpatch, vmajor, vminor, vpatch');
+        $Qrel = $OSCOM_PDO->prepare('select af.id, af.app_version, af.ver_major as vmajor, af.ver_minor as vminor, af.ver_patch as vpatch, rv.major_ver as cmajor, rv.minor_ver as cminor, rv.patch_ver as cpatch, unix_timestamp(af.date_added) as date_added, ac.changelog from :table_website_apps_files af, :table_website_release_versions rv, :table_website_apps_files_changelog ac where af.app_id = :app_id and af.release_version_id = rv.id and af.id = ac.file_id and ac.language_id = :language_id order by cmajor, cminor, cpatch, vmajor, vminor, vpatch');
         $Qrel->bindInt(':app_id', $app['id']);
         $Qrel->bindInt(':language_id', $data['language_id']);
         $Qrel->execute();
@@ -37,6 +37,7 @@
           $app['releases'][$core_dep][] = [
             'id' => $Qrel->valueInt('id'),
             'version' => $version,
+            'legacy_version' => $Qrel->value('app_version'),
             'date_added' => date('j M Y', $Qrel->value('date_added')),
             'changelog' => $Qrel->value('changelog')
           ];

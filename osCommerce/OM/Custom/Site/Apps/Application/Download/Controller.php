@@ -24,10 +24,30 @@
 
         $provider = HTML::sanitize(basename($req[0]));
         $app = HTML::sanitize(basename($req[1]));
-        $dep = number_format(str_replace('_', '.', HTML::sanitize(basename($req[2]))), 3);
+        $dep = str_replace('_', '.', HTML::sanitize(basename($req[2])));
 
-        if ( isset($req[3]) ) {
-          $version = number_format(str_replace('_', '.', HTML::sanitize(basename($req[3]))), 3);
+        if (preg_match('/([0-9])\.([0-9])([0-9]{2})/', $dep, $matches)) {
+          $minor = ltrim($matches[3], '0');
+
+          if (empty($minor)) {
+            $minor = 0;
+          }
+
+          $dep = $matches[1] . '.' . $matches[2] . '.' . $minor;
+        }
+
+        if (isset($req[3])) {
+          $version = str_replace('_', '.', HTML::sanitize(basename($req[3])));
+
+          if (preg_match('/([0-9])\.([0-9])([0-9]{2})/', $version, $matches)) {
+            $minor = ltrim($matches[3], '0');
+
+            if (empty($minor)) {
+              $minor = 0;
+            }
+
+            $version = $matches[1] . '.' . $matches[2] . '.' . $minor;
+          }
         }
 
         if ( isset($req[4]) && ($req[4] == 'update') ) {

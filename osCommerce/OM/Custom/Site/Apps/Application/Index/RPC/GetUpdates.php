@@ -23,8 +23,36 @@
       if ( count($req) >= 4 ) {
         $provider = HTML::sanitize(basename($req[0]));
         $app = HTML::sanitize(basename($req[1]));
-        $dep = number_format(str_replace('_', '.', HTML::sanitize(basename($req[2]))), 3);
-        $base_version = number_format(str_replace('_', '.', HTML::sanitize(basename($req[3]))), 3);
+        $dep = str_replace('_', '.', HTML::sanitize(basename($req[2])));
+        $base_version = str_replace('_', '.', HTML::sanitize(basename($req[3])));
+
+        if (preg_match('/([0-9])\.([0-9])([0-9]{2}?)/', $dep, $matches)) {
+          $minor = 0;
+
+          if (isset($matches[3])) {
+            $minor = ltrim($matches[3], '0');
+
+            if (empty($minor)) {
+              $minor = 0;
+            }
+          }
+
+          $dep = $matches[1] . '.' . $matches[2] . '.' . $minor;
+        }
+
+        if (preg_match('/([0-9])\.([0-9])([0-9]{2}?)/', $base_version, $matches)) {
+          $minor = 0;
+
+          if (isset($matches[3])) {
+            $minor = ltrim($matches[3], '0');
+
+            if (empty($minor)) {
+              $minor = 0;
+            }
+          }
+
+          $base_version = $matches[1] . '.' . $matches[2] . '.' . $minor;
+        }
 
         $data = [ 'provider' => $provider,
                   'app' => $app,
@@ -39,7 +67,7 @@
           $base_id = null;
 
           foreach ( $info['releases'][$dep] as $file ) {
-            if ( $file['version'] > $base_version ) {
+            if ( version_compare($file['version'], $base_version, '>') ) {
               $result['app']['releases'][] = $file;
             } elseif ( $file['version'] == $base_version ) {
               $base_id = $file['id'];

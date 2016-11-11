@@ -26,7 +26,7 @@
         $dep = str_replace('_', '.', HTML::sanitize(basename($req[2])));
         $base_version = str_replace('_', '.', HTML::sanitize(basename($req[3])));
 
-        if (preg_match('/([0-9])\.([0-9])([0-9]{2}?)/', $dep, $matches)) {
+        if (preg_match('/([0-9])\.([0-9])([0-9]{2})?/', $dep, $matches)) {
           $minor = 0;
 
           if (isset($matches[3])) {
@@ -40,7 +40,7 @@
           $dep = $matches[1] . '.' . $matches[2] . '.' . $minor;
         }
 
-        if (preg_match('/([0-9])\.([0-9])([0-9]{2}?)/', $base_version, $matches)) {
+        if (preg_match('/([0-9])\.([0-9])([0-9]{2})?/', $base_version, $matches)) {
           $minor = 0;
 
           if (isset($matches[3])) {

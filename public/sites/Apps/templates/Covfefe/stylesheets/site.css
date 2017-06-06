@@ -1,0 +1,58 @@
+footer #footerSocialLinks a {
+  margin-right: 10px;
+}
+
+footer #footerSocialLinks a:last-of-type {
+  margin-right: 0;
+}
+
+#filterNav {
+  top: 30px;
+}
+
+a.white, a.white:active, a.white:visited {
+  color: #fff;
+}
+
+label {
+  font-weight: bold;
+}
+
+.qfCardImageBlock {
+  height: 160px;
+}
+
+.no-transition {
+  transition: none !important;
+}
+
+.sortableDragHandle {
+  cursor: move;
+}
+
+.sortablePlaceholder {
+  opacity: 0.5;
+}
+
+.autocomplete-suggestions {
+  box-sizing: border-box;
+  border: 1px solid #999;
+  background: #FFF;
+  cursor: default;
+  overflow: auto;
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.175);
+}
+
+.autocomplete-suggestion {
+  padding: 2px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.autocomplete-no-suggestion {
+  padding: 2px 5px;
+}
+
+.autocomplete-selected {
+  background: #F0F0F0;
+}

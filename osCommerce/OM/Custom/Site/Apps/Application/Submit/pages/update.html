@@ -1,0 +1,262 @@
+<div class="row">
+  <div class="col-12">
+    <nav class="breadcrumb">
+      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
+      <a class="breadcrumb-item" href="{value}addon category_url{value}">{value}addon category_title{value}</a>
+      <a class="breadcrumb-item active" href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}">{value}addon title{value}</a>
+    </nav>
+  </div>
+</div>
+
+{widget}message_stack|Submit{widget}
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
+      <div class="card-block">
+        <div class="float-left">
+          <h2 class="card-title"><a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-white">{value}addon title{value}</a> {ifvalue addon certified}<small><span class="badge badge-warning">{lang}tag_certified{lang}</span></small>{ifvalue}</h2>
+          <p class="card-text">{lang}for_oscom_version version="{value}addon version_title{value}"{lang}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h4 class="pb-3">{lang}heading_update_submission{lang}</h4>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <form id="aUpdate" action="{link}Submit||Process&{raw}addon public_id{raw}{link}" method="post">{formprotect}public_token{formprotect}
+      <div class="row">
+        <div class="col-4">
+          <div class="form-group">
+            <label>{lang}field_version{lang}</label>
+            <p class="form-control-static">{value}addon version_title{value}</p>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="form-group">
+            <label>{lang}field_category{lang}</label>
+            <p class="form-control-static">{value}addon category_title{value}</p>
+          </div>
+        </div>
+
+        <div class="col-4">
+          <div class="form-group">
+            <label>{lang}field_license{lang}</label>
+            <p class="form-control-static">{lang}field_license_option_open_source_gpl{lang}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="aUpdateTitle">{lang}field_title{lang}</label>
+        <input id="aUpdateTitle" name="title" value="{post}title{post}" maxlength="{value}aTitleLength{value}" type="text" class="form-control" aria-describedby="aUpdateTitleInfo">
+        <p id="aUpdateTitleInfo" class="form-text text-muted small">{lang}field_title_info{lang}</p>
+      </div>
+
+      <div class="form-group">
+        <label for="aUpdateDescription">{lang}field_update_description{lang}</label>
+        <textarea id="aUpdateDescription" name="description" maxlength="{value}aDescriptionLength{value}" class="form-control" rows="15" aria-describedby="aUpdateDescriptionInfo">{post}description{post}</textarea>
+        <p id="aUpdateDescriptionInfo" class="form-text text-muted small">{lang}field_description_info{lang}</p>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <p><strong>{lang}field_upload{lang}</strong></p>
+
+    <div id="fileUploadTermsNotice" class="alert alert-danger d-none">
+      {lang}ms_error_terms_upload{lang}
+    </div>
+  </div>
+
+  <div class="col-7">
+    <form id="aUpdateFiles" action="{rpclink}UploadAddOn{rpclink}" class="dropzone">{formprotect}public_token{formprotect}</form>
+    <p class="form-text text-muted small">{lang}update_field_upload_info maxsize="{value}aUploadSizeMb{value}"{lang}</p>
+  </div>
+
+  <div class="col-5">
+    <ul class="list-group">
+      <li class="list-group-item justify-content-between">{lang}field_upload_info_zip{lang} <i id="aUploadZipIcon" class="fa fa-minus-square text-danger"></i></li>
+    </ul>
+  </div>
+</div>
+
+<div class="row pt-4">
+  <div class="col-12">
+    <div class="form-check alert alert-warning pb-4">
+      <p><strong>Terms</strong></p>
+      <label class="form-check-label" style="font-weight: 500;">
+        <input id="termsCheckbox" class="form-check-input" type="checkbox" value="1">
+        {lang}field_terms{lang}
+      </label>
+    </div>
+  </div>
+</div>
+
+<div class="row pt-4">
+  <div class="col">
+    <p>
+      <button id="aUpdateSubmit" type="submit" class="btn btn-success">{lang}button_submit{lang}</button>
+      <a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="btn btn-link"> {lang}button_cancel_update_submission{lang}</a>
+    </p>
+  </div>
+</div>
+
+<script>
+$(function() {
+  var aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
+  var aTitleLength = {raw json_encode}aTitleLength{raw};
+  var aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
+  var aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
+
+  if ("{post}terms{post}" == "1") {
+    $('#termsCheckbox').prop('checked', true);
+  }
+
+  $('#aUpdateSubmit').click(function(e) {
+    e.preventDefault();
+
+    $('#aUpdate').submit();
+  });
+
+  $('#aUpdate').submit(function(event) {
+    var errors = [];
+
+    var title = $('#aUpdateTitle').val();
+
+    if ((title.length < aTitleMinLength) || (title.length > aTitleLength)) {
+      errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
+    }
+
+    var description = $('#aUpdateDescription').val();
+
+    if ((description.length < aDescriptionMinLength) || (description.length > aDescriptionLength)) {
+      errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
+    }
+
+    if (aUploaded.zip.length < 1) {
+      errors.push({lang json_encode}ms_error_zip_required{lang});
+    }
+
+    if ($("#termsCheckbox").is(':checked') !== true) {
+      errors.push({lang json_encode}ms_error_terms{lang});
+    }
+
+    if (errors.length > 0) {
+      if ($('#msgStk_Submit').length) {
+        $('#msgStk_Submit .alert').empty();
+      } else {
+        $('#aUpdate').before('<div id="msgStk_Submit"></div>');
+        $('#msgStk_Submit').html('<div class="alert alert-danger" role="alert"></div>');
+      }
+
+      var alerts = $('#msgStk_Submit .alert.alert-danger');
+
+      errors.forEach(function (value) {
+        alerts.append('<p>' + value + '</p>');
+      });
+
+      alerts.find('p:last').addClass('mb-0');
+
+      $('html, body').stop().animate({
+        scrollTop: $('#msgStk_Submit').offset().top - 100
+      }, 300);
+
+      return false;
+    }
+
+    $('#aUpdate').append('<input type="hidden" name="upload_zip" value="' + aUploaded.zip[0] + '">');
+
+    $('#aUpdate').append('<input type="hidden" name="terms" value="' + $("#termsCheckbox").val() + '">');
+  });
+});
+
+var aUploaded = {
+  zip: []
+};
+
+Dropzone.options.aUpdateFiles = {
+  acceptedFiles: '.zip',
+  maxFiles: 1,
+  maxFilesize: {raw json_encode}aUploadSizeMb{raw},
+  addRemoveLinks: true,
+  accept: function(file, done) {
+    if ($('#termsCheckbox').is(':checked') !== true) {
+      this.removeFile(file);
+
+      if ($('#fileUploadTermsNotice').hasClass('d-none')) {
+        $('#fileUploadTermsNotice').removeClass('d-none');
+      }
+    } else if ($('#fileUploadTermsNotice').hasClass('d-none') !== true) {
+      $('#fileUploadTermsNotice').addClass('d-none');
+    }
+
+    return done();
+  },
+  init: function() {
+    this.on('error', function(file) {
+      if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
+        if (file.xhr.status == 500) {
+          this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
+        }
+      }
+    });
+
+    this.on('success', function(file, response) {
+      if (typeof response.rpcStatus != 'undefined') {
+        if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
+          if (file.type == 'application/x-zip-compressed') {
+            if (aUploaded.zip.length < 1) {
+              file.oscomName = response.filename;
+
+              aUploaded.zip.push(file.oscomName);
+
+              $('#aUploadZipIcon').removeClass('text-danger').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
+            } else {
+              this.defaultOptions.error(file, {lang json_encode}ms_error_zip_multiple{lang});
+
+              $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                public_token: '{value md5}public_token{value}',
+                file: response.filename
+              });
+            }
+          }
+        }
+      } else {
+        this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
+      }
+    });
+
+    this.on('removedfile', function(file) {
+      if (typeof file.oscomName != 'undefined') {
+        $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+          public_token: '{value md5}public_token{value}',
+          file: file.oscomName
+        });
+
+        if (file.type == 'application/x-zip-compressed') {
+          if (aUploaded.zip.length > 0) {
+            var pos = aUploaded.zip.indexOf(file.oscomName);
+
+            if (pos >= 0) {
+              aUploaded.zip.splice(pos, 1);
+
+              $('#aUploadZipIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square').addClass('text-danger');
+            }
+          }
+        }
+      }
+    });
+  }
+};
+</script>

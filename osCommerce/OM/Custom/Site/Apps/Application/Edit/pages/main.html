@@ -1,0 +1,592 @@
+<div class="row">
+  <div class="col-12">
+    <nav class="breadcrumb">
+      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
+      <a class="breadcrumb-item" href="{value}addon category_url{value}">{value}addon category_title{value}</a>
+      <a class="breadcrumb-item active" href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}">{value}addon title{value}</a>
+    </nav>
+  </div>
+</div>
+
+{widget}message_stack|Edit{widget}
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
+      <div class="card-block">
+        <div class="float-left">
+          <h2 class="card-title"><a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-white">{value}addon title{value}</a> {ifvalue addon certified}<small><span class="badge badge-warning">{lang}tag_certified{lang}</span></small>{ifvalue}</h2>
+          <p class="card-text">{lang}for_oscom_version version="{value}addon version_title{value}"{lang}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <h4 class="pb-3">{lang}heading_edit_app{lang}</h4>
+  </div>
+</div>
+
+<ul class="nav nav-tabs nav-justified" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" data-toggle="tab" href="#app" role="tab">App</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#screenshots" role="tab">Screenshots</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" data-toggle="tab" href="#maintainers" role="tab">Maintainers</a>
+  </li>
+</ul>
+
+<div class="tab-content pt-4">
+  <div class="tab-pane active" id="app" role="tabpanel">
+    <div class="row">
+      <div class="col">
+        <form id="aEdit" action="{link}Edit||Process&{raw}addon public_id{raw}{link}" method="post">{formprotect}public_token{formprotect}
+          <div class="row">
+            <div class="col-4">
+              <div class="form-group">
+                <label>{lang}field_version{lang}</label>
+                <p class="form-control-static">{value}addon version_title{value}</p>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="form-group">
+                <label>{lang}field_category{lang}</label>
+                <p class="form-control-static">{value}addon category_title{value}</p>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="form-group">
+                <label>{lang}field_license{lang}</label>
+                <p class="form-control-static">{lang}field_license_option_open_source_gpl{lang}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="aEditTitle">{lang}field_title{lang}</label>
+            <input id="aEditTitle" name="title" value="{post}title|addon title{post}" maxlength="{value}aTitleLength{value}" type="text" class="form-control" aria-describedby="aEditTitleInfo">
+            <p id="aEditTitleInfo" class="form-text text-muted small">{lang}field_title_info{lang}</p>
+          </div>
+
+          <div class="form-group">
+            <label for="aEditShortDescription">{lang}field_short_description{lang}</label>
+            <textarea id="aEditShortDescription" name="short_description" maxlength="{value}aShortDescriptionLength{value}" class="form-control" rows="3" aria-describedby="aEditShortDescriptionInfo">{post}short_description|addon short_description{post}</textarea>
+            <p id="aEditShortDescriptionInfo" class="form-text text-muted small">{lang}field_short_description_info{lang}</p>
+          </div>
+
+          <div class="form-group">
+            <label for="aEditDescription">{lang}field_description{lang}</label>
+            <textarea id="aEditDescription" name="description" maxlength="{value}aDescriptionLength{value}" class="form-control" rows="15" aria-describedby="aEditDescriptionInfo">{post}description|addon description{post}</textarea>
+            <p id="aEditDescriptionInfo" class="form-text text-muted small">{lang}field_description_info{lang}</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="screenshots" role="tabpanel">
+{ifvalue addon cover_image}
+    <div class="row pb-3">
+      <div class="col-12">
+        <p>{lang}field_screenshots{lang}</p>
+      </div>
+
+      <div class="col-12">
+        <div id="aCoverImage" class="card-group">
+          <div class="card" style="max-width: 25%;" data-code="{value}addon cover_image{value}" data-status="1">
+            <img class="card-img-top invisible" data-imagetype="cover">
+            <div class="card-footer">
+              <a role="button" data-action="delCoverImage" data-toggle="tooltip" data-animation="false" title="Delete"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{ifvalue}
+
+{ifvalue addon screenshot_images}
+    <div class="row pb-3">
+      <div class="col-12">
+        <p>{lang}field_screenshots{lang}</p>
+      </div>
+
+      <div class="col-12">
+        <div id="aScreenshotImages" class="card-group"></div>
+      </div>
+    </div>
+
+<script id="aScreenshotImagePreview" type="x-tmpl-mustache">
+<div class="card" style="max-width: 25%;" data-code="{{code}}" data-status="1">
+  <img class="card-img-top" data-imagetype="screenshot" src="{{url}}">
+  <div class="card-footer">
+    <a role="button" data-action="rearrangeScreenshot" data-toggle="tooltip" data-animation="false" title="Drag to rearrange" class="aScreenshotDragHandle sortableDragHandle"><span class="badge badge-pill badge-default"><i class="fa fa-arrows"></i></span></a>
+    <a role="button" data-action="delScreenshot" data-toggle="tooltip" data-animation="false" title="Delete"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
+  </div>
+</div>
+</script>
+{ifvalue}
+
+    <div class="row">
+      <div class="col-12">
+        <p>{lang}field_upload{lang}</p>
+      </div>
+
+      <div class="col-7">
+        <form id="aEditFiles" action="{rpclink}UploadImage{rpclink}" class="dropzone">{formprotect}public_token{formprotect}</form>
+        <p class="form-text text-muted small">{lang}edit_field_upload_info maxsize="{value}aUploadSizeMb{value}"{lang}</p>
+      </div>
+
+      <div class="col-5">
+        <ul class="list-group">
+          <li class="list-group-item justify-content-between">{lang}field_upload_info_cover_image{lang} <i id="aUploadCoverIcon" class="fa fa-minus-square"></i></li>
+          <li class="list-group-item justify-content-between">{lang}field_upload_info_screenshot_images{lang} <i id="aUploadImagesIcon" class="fa fa-minus-square"></i></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-pane" id="maintainers" role="tabpanel">
+    <div class="row">
+      <div class="col">
+        <p><strong>Maintainers</strong></p>
+
+        <p>Only you are able to edit the App information page and assign other members to upload file updates.</p>
+
+        <p><strong>Uploaders</strong></p>
+
+        <div class="form-group row">
+          <div class="col-sm-1 text-center">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input id="submitTypePrivate" type="radio" class="form-check-input" name="submitType" value="private">
+              </label>
+            </div>
+          </div>
+
+          <div class="col-sm-11">
+            <label for="submitTypePrivate">Private; Only you and assigned members can upload updates.</label>
+
+            <ol id="aMaintainersList" class="list-unstyled">
+            {ifvalue addon_authors}
+              {loop addon_authors}
+              <li data-aid="#id#" data-status="1">#name# <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="Delete"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a></li>
+              {loop}
+            {ifvalue}
+            </ol>
+
+            <div class="form-group">
+              <label for="aNewAuthorInput">Add Member</label>
+              <input type="text" class="form-control" id="aNewAuthorInput" name="aNewAuthor" placeholder="Enter name of member" aria-describedby="aNewAuthorInfo">
+              <small id="aNewAuthorInfo" class="form-text text-muted">Select the member from the auto-suggestion list to accept uploads from. A maximum of {value}aMaxMaintainersUploaders{value} members can be authorized.</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-1 text-center">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input id="submitTypePublic" type="radio" class="form-check-input" name="submitType" value="public">
+              </label>
+            </div>
+          </div>
+          <label for="submitTypePublic" class="col-sm-11">Open; Anyone can can upload updates.</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row pt-4">
+  <div class="col">
+    <p>
+      <button id="aEditSubmit" type="submit" class="btn btn-success">{lang}button_save{lang}</button>
+      <a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="btn btn-link"> {lang}button_cancel_update_submission{lang}</a>
+    </p>
+  </div>
+</div>
+
+<script>
+$(function() {
+  $('body').tooltip({
+    selector: '[data-toggle="tooltip"]'
+  });
+
+  var public_id = {raw json_encode}addon public_id{raw};
+
+  var aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
+  var aTitleLength = {raw json_encode}aTitleLength{raw};
+  var aShortDescriptionMinLength = {raw json_encode}aShortDescriptionMinLength{raw};
+  var aShortDescriptionLength = {raw json_encode}aShortDescriptionLength{raw};
+  var aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
+  var aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
+
+  var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+
+{ifvalue addon cover_image}
+  $('#aCoverImage .card img[data-imagetype="cover"]').attr('src', images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-{value}addon cover_image{value}')).removeClass('invisible');
+
+  $('#aCoverImage .card a[data-action="delCoverImage"]').on('click', function (e) {
+    e.preventDefault();
+
+    var badge = $(this).find('.badge');
+    var icon = $(badge).find('.fa');
+
+    if ($(this).closest('.card').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
+      $(badge).removeClass('badge-default').addClass('badge-danger');
+      $(icon).removeClass('fa-times').addClass('fa-undo');
+
+      $(this).closest('.card').attr('data-status', '0');
+
+      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+    } else {
+      $(badge).removeClass('badge-danger').addClass('badge-default');
+      $(icon).removeClass('fa-undo').addClass('fa-times');
+
+      $(this).closest('.card').attr('data-status', '1');
+
+      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+    }
+  });
+{ifvalue}
+
+{ifvalue addon screenshot_images}
+  var aScreenshotImages = {raw json_encode}addon screenshot_images{raw};
+
+  var aScreenshotTemplate = $('#aScreenshotImagePreview').html();
+  Mustache.parse(aScreenshotTemplate);
+
+  aScreenshotImages.forEach(function (value) {
+    var data = {
+      code: value,
+      url: images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value)
+    };
+
+    $('#aScreenshotImages').append(Mustache.render(aScreenshotTemplate, data));
+  });
+
+  $('#aScreenshotImages').on('mousedown', '.card a[data-action="rearrangeScreenshot"]', function (e) {
+    $(this).tooltip('dispose');
+  });
+
+  $('#aScreenshotImages').on('click', '.card a[data-action="delScreenshot"]', function (e) {
+    e.preventDefault();
+
+    var badge = $(this).find('.badge');
+    var icon = $(badge).find('.fa');
+
+    if ($(this).closest('.card').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
+      $(badge).removeClass('badge-default').addClass('badge-danger');
+      $(icon).removeClass('fa-times').addClass('fa-undo');
+
+      $(this).closest('.card').attr('data-status', '0');
+
+      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+    } else {
+      $(badge).removeClass('badge-danger').addClass('badge-default');
+      $(icon).removeClass('fa-undo').addClass('fa-times');
+
+      $(this).closest('.card').attr('data-status', '1');
+
+      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+    }
+  });
+{ifvalue}
+
+  var aOpenFlag = {raw json_encode}addon open_flag{raw};
+  var aAuthors = {raw json_encode}addon_authors_names{raw};
+
+  if (aOpenFlag === "1") {
+    $('#submitTypePublic').prop('checked', true);
+  } else {
+    $('#submitTypePrivate').prop('checked', true);
+  }
+
+  $('#aNewAuthorInput').bind('keypress', function(e) {
+    if (e.keyCode == 13) {
+      e.preventDefault();
+    }
+  });
+
+  if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
+    $('#aNewAuthorInput').prop('disabled', true);
+  }
+
+  $('#aMaintainersList').on('click', 'li a[data-action="delUploader"]', function (e) {
+    e.preventDefault();
+
+    var badge = $(this).find('.badge');
+    var icon = $(badge).find('.fa');
+
+    if ($(this).closest('li').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
+      $(badge).removeClass('badge-default').addClass('badge-danger');
+      $(icon).removeClass('fa-times').addClass('fa-undo');
+
+      $(this).closest('li').attr('data-status', '0');
+
+      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+    } else {
+      if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
+        return false;
+      }
+
+      $(badge).removeClass('badge-danger').addClass('badge-default');
+      $(icon).removeClass('fa-undo').addClass('fa-times');
+
+      $(this).closest('li').attr('data-status', '1');
+
+      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+    }
+
+    if ($('#aNewAuthorInput').prop('disabled') === true) {
+      if ($('#aMaintainersList li[data-status="1"]').length < 15) {
+        $('#aNewAuthorInput').prop('disabled', false);
+      }
+    } else if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
+      $('#aNewAuthorInput').prop('disabled', true);
+    }
+  });
+
+  $('#aNewAuthorInput').autocomplete({
+    serviceUrl: '{rpclink}FindMembers{rpclink}',
+    type: 'POST',
+    deferRequestBy: 300,
+    params: {
+      public_token: '{value md5}public_token{value}'
+    },
+    onSelect: function (sel) {
+      $('#aNewAuthorInput').val('');
+
+      if ($('#aMaintainersList li[data-aid="' + sel.id + '"]').length === 0) {
+        $('#aMaintainersList').append($('<li>', {
+          'data-aid': sel.id,
+          'data-status': '1'
+        }).text(sel.value));
+
+        $('#aMaintainersList li[data-aid="' + sel.id + '"]').append(' <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="Delete"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a>');
+
+        if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
+          $('#aNewAuthorInput').prop('disabled', true);
+        }
+      }
+    }
+  });
+
+  $('#aEditSubmit').click(function(e) {
+    e.preventDefault();
+
+    $('#aEdit').submit();
+  });
+
+  $('#aEdit').submit(function(event) {
+    var errors = [];
+
+    var title = $('#aEditTitle').val();
+
+    if ((title.length < aTitleMinLength) || (title.length > aTitleLength)) {
+      errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
+    }
+
+    var short_description = $('#aEditShortDescription').val();
+
+    if ((short_description.length < aShortDescriptionMinLength) || (short_description.length > aShortDescriptionLength)) {
+      errors.push({lang json_encode}ms_error_short_description min_length="{value number_format}aShortDescriptionMinLength{value}" length="{value number_format}aShortDescriptionLength{value}"{lang});
+    }
+
+    var description = $('#aEditDescription').val();
+
+    if ((description.length < aDescriptionMinLength) || (description.length > aDescriptionLength)) {
+      errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
+    }
+
+    if (errors.length > 0) {
+      if ($('#msgStk_Submit').length) {
+        $('#msgStk_Submit .alert').empty();
+      } else {
+        $('#aEdit').before('<div id="msgStk_Submit"></div>');
+        $('#msgStk_Submit').html('<div class="alert alert-danger" role="alert"></div>');
+      }
+
+      var alerts = $('#msgStk_Submit .alert.alert-danger');
+
+      errors.forEach(function (value) {
+        alerts.append('<p>' + value + '</p>');
+      });
+
+      alerts.find('p:last').addClass('mb-0');
+
+      $('html, body').stop().animate({
+        scrollTop: $('#msgStk_Submit').offset().top - 100
+      }, 300);
+
+      return false;
+    }
+
+    if (aUploaded.cover.length > 0) {
+      $('#aEdit').append('<input type="hidden" name="upload_cover" value="' + aUploaded.cover[0] + '">');
+    }
+
+    if (aUploaded.images.length > 0) {
+      $('#aEdit').append('<input type="hidden" name="upload_images" value="' + aUploaded.images.join(',') + '">');
+    }
+
+{ifvalue addon cover_image}
+    var cover_image = ($('#aCoverImage .card').attr('data-status') == '1') ? {raw json_encode}addon cover_image{raw} : '';
+
+    if ($('#aEdit input[name="cover_image"]').length === 0) {
+      $('#aEdit').append('<input type="hidden" name="cover_image">');
+    }
+
+    $('#aEdit input[name="cover_image"]').val(cover_image);
+{ifvalue}
+
+{ifvalue addon screenshot_images}
+    var images = [];
+
+    $('#aScreenshotImages .card[data-status="1"]').each(function (index) {
+      images.push($(this).data('code'));
+    });
+
+    if ($('#aEdit input[name="screenshot_images"]').length === 0) {
+      $('#aEdit').append('<input type="hidden" name="screenshot_images">');
+    }
+
+    $('#aEdit input[name="screenshot_images"]').val(images.join(','));
+{ifvalue}
+
+    if ($('#aEdit input[name="submit_type"]').length === 0) {
+      $('#aEdit').append('<input type="hidden" name="submit_type">');
+    }
+
+    $('#aEdit input[name="submit_type"]').val($('#maintainers input[name="submitType"]:checked').val());
+
+    var uploaders = [];
+
+    $('#aMaintainersList li[data-status="1"]').each(function (index) {
+      uploaders.push($(this).data('aid'));
+    });
+
+    if ($('#aEdit input[name="uploaders"]').length === 0) {
+      $('#aEdit').append('<input type="hidden" name="uploaders">');
+    }
+
+    $('#aEdit input[name="uploaders"]').val(uploaders.join(','));
+  });
+
+{ifvalue addon screenshot_images}
+  Sortable.create(document.getElementById('aScreenshotImages'), {
+    handle: '.aScreenshotDragHandle',
+    ghostClass: 'sortablePlaceholder'
+  });
+{ifvalue}
+});
+
+var aUploaded = {
+  cover: [],
+  images: []
+};
+
+Dropzone.options.aEditFiles = {
+  acceptedFiles: '.jpg,.png',
+  maxFiles: 8,
+  maxFilesize: {raw json_encode}aUploadSizeMb{raw},
+  addRemoveLinks: true,
+  init: function() {
+    this.on('error', function(file) {
+      if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
+        if (file.xhr.status == 500) {
+          this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
+        }
+      }
+    });
+
+    this.on('success', function(file, response) {
+      if (typeof response.rpcStatus != 'undefined') {
+        if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
+          if ((file.type == 'image/png') || (file.type == 'image/jpg')) {
+            if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+              if (aUploaded.cover.length < 1) {
+                file.oscomName = response.filename;
+
+                aUploaded.cover.push(file.oscomName);
+
+                $('#aUploadCoverIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
+              } else {
+                this.defaultOptions.error(file, {lang json_encode}ms_error_cover_image_multiple{lang});
+
+                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                  public_token: '{value md5}public_token{value}',
+                  file: response.filename
+                });
+              }
+            } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+              if (aUploaded.images.length < 7) {
+                file.oscomName = response.filename;
+
+                if (aUploaded.images.length < 1) {
+                  $('#aUploadImagesIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
+                }
+
+                aUploaded.images.push(file.oscomName);
+              } else {
+                this.defaultOptions.error(file, {lang json_encode}ms_error_screenshot_image_max_allowed{lang});
+
+                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                  public_token: '{value md5}public_token{value}',
+                  file: response.filename
+                });
+              }
+            } else {
+              this.defaultOptions.error(file, {lang json_encode}error_image_invalid_dimensions{lang});
+            }
+          }
+        }
+      } else {
+        this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
+      }
+    });
+
+    this.on('removedfile', function(file) {
+      if (typeof file.oscomName != 'undefined') {
+        $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+          public_token: '{value md5}public_token{value}',
+          file: file.oscomName
+        });
+
+        if ((file.type == 'image/png') || (file.type == 'image/jpg')) {
+          if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+            if (aUploaded.cover.length > 0) {
+              var pos = aUploaded.cover.indexOf(file.oscomName);
+
+              if (pos >= 0) {
+                aUploaded.cover.splice(pos, 1);
+
+                $('#aUploadCoverIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
+              }
+            }
+          } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+            if (aUploaded.images.length > 0) {
+              var pos = aUploaded.images.indexOf(file.oscomName);
+
+              if (pos >= 0) {
+                aUploaded.images.splice(pos, 1);
+              }
+
+              if (aUploaded.images.length < 1) {
+                $('#aUploadImagesIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+};
+</script>

@@ -1,0 +1,276 @@
+<div class="row">
+  <div class="col-12">
+    <nav class="breadcrumb">
+      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
+      <a class="breadcrumb-item" href="{value}addon category_url{value}">{value}addon category_title{value}</a>
+      <a class="breadcrumb-item active" href="{link}||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}">{value}addon title{value}</a>
+    </nav>
+  </div>
+</div>
+
+{widget}message_stack|Index{widget}
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
+      <div class="card-block">
+        <div class="float-left">
+          <h2 class="card-title"><a href="{link}||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-white">{value}addon title{value}</a> {ifvalue addon certified}<small><span class="badge badge-warning">{lang}tag_certified{lang}</span></small>{ifvalue}</h2>
+          <p class="card-text">{lang}for_oscom_version version="{value}addon version_title{value}"{lang}</p>
+        </div>
+
+        <div id="aButtons" class="d-none float-right text-right">
+          <div class="btn-group">
+            <button id="aButtonMenuButton" type="button" class="btn text-white dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+            <div class="dropdown-menu">
+              <a id="aDownloadLink" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="dropdown-item" download>{lang}link_download{lang}</a>
+              <a id="aViewFilesLink" role="button" class="dropdown-item">{lang}link_view_changelog{lang}</a>
+
+              {iftrue can_upload_update}
+              <a class="dropdown-item" href="{link}Submit|Apps|{raw}addon public_id{raw}{link}">{lang}link_upload_update{lang}</a>
+              {iftrue}
+
+              {iftrue is_owner}
+              <a class="dropdown-item" href="{link}Edit|Apps|{raw}addon public_id{raw}{link}">{lang}link_edit_app{lang}</a>
+              {iftrue}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div id="aImageCover" class="card card-outline-primary float-right d-none">
+      <a role="button" data-toggle="modal" data-target="#aModalImages">
+        <span class="fa-stack text-white" style="position: absolute; bottom: 10px; right: 10px;" aria-hidden="true">
+          <i class="fa fa-square-o fa-stack-2x"></i>
+          <i class="fa fa-expand fa-stack-1x"></i>
+        </span>
+      </a>
+    </div>
+
+    <div id="aDescription" style="white-space: pre-wrap">{value}addon description{value}</div>
+  </div>
+</div>
+
+<div class="modal fade" id="aModalImages" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="aCarouselImages" class="carousel slide" data-interval="false">
+          <ol class="carousel-indicators"></ol>
+
+          <div class="carousel-inner" role="listbox"></div>
+
+          <a class="carousel-control-prev" data-target="#aCarouselImages" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">{lang}carousel_previous{lang}</span>
+          </a>
+          <a class="carousel-control-next" data-target="#aCarouselImages" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">{lang}carousel_next{lang}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="aFilesListing" class="row d-none">
+  <div class="col-12">
+    <h3 id="aFilesHeading" class="pb-4">
+      {ifvalue addon open_flag}
+        {lang}heading_files{lang}
+      {else}
+        {lang}heading_changelog{lang}
+      {ifvalue}
+    </h3>
+
+    <div id="aFiles" role="tablist" aria-multiselectable="true"></div>
+  </div>
+</div>
+
+<script id="afTemplate" type="x-tmpl-mustache">
+<div class="card">
+  <div class="card-header" role="tab" id="afHeading{{counter}}">
+    <span class="float-right">{{date_added_formatted}}</span>
+
+    <a class="collapsed" data-toggle="collapse" href="#afBody{{counter}}" aria-expanded="false" aria-controls="afBody{{counter}}">
+      {{title}}
+    </a>
+  </div>
+
+  <div id="afBody{{counter}}" class="collapse no-transition" role="tabpanel" aria-labelledby="afHeading{{counter}}">
+    <div class="card-block">
+      <div class="float-right">
+        <a href="{{download_url}}" id="dl-{value}addon public_id{value}{{public_id}}" class="btn btn-sm btn-primary text-white" download>{lang}button_download{lang}</a>
+      </div>
+
+      {{#author.name}}
+      <p class="text-muted">{lang}uploaded_by name="{{author.formatted_name}}"{lang}</p>
+      {{/author.name}}
+
+      <div style="white-space: pre-wrap">{{description}}</div>
+    </div>
+  </div>
+</div>
+</script>
+
+<div id="aModalDownloadFile" class="modal">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="jumbotron mb-1 p-4">
+          <h1 class="display-3">{lang}download_title{lang}</h1>
+
+          <p class="lead">{lang}download_description{lang}</p>
+
+          <form id="downloadForm" action="" method="post">{formprotect}public_token{formprotect}
+            <p><button type="submit" class="btn btn-success">{lang}download_now_button{lang}</button></p>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{lang}button_close{lang}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  var public_id = {raw json_encode}addon public_id{raw};
+  var images = {raw json_encode}addon screenshot_images{raw};
+  var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+  var files = {raw json_encode}addon_files{raw};
+  var files_download_url = {raw json_encode}addon_download_url{raw};
+  var open_flag = {raw json_encode}addon open_flag{raw};
+  var files_counter = 0;
+
+  if ((open_flag === '') || (files.length < 2)) {
+    $('#aButtons .btn-group').prepend('<a id="aDownloadButton" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="btn btn-primary text-white" download>' + {lang json_encode}button_download{lang} + '</a>');
+    $('#aButtonMenuButton').addClass('btn-primary');
+
+    $('#aDownloadLink').remove();
+
+    if (files.length < 2) {
+      $('#aViewFilesLink').remove();
+    }
+  } else {
+    $('#aButtons .btn-group').prepend('<a id="aViewFilesButton" role="button" class="btn btn-info text-white">' + {lang json_encode}button_view_files{lang} + '</a>');
+    $('#aButtonMenuButton').addClass('btn-info');
+
+    $('#aViewFilesLink').remove();
+  }
+
+  if ($('#aButtons .btn-group .dropdown-menu a').length < 1) {
+    $('#aButtonMenuButton, #aButtons .btn-group .dropdown-menu').remove();
+  }
+
+  $('#aButtons').removeClass('d-none');
+
+  $('#aButtons').append('<p class="mt-3 mb-0">' + Mustache.render({lang json_encode}updated_by_on{lang}, {
+    'name': files[0].author.formatted_name,
+    'date': moment(files[0].date_added, 'YYYYMMDD').format('Do MMMM YYYY')
+  }) + '</p>');
+
+  if (images.length > 0) {
+    var image_cover = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + images[0]);
+
+    $('#aImageCover a[data-toggle="modal"]').prepend('<img src="' + image_cover + '" class="card-img img-fluid m-1" style="width: 320px; height: 180px;">');
+
+    var images_counter = 0;
+
+    images.forEach(function(value) {
+      var image = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value);
+
+      $('#aCarouselImages .carousel-inner').append('<div class="carousel-item"><img class="d-block img-fluid" src="' + image + '" alt="" style="width: 100%; height: 100%;"></div>');
+
+      $('#aCarouselImages .carousel-indicators').append('<li data-target="#aCarouselImages" data-slide-to="' + images_counter + '"></li>');
+
+      images_counter += 1;
+    });
+
+    $('#aCarouselImages .carousel-inner .carousel-item:first').addClass('active');
+
+    $('#aCarouselImages .carousel-indicators li:first').addClass('active');
+
+    $('#aImageCover').removeClass('d-none');
+  }
+
+  if (files.length > 1) {
+    $('#aFilesListing').removeClass('d-none');
+
+    $('#aViewFilesButton, #aViewFilesLink').click(function(e) {
+      e.preventDefault();
+
+      $('html, body').stop().animate({
+        scrollTop: $('#aFilesHeading').offset().top - 100
+      }, 300);
+    });
+
+    var template = $('#afTemplate').html();
+    Mustache.parse(template);
+
+    files.forEach(function (value) {
+      value.counter = files_counter;
+      value.download_url = files_download_url.replace('FILE_CODE', value.public_id);
+      value.date_added_formatted = moment(value.date_added, 'YYYYMMDD').format('Do MMMM YYYY');
+
+      $('#aFiles').append(Mustache.render(template, value));
+
+      files_counter += 1;
+    });
+
+    $('#afBody0').collapse('show');
+  }
+
+  var redirect_count = 5;
+  var redirect_timer;
+
+  $('a[download]').on('click', function (e) {
+    e.preventDefault();
+
+{ifvalue user}
+    $('#downloadForm').attr('action', $(this).attr('href'));
+
+    redirect_timer = setInterval(function() {
+      if ( --redirect_count < 1 ) {
+        clearInterval(redirect_timer);
+        $('#downloadForm').submit();
+      }
+
+      $('#redirect_counter').text(redirect_count);
+    }, 1000);
+
+    $('#aModalDownloadFile').modal('show');
+{else}
+    window.location = $(this).attr('href');
+    return false;
+{ifvalue}
+  });
+
+  $('#downloadForm').submit(function() {
+    clearInterval(redirect_timer);
+    $('#redirect_counter').text(0);
+  });
+
+  $('#aModalDownloadFile').on('show.bs.modal', function (e) {
+    redirect_count = 5;
+    $('#redirect_counter').text(redirect_count);
+  });
+
+  $('#aModalDownloadFile').on('hide.bs.modal', function (e) {
+    clearInterval(redirect_timer);
+  });
+
+  {iftrue initiate_download}
+  $('#dl-{value}download_file app{value}{value}download_file file{value}').click();
+  {iftrue}
+});
+</script>

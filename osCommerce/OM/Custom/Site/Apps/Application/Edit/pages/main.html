@@ -31,13 +31,13 @@
 
 <ul class="nav nav-tabs nav-justified" role="tablist">
   <li class="nav-item">
-    <a class="nav-link active" data-toggle="tab" href="#app" role="tab">App</a>
+    <a class="nav-link active" data-toggle="tab" href="#app" role="tab">{lang}section_app{lang}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#screenshots" role="tab">Screenshots</a>
+    <a class="nav-link" data-toggle="tab" href="#screenshots" role="tab">{lang}section_screenshots{lang}</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#maintainers" role="tab">Maintainers</a>
+    <a class="nav-link" data-toggle="tab" href="#maintainers" role="tab">{lang}section_maintainers{lang}</a>
   </li>
 </ul>
 
@@ -95,7 +95,7 @@
 {ifvalue addon cover_image}
     <div class="row pb-3">
       <div class="col-12">
-        <p>{lang}field_screenshots{lang}</p>
+        <p><strong>{lang}field_cover_image{lang}</strong></p>
       </div>
 
       <div class="col-12">
@@ -103,7 +103,7 @@
           <div class="card" style="max-width: 25%;" data-code="{value}addon cover_image{value}" data-status="1">
             <img class="card-img-top invisible" data-imagetype="cover">
             <div class="card-footer">
-              <a role="button" data-action="delCoverImage" data-toggle="tooltip" data-animation="false" title="Delete"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
+              <a role="button" data-action="delCoverImage" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@
 {ifvalue addon screenshot_images}
     <div class="row pb-3">
       <div class="col-12">
-        <p>{lang}field_screenshots{lang}</p>
+        <p><strong>{lang}field_screenshots{lang}</strong></p>
       </div>
 
       <div class="col-12">
@@ -126,8 +126,8 @@
 <div class="card" style="max-width: 25%;" data-code="{{code}}" data-status="1">
   <img class="card-img-top" data-imagetype="screenshot" src="{{url}}">
   <div class="card-footer">
-    <a role="button" data-action="rearrangeScreenshot" data-toggle="tooltip" data-animation="false" title="Drag to rearrange" class="aScreenshotDragHandle sortableDragHandle"><span class="badge badge-pill badge-default"><i class="fa fa-arrows"></i></span></a>
-    <a role="button" data-action="delScreenshot" data-toggle="tooltip" data-animation="false" title="Delete"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
+    <a role="button" data-action="rearrangeScreenshot" data-toggle="tooltip" data-animation="false" title="{lang}button_drag_rearrange{lang}" class="aScreenshotDragHandle sortableDragHandle"><span class="badge badge-pill badge-default"><i class="fa fa-arrows"></i></span></a>
+    <a role="button" data-action="delScreenshot" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
   </div>
 </div>
 </script>
@@ -135,12 +135,12 @@
 
     <div class="row">
       <div class="col-12">
-        <p>{lang}field_upload{lang}</p>
+        <p><strong>{lang}field_upload{lang}</strong></p>
       </div>
 
       <div class="col-7">
         <form id="aEditFiles" action="{rpclink}UploadImage{rpclink}" class="dropzone">{formprotect}public_token{formprotect}</form>
-        <p class="form-text text-muted small">{lang}edit_field_upload_info maxsize="{value}aUploadSizeMb{value}"{lang}</p>
+        <p class="form-text text-muted small">{lang}field_upload_info maxsize="{value}aUploadSizeMb{value}"{lang}</p>
       </div>
 
       <div class="col-5">
@@ -155,11 +155,11 @@
   <div class="tab-pane" id="maintainers" role="tabpanel">
     <div class="row">
       <div class="col">
-        <p><strong>Maintainers</strong></p>
+        <p><strong>{lang}field_maintainers{lang}</strong></p>
 
-        <p>Only you are able to edit the App information page and assign other members to upload file updates.</p>
+        <p>{lang}field_maintainers_info{lang}</p>
 
-        <p><strong>Uploaders</strong></p>
+        <p><strong>{lang}field_uploaders{lang}</strong></p>
 
         <div class="form-group row">
           <div class="col-sm-1 text-center">
@@ -171,20 +171,20 @@
           </div>
 
           <div class="col-sm-11">
-            <label for="submitTypePrivate">Private; Only you and assigned members can upload updates.</label>
+            <label for="submitTypePrivate">{lang}field_uploaders_private{lang}</label>
 
             <ol id="aMaintainersList" class="list-unstyled">
             {ifvalue addon_authors}
               {loop addon_authors}
-              <li data-aid="#id#" data-status="1">#name# <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="Delete"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a></li>
+              <li data-aid="#id#" data-status="1">#name# <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a></li>
               {loop}
             {ifvalue}
             </ol>
 
             <div class="form-group">
-              <label for="aNewAuthorInput">Add Member</label>
-              <input type="text" class="form-control" id="aNewAuthorInput" name="aNewAuthor" placeholder="Enter name of member" aria-describedby="aNewAuthorInfo">
-              <small id="aNewAuthorInfo" class="form-text text-muted">Select the member from the auto-suggestion list to accept uploads from. A maximum of {value}aMaxMaintainersUploaders{value} members can be authorized.</small>
+              <label for="aNewAuthorInput">{lang}field_uploaders_private_add_member{lang}</label>
+              <input type="text" class="form-control" id="aNewAuthorInput" name="aNewAuthor" placeholder="{lang}field_uploaders_private_add_member_placeholder{lang}" aria-describedby="aNewAuthorInfo">
+              <small id="aNewAuthorInfo" class="form-text text-muted">{lang}field_uploaders_private_add_member_info max_members="{value}aMaxMaintainersUploaders{value}"{lang}</small>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@
               </label>
             </div>
           </div>
-          <label for="submitTypePublic" class="col-sm-11">Open; Anyone can can upload updates.</label>
+          <label for="submitTypePublic" class="col-sm-11">{lang}field_uploaders_public{lang}</label>
         </div>
       </div>
     </div>
@@ -245,14 +245,14 @@ $(function() {
 
       $(this).closest('.card').attr('data-status', '0');
 
-      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
     } else {
       $(badge).removeClass('badge-danger').addClass('badge-default');
       $(icon).removeClass('fa-undo').addClass('fa-times');
 
       $(this).closest('.card').attr('data-status', '1');
 
-      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
     }
   });
 {ifvalue}
@@ -288,14 +288,14 @@ $(function() {
 
       $(this).closest('.card').attr('data-status', '0');
 
-      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
     } else {
       $(badge).removeClass('badge-danger').addClass('badge-default');
       $(icon).removeClass('fa-undo').addClass('fa-times');
 
       $(this).closest('.card').attr('data-status', '1');
 
-      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
     }
   });
 {ifvalue}
@@ -331,7 +331,7 @@ $(function() {
 
       $(this).closest('li').attr('data-status', '0');
 
-      $(this).attr('title', 'Undo').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
     } else {
       if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
         return false;
@@ -342,7 +342,7 @@ $(function() {
 
       $(this).closest('li').attr('data-status', '1');
 
-      $(this).attr('title', 'Delete').tooltip('dispose').tooltip('show');
+      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
     }
 
     if ($('#aNewAuthorInput').prop('disabled') === true) {
@@ -370,7 +370,7 @@ $(function() {
           'data-status': '1'
         }).text(sel.value));
 
-        $('#aMaintainersList li[data-aid="' + sel.id + '"]').append(' <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="Delete"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a>');
+        $('#aMaintainersList li[data-aid="' + sel.id + '"]').append(' <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title=' + {lang json_encode}button_delete{lang} + '><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a>');
 
         if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
           $('#aNewAuthorInput').prop('disabled', true);

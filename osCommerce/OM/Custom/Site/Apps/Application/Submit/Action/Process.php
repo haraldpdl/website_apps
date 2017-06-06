@@ -207,7 +207,7 @@ class Process
             }
 
             if (Apps::prepareAddOn($data)) {
-                $OSCOM_MessageStack->add('Index', OSCOM::getDef('ms_success_prepare'), 'success');
+                $OSCOM_MessageStack->add('Index', OSCOM::getDef('ms_success_saved_in_queue'), 'success');
 
                 OSCOM::redirect(OSCOM::getLink(null, 'Index'));
             } else {

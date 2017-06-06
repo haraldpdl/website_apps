@@ -28,7 +28,7 @@ field_terms = I acknowledge that I have the legal rights and permission to perfo
 
 select_list_default = -- Please Select --
 
-ms_success_prepare = The file uploaded has been submitted successfully! This is now in queue for further processing and will be made publicly available soon.
+ms_success_saved_in_queue = The App has been successfully submitted! This is now in queue for further processing and will be made publicly available soon.
 
 ms_error_terms = Please accept the terms to perform the submission.
 ms_error_terms_upload = Please accept the terms below to perform the upload.

@@ -15,7 +15,7 @@ navbar_log_out = Log Out
 
 breadcrumb_home = All
 
-redirect_cancel_return_to_site = or cancel and go back to the Apps Marketplace website
+redirect_cancel_return_to_site = or cancel and return to the Apps Marketplace
 
 copyright_footer = <p>Copyright (c) 2000-{value}current_year{value} osCommerce (<a href="{link}Us|Website|Legal{link}">legal</a>)</p>
 
@@ -31,10 +31,13 @@ social_github = GitHub
 social_github_title = Code with us on GitHub
 
 button_close = Close
+button_delete = Delete
+button_drag_rearrange = Drag to rearrange
 button_download = <i class="fa fa-download" aria-hidden="true"></i> Download
 button_view_files = <i class="fa fa-th-large" aria-hidden="true"></i> View Files
 button_save = Save
 button_submit = Submit
+button_undo = Undo
 
 tag_certified = certified
 tag_open = open

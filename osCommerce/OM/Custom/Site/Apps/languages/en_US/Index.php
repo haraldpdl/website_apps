@@ -22,7 +22,7 @@ uploaded_by = Uploaded by :name
 updated_by_on = Updated by {{name}} on {{date}}
 last_updated = Last updated :date
 
-login_text_download = <p>Log in or <a href="{link}Account|Website|Create{link}">create an account</a> for free to start downloading Apps from the Apps Marketplace website.</p>
+login_text_download = <p>Log in or <a href="{link}Account|Website|Create{link}">create a free account</a> to start downloading Apps from the Apps Marketplace.</p>
 
 download_title = Downloading..
 download_description = .. in <span id="redirect_counter">5</span> second(s)
@@ -35,7 +35,7 @@ placeholder_search = Search
 
 pageset_current_page = Page {{number}}
 
-empty_resultset = No files were found to display.
-search_empty_resultset = The search criteria did not match any items. Try again by refining the search keywords. Keywords should have a minimum of 4 characters.
+empty_resultset = No Apps were found to display.
+search_empty_resultset = The search criteria did not match any Apps. Try again by refining the search keywords. Keywords should have a minimum of 4 characters.
 
-ms_error_file_download_nonexistent = File can not be downloaded. Please try again with another file.
+ms_error_file_download_nonexistent = The App can not be downloaded. Please try again.

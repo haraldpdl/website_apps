@@ -177,11 +177,11 @@ class Process
             }
 
             if (!empty($cover_image) && ($cover_image != $addon['cover_image'])) {
-                $errors[] = OSCOM::getDef('ms_error_invalid_cover_image');
+                $errors[] = OSCOM::getDef('ms_error_cover_image_original_mismatch');
             }
 
             if (count(array_diff($screenshot_images, $addon['screenshot_images'])) > 0) { // new images cannot be added through $screenshot_images
-                $errors[] = OSCOM::getDef('ms_error_invalid_screenshot_image');
+                $errors[] = OSCOM::getDef('ms_error_screenshot_image_original_mismatch');
             }
 
             if (!in_array($submit_type, ['private', 'public'])) {
@@ -231,7 +231,7 @@ class Process
             if ($result === 1) {
                 $OSCOM_MessageStack->add('Index', OSCOM::getDef('ms_success_saved'), 'success');
             } elseif ($result === 2) {
-                $OSCOM_MessageStack->add('Index', OSCOM::getDef('ms_success_prepare'), 'success');
+                $OSCOM_MessageStack->add('Index', OSCOM::getDef('ms_success_saved_in_queue'), 'success');
             }
 
             OSCOM::redirect(OSCOM::getLink(null, OSCOM::getDefaultSiteApplication(), implode('&', $params)));

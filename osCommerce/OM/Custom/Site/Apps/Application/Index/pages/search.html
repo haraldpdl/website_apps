@@ -66,22 +66,27 @@
       <img class="card-img-top img-fluid" src="{{cover_image}}" alt="{{title}}">
       {{/cover_image}}
 
+      {{^cover_image}}
       <div class="card-img-overlay">
         <h4 class="card-title" style="word-wrap: break-word;"><a href="{{url}}" class="white">{{title}}</a></h4>
       </div>
+      {{/cover_image}}
     </div>
 
     <div class="card-block">
+      {{#certified}}<span class="badge badge-warning float-right">{lang}tag_certified{lang}</span>{{/certified}}
+
+      <p class="card-text" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;">
+        {{title}}
+      </p>
+
       <p class="card-text" style="word-wrap: break-word;">
-        {{#certified}}<span class="badge badge-warning float-right">{lang}tag_certified{lang}</span>{{/certified}}
-
-<!--
-        {{#open_flag}}<span class="badge badge-info float-right mr-1">{lang}tag_open{lang}</span>{{/open_flag}}
-//-->
-
         {{short_description}}
       </p>
-      <p class="card-text"><small class="text-muted">{lang}last_updated date="{{last_update_date_formatted}}"{lang}</small></p>
+
+      <p class="card-text">
+        <small class="text-muted">{lang}last_updated date="{{last_update_date_formatted}}"{lang}</small>
+      </p>
     </div>
   </div>
 </div>

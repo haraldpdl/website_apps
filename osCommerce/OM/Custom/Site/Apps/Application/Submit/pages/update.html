@@ -215,7 +215,9 @@ Dropzone.options.aUpdateFiles = {
     this.on('success', function(file, response) {
       if (typeof response.rpcStatus != 'undefined') {
         if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
-          if (file.type == 'application/x-zip-compressed') {
+          var file_ext = response.filename.substr(response.filename.lastIndexOf('.') + 1);
+
+          if (file_ext == 'zip') {
             if (aUploaded.zip.length < 1) {
               file.oscomName = response.filename;
 
@@ -244,7 +246,9 @@ Dropzone.options.aUpdateFiles = {
           file: file.oscomName
         });
 
-        if (file.type == 'application/x-zip-compressed') {
+        var file_ext = file.oscomName.substr(file.oscomName.lastIndexOf('.') + 1);
+
+        if (file_ext == 'zip') {
           if (aUploaded.zip.length > 0) {
             var pos = aUploaded.zip.indexOf(file.oscomName);
 

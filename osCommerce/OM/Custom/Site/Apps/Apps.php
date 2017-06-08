@@ -466,6 +466,8 @@ class Apps
         }
 
         if ($add_to_queue === false) {
+            $fields['screenshot_images'] = !empty($fields['screenshot_images']) ? implode(',', $fields['screenshot_images']) : null;
+
             if (OSCOM::callDB('Apps\SaveAddOnInfo', $fields, 'Site') === true) {
                 if (isset($addon['cover_image']) && !isset($fields['cover_image'])) { // delete flagged image
                     static::deleteImageFile($addon['cover_image'], $data['public_id']);
@@ -481,20 +483,20 @@ class Apps
             if (static::saveAddOnUploaders($data['public_id'], $data['uploaders'])) {
                 $modified = true;
             }
-        }
 
-        if ($add_to_queue === true) {
+            if ($modified === true) {
+                static::auditLog($addon, $fields);
+
+                Cache::clear('apps-listing');
+
+                return 1;
+            }
+        } else {
             $fields['user_id'] = $_SESSION['Website']['Account']['id'];
 
             if (static::prepareAddOn($fields)) {
                 return 2;
             }
-        } elseif ($modified === true) {
-            static::auditLog($addon, $fields);
-
-            Cache::clear('apps-listing');
-
-            return 1;
         }
 
         return -1;

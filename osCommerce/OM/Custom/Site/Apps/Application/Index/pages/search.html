@@ -62,22 +62,25 @@
 <div class="col-md-4 mb-4">
   <div class="card h-100">
     <div class="qfCardImageBlock rounded-top" style="position: relative; {{^cover_image}}background-color: {{card_background_color}};{{/cover_image}}">
-      {{#cover_image}}
-      <img class="card-img-top img-fluid" src="{{cover_image}}" alt="{{title}}">
-      {{/cover_image}}
+      <a href="{{url}}" class="white">
 
-      {{^cover_image}}
-      <div class="card-img-overlay">
-        <h4 class="card-title" style="word-wrap: break-word;"><a href="{{url}}" class="white">{{title}}</a></h4>
-      </div>
-      {{/cover_image}}
+        {{#cover_image}}
+        <img class="card-img-top img-fluid" src="{{cover_image}}" alt="{{title}}">
+        {{/cover_image}}
+
+        {{^cover_image}}
+        <div class="card-img-overlay">
+          <h4 class="card-title" style="word-wrap: break-word;">{{title}}</h4>
+        </div>
+        {{/cover_image}}
+      </a>
     </div>
 
     <div class="card-block">
       {{#certified}}<span class="badge badge-warning float-right">{lang}tag_certified{lang}</span>{{/certified}}
 
       <p class="card-text" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;">
-        {{title}}
+        <a href="{{url}}" style="color: #000; text-decoration: none;">{{title}}</a>
       </p>
 
       <p class="card-text" style="word-wrap: break-word;">

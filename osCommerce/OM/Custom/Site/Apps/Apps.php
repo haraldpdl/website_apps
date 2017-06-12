@@ -434,7 +434,7 @@ class Apps
         return implode(' ', $keys);
     }
 
-    public static function saveAddOnInfo(array $data): int
+    public static function saveAddOnInfo(array $data, $bypass_queue = false): int
     {
         $add_to_queue = false;
         $modified = false;
@@ -465,8 +465,20 @@ class Apps
             $add_to_queue = true;
         }
 
-        if ($add_to_queue === false) {
+        if (($add_to_queue === false) || ($bypass_queue === true)) {
             $fields['screenshot_images'] = !empty($fields['screenshot_images']) ? implode(',', $fields['screenshot_images']) : null;
+
+            if (isset($data['user_id'])) {
+                $fields['user_id'] = $data['user_id'];
+            }
+
+            if (isset($data['ip_address'])) {
+                $fields['ip_address'] = $data['ip_address'];
+            }
+
+            if (isset($data['audit_log_type'])) {
+                $fields['audit_log_type'] = $data['audit_log_type'];
+            }
 
             if (OSCOM::callDB('Apps\SaveAddOnInfo', $fields, 'Site') === true) {
                 if (isset($addon['cover_image']) && !isset($fields['cover_image'])) { // delete flagged image
@@ -518,6 +530,7 @@ class Apps
             'zip_file' => null,
             'cover_image' => null,
             'screenshot_images' => null,
+            'public_flag' => $data['public_flag'] ?? 0,
             'uploaders' => isset($data['uploaders']) ? implode(',', $data['uploaders']) : null,
             'public_id' => $data['public_id'] ?? null,
             'parent_public_id' => $data['parent_public_id'] ?? null,
@@ -529,7 +542,7 @@ class Apps
 
             $zip_file = static::UPLOAD_TEMP_PATH . '/' . (int)$data['user_id'] . '-' . $data['filename'];
 
-            if (file_exists($zip_file) && copy($zip_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $data['filename'])) {
+            if (is_file($zip_file) && copy($zip_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $data['filename'])) {
                 unlink($zip_file);
             }
         }
@@ -539,7 +552,7 @@ class Apps
 
             $cover_image_file = static::UPLOAD_TEMP_PATH . '/' . (int)$data['user_id'] . '-' . $data['cover_image'];
 
-            if (file_exists($cover_image_file) && copy($cover_image_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $data['cover_image'])) {
+            if (is_file($cover_image_file) && copy($cover_image_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $data['cover_image'])) {
                 unlink($cover_image_file);
             }
         }
@@ -550,7 +563,7 @@ class Apps
             foreach ($data['screenshot_images'] as $i) {
                 $i_file = static::UPLOAD_TEMP_PATH . '/' . (int)$data['user_id'] . '-' . $i;
 
-                if (file_exists($i_file) && copy($i_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $i)) {
+                if (is_file($i_file) && copy($i_file, static::UPLOAD_PENDING_PATH . '/' . (int)$data['user_id'] . '-' . $i)) {
                     unlink($i_file);
                 }
             }
@@ -609,8 +622,26 @@ class Apps
 
     protected static function auditLog(array $orig, array $new)
     {
+        $action_type = $new['audit_log_type'] ?? 'update';
+
+        if (isset($new['audit_log_type'])) {
+            unset($new['audit_log_type']);
+        }
+
         $public_id = $new['public_id'];
         unset($new['public_id']);
+
+        $user_id = $new['user_id'] ?? $_SESSION['Website']['Account']['id'];
+
+        if (isset($new['user_id'])) {
+            unset($new['user_id']);
+        }
+
+        $ip_address = $new['ip_address'] ?? sprintf('%u', ip2long(OSCOM::getIPAddress()));
+
+        if (isset($new['ip_address'])) {
+            unset($new['ip_address']);
+        }
 
         $orig['public_flag'] = ($orig['open_flag'] == '1') ? '1' : '0';
         unset($orig['open_flag']);
@@ -669,9 +700,9 @@ class Apps
             $data = [
                 'action' => 'AddOn',
                 'id' => static::getAddOnId($public_id),
-                'user_id' => $_SESSION['Website']['Account']['id'],
-                'ip_address' => sprintf('%u', ip2long(OSCOM::getIPAddress())),
-                'action_type' => 'update',
+                'user_id' => $user_id,
+                'ip_address' => $ip_address,
+                'action_type' => $action_type,
                 'rows' => []
             ];
 
@@ -695,5 +726,16 @@ class Apps
 
             AuditLog::save($data);
         }
+    }
+
+    public static function getPending(int $limit = null)
+    {
+        $params = [
+            'limit' => $limit
+        ];
+
+        $result = OSCOM::callDB('Apps\GetPending', $params, 'Site');
+
+        return $result;
     }
 }

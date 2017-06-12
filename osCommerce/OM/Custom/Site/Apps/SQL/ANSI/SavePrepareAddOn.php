@@ -20,6 +20,7 @@ class SavePrepareAddOn
             'title' => $data['title'],
             'description' => $data['description'],
             'user_id' => (int)$data['user_id'],
+            'public_flag' => $data['public_flag'],
             'date_added' => 'now()',
             'ip_address' => $data['ip_address']
         ];

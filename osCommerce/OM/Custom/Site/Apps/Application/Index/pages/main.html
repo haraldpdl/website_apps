@@ -186,7 +186,7 @@ $(function() {
       value.url = addon_url.replace('ADDON_CODE', value.public_id);
       value.url = value.url.replace('ADDON_SLUG', value.title_slug);
       value.card_background_color = '#' + cardBackgroundColors[colorIndex];
-      value.last_update_date_formatted = moment(value.last_update_date, 'YYYYMMDD').fromNow();
+      value.last_update_date_formatted = moment(value.last_update_date, 'YYYYMMDD HHmmss').fromNow();
 
       value.certified = (value.certified == '1');
       value.open_flag = (value.open_flag == '1');

@@ -20,7 +20,7 @@ class GetSearchListing
 
         $result = [];
 
-        $query = 'select SQL_CALC_FOUND_ROWS left(p.title, :title_length) as title, left(p.short_description, :short_description_length) as short_description, p.public_id, p.cover_image, if(p.public_flag = 1, 1, null) as open_flag, date_format(max(f.date_added), "%Y%m%d") as last_update_date, if(ma.id > 0, 1, null) as certified';
+        $query = 'select SQL_CALC_FOUND_ROWS left(p.title, :title_length) as title, left(p.short_description, :short_description_length) as short_description, p.public_id, p.cover_image, if(p.public_flag = 1, 1, null) as open_flag, date_format(max(f.date_added), "%Y%m%d %H%i%s") as last_update_date, if(ma.id > 0, 1, null) as certified';
 
         if (!isset($params['sort'])) {
             $query .= ', match (p.title, p.description) against (:keywords) as pscore';

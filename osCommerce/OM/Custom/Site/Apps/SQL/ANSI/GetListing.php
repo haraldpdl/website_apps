@@ -20,7 +20,7 @@ class GetListing
 
         $result = [];
 
-        $query = 'select SQL_CALC_FOUND_ROWS left(p.title, :title_length) as title, left(p.short_description, :short_description_length) as short_description, p.public_id, p.cover_image, if(p.public_flag = 1, 1, null) as open_flag, date_format(max(f.date_added), "%Y%m%d") as last_update_date, if(ma.id > 0, 1, null) as certified from contrib_files f, contrib_packages p left join modules_addons ma on (p.id = ma.addons_package_id), contrib_categories c, contrib_versions v where f.status = 1 and f.contrib_packages_id = p.id and p.status = 1 and p.contrib_categories_id = c.id and c.status = 1 and p.contrib_versions_id = v.id and v.status = 1 ';
+        $query = 'select SQL_CALC_FOUND_ROWS left(p.title, :title_length) as title, left(p.short_description, :short_description_length) as short_description, p.public_id, p.cover_image, if(p.public_flag = 1, 1, null) as open_flag, date_format(max(f.date_added), "%Y%m%d %H%i%s") as last_update_date, if(ma.id > 0, 1, null) as certified from contrib_files f, contrib_packages p left join modules_addons ma on (p.id = ma.addons_package_id), contrib_categories c, contrib_versions v where f.status = 1 and f.contrib_packages_id = p.id and p.status = 1 and p.contrib_categories_id = c.id and c.status = 1 and p.contrib_versions_id = v.id and v.status = 1 ';
 
         if (isset($params['category'])) {
             $query .= 'and c.code = :category_code ';

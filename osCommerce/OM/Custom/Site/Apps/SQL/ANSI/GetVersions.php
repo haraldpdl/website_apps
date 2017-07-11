@@ -16,9 +16,7 @@ class GetVersions
     {
         $OSCOM_PDO_OLD = Registry::get('PDO_OLD');
 
-        $Qversions = $OSCOM_PDO_OLD->prepare('select id, code, title from contrib_versions where status = 1 order by sort_order, title');
-        $Qversions->setCache('apps-versions');
-        $Qversions->execute();
+        $Qversions = $OSCOM_PDO_OLD->query('select id, code, title from contrib_versions where status = 1 order by sort_order, title');
 
         return $Qversions->fetchAll();
     }

@@ -10,7 +10,6 @@ namespace osCommerce\OM\Core\Site\Apps;
 
 use osCommerce\OM\Core\{
     AuditLog,
-    Cache,
     HTML,
     OSCOM
 };
@@ -46,8 +45,6 @@ class Apps
 
     public static function getListing(string $category = null, string $version = null, int $pageset = null): array
     {
-        $OSCOM_Cache = new Cache();
-
         if (isset($category) && empty($category)) {
             $category = null;
         }
@@ -60,7 +57,7 @@ class Apps
             $pageset = 1;
         }
 
-        $cache_name = 'apps-listing';
+        $cache_name = 'apps-listing-NS';
 
         if (isset($category)) {
             $cache_name .= '-c' . $category;
@@ -72,9 +69,9 @@ class Apps
 
         $cache_name .= '-page' . $pageset;
 
-        if ($OSCOM_Cache->read($cache_name)) {
-            $result = $OSCOM_Cache->getCache();
-        } else {
+        $CACHE_Listing = new Cache($cache_name);
+
+        if (($result = $CACHE_Listing->get()) === false) {
             $slugify = new Slugify();
 
             $params = [
@@ -99,7 +96,7 @@ class Apps
                     $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
                 }
 
-                $OSCOM_Cache->write($result);
+                $CACHE_Listing->set($result);
             }
         }
 
@@ -152,13 +149,27 @@ class Apps
             $version = null;
         }
 
-        $params = [];
+        $cache_name = 'apps-categories';
 
         if (isset($version)) {
-            $params['version'] = $version;
+            $cache_name .= '-v' . $version;
         }
 
-        return OSCOM::callDB('Apps\GetCategories', $params, 'Site');
+        $CACHE_Categories = new Cache($cache_name);
+
+        if (($result = $CACHE_Categories->get()) === false) {
+            $params = [];
+
+            if (isset($version)) {
+                $params['version'] = $version;
+            }
+
+            $result = OSCOM::callDB('Apps\GetCategories', $params, 'Site');
+
+            $CACHE_Categories->set($result);
+        }
+
+        return $result;
     }
 
     public static function isCategory(string $code): bool
@@ -196,7 +207,15 @@ class Apps
 
     public static function getVersions(): array
     {
-        return OSCOM::callDB('Apps\GetVersions', null, 'Site');
+        $CACHE_Versions = new Cache('apps-versions');
+
+        if (($result = $CACHE_Versions->get()) === false) {
+            $result = OSCOM::callDB('Apps\GetVersions', null, 'Site');
+
+            $CACHE_Versions->set($result);
+        }
+
+        return $result;
     }
 
     public static function isVersion(string $code): bool
@@ -255,32 +274,38 @@ class Apps
 
     public static function getAddOnInfo(string $public_id, string $key = null)
     {
-        $slugify = new Slugify();
+        $CACHE_Listing = new Cache('apps-info-' . $public_id);
 
-        $params = [
-            'public_id' => $public_id,
-            'strict' => true
-        ];
+        if (($result = $CACHE_Listing->get()) === false) {
+            $slugify = new Slugify();
 
-        $result = OSCOM::callDB('Apps\GetAddOnInfo', $params, 'Site');
+            $params = [
+                'public_id' => $public_id,
+                'strict' => true
+            ];
 
-        $result['title'] = preg_replace('/\s+/u', ' ', $result['title']);
-        $result['title_slug'] = $slugify->slugify($result['title']);
+            $result = OSCOM::callDB('Apps\GetAddOnInfo', $params, 'Site');
 
-        $result['short_description'] = preg_replace('/\s+/u', ' ', $result['short_description']);
+            $result['title'] = preg_replace('/\s+/u', ' ', $result['title']);
+            $result['title_slug'] = $slugify->slugify($result['title']);
 
-        $result['description'] = preg_replace([
-            '/[\r\n]{3,}/u',
-            '/  +/u'
-        ], [
-            "\r\n\r\n",
-            ' '
-        ], $result['description']);
+            $result['short_description'] = preg_replace('/\s+/u', ' ', $result['short_description']);
 
-        $result['category_url'] = OSCOM::getLink(null, 'Index', 'c=' . $result['category_code']);
-        $result['has_multiple_files'] = ($result['total_files'] > 1) ? true : false;
+            $result['description'] = preg_replace([
+                '/[\r\n]{3,}/u',
+                '/  +/u'
+            ], [
+                "\r\n\r\n",
+                ' '
+            ], $result['description']);
 
-        $result['screenshot_images'] = !empty($result['screenshot_images']) ? explode(',', $result['screenshot_images']) : [];
+            $result['category_url'] = OSCOM::getLink(null, 'Index', 'c=' . $result['category_code']);
+            $result['has_multiple_files'] = ($result['total_files'] > 1) ? true : false;
+
+            $result['screenshot_images'] = !empty($result['screenshot_images']) ? explode(',', $result['screenshot_images']) : [];
+
+            $CACHE_Listing->set($result);
+        }
 
         if (isset($key)) {
             return $result[$key];
@@ -291,45 +316,58 @@ class Apps
 
     public static function getAddOnFiles(string $public_id): array
     {
-        $params = [
-            'public_id' => $public_id,
-            'strict' => true
-        ];
+        $CACHE_Listing = new Cache('apps-files-' . $public_id);
 
-        $result = OSCOM::callDB('Apps\GetAddOnFiles', $params, 'Site');
+        if (($result = $CACHE_Listing->get()) === false) {
+            $slugify = new Slugify();
 
-        foreach ($result as &$r) {
-            $author = [
-                'name' => '',
-                'formatted_name' => ''
+            $params = [
+                'public_id' => $public_id,
+                'strict' => true
             ];
 
-            if (isset($r['userprofile_id']) && ((int)$r['userprofile_id'] > 0)) {
-                $user = Users::get($r['userprofile_id']);
+            $result = OSCOM::callDB('Apps\GetAddOnFiles', $params, 'Site');
 
-                if (is_array($user) && isset($user['name'])) {
-                  $author['name'] = $user['name'];
-                  $author['formatted_name'] = strip_tags($user['formatted_name']);
+            foreach ($result as &$r) {
+                $author = [
+                    'id' => null,
+                    'name' => '',
+                    'formatted_name' => '',
+                    'name_slug' => ''
+                ];
+
+                if (isset($r['userprofile_id']) && ((int)$r['userprofile_id'] > 0)) {
+                    $user = Users::get($r['userprofile_id']);
+
+                    if (is_array($user) && isset($user['name'])) {
+                        $author['id'] = $user['id'];
+                        $author['name'] = $user['name'];
+                        $author['formatted_name'] = strip_tags($user['formatted_name']);
+                        $author['name_slug'] = $slugify->slugify($user['name']);
+                    }
+                } elseif (!empty($r['author_name'])) {
+                    $author['name'] = $r['author_name'];
+                    $author['formatted_name'] = strip_tags($r['author_name']);
+                    $author['name_slug'] = $slugify->slugify($r['author_name']);
                 }
-            } elseif (!empty($r['author_name'])) {
-                $author['name'] = $r['author_name'];
-                $author['formatted_name'] = $r['author_name'];
+
+                $r['author'] = $author;
+
+                unset($r['userprofile_id']);
+                unset($r['author_name']);
+
+                $r['title'] = preg_replace('/\s+/u', ' ', $r['title']);
+
+                $r['description'] = preg_replace([
+                    '/[\r\n]{3,}/u',
+                    '/  +/u'
+                ], [
+                    "\r\n\r\n",
+                    ' '
+                ], $r['description']);
             }
 
-            $r['author'] = $author;
-
-            unset($r['userprofile_id']);
-            unset($r['author_name']);
-
-            $r['title'] = preg_replace('/\s+/u', ' ', $r['title']);
-
-            $r['description'] = preg_replace([
-                '/[\r\n]{3,}/u',
-                '/  +/u'
-            ], [
-                "\r\n\r\n",
-                ' '
-            ], $r['description']);
+            $CACHE_Listing->set($result);
         }
 
         return $result;
@@ -337,11 +375,17 @@ class Apps
 
     public static function getAddOnAuthors(string $public_id, bool $with_names = true): array
     {
-        $params = [
-            'public_id' => $public_id
-        ];
+        $CACHE_Listing = new Cache('apps-authors-' . $public_id);
 
-        $result = OSCOM::callDB('Apps\GetAddOnAuthors', $params, 'Site');
+        if (($result = $CACHE_Listing->get()) === false) {
+            $params = [
+                'public_id' => $public_id
+            ];
+
+            $result = OSCOM::callDB('Apps\GetAddOnAuthors', $params, 'Site');
+
+            $CACHE_Listing->set($result);
+        }
 
         if ($with_names === true) {
             foreach ($result as &$r) {
@@ -390,6 +434,74 @@ class Apps
         $result = OSCOM::callDB('Apps\GetAddOnId', $params, 'Site');
 
         return $result['id'];
+    }
+
+    public static function getUserApps(int $user_id): array
+    {
+        $CACHE_Listing = new Cache('apps-user-' . $user_id . '-apps');
+
+        if (($result = $CACHE_Listing->get()) === false) {
+            $slugify = new Slugify();
+
+            $params = [
+                'user_id' => $user_id
+            ];
+
+            $result = OSCOM::callDB('Apps\GetUserApps', $params, 'Site');
+
+            if (!is_array($result)) {
+                $result = [];
+            }
+
+            foreach ($result as &$r) {
+                $r['title'] = preg_replace('/\s+/u', ' ', $r['title']);
+                $r['title_slug'] = $slugify->slugify($r['title']);
+
+                $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+            }
+
+            $CACHE_Listing->set($result, 10080);
+        }
+
+        if (!is_array($result)) {
+            $result = [];
+        }
+
+        return $result;
+    }
+
+    public static function getUserContributions(int $user_id): array
+    {
+        $CACHE_Listing = new Cache('apps-user-' . $user_id . '-contributions');
+
+        if (($result = $CACHE_Listing->get()) === false) {
+            $slugify = new Slugify();
+
+            $params = [
+                'user_id' => $user_id
+            ];
+
+            $result = OSCOM::callDB('Apps\GetUserContributions', $params, 'Site');
+
+            if (!is_array($result)) {
+                $result = [];
+            }
+
+            foreach ($result as &$r) {
+                $r['title'] = preg_replace('/\s+/u', ' ', $r['title']);
+                $r['title_slug'] = $slugify->slugify($r['title']);
+
+                $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+            }
+
+            $CACHE_Listing->set($result, 10080);
+        }
+
+        if (!is_array($result)) {
+            $result = [];
+        }
+
+        return $result;
     }
 
     public static function isInQueue(string $public_id): bool
@@ -499,7 +611,27 @@ class Apps
             if ($modified === true) {
                 static::auditLog($addon, $fields);
 
-                Cache::clear('apps-listing');
+                $authors = [];
+
+                if (isset($data['user_id'])) {
+                    $authors[] = $data['user_id'];
+                }
+
+                foreach (static::getAddOnFiles($data['public_id']) as $a) {
+                    if (isset($a['author']['id']) && ($a['author']['id'] > 0) && !in_array($a['author']['id'], $authors)) {
+                        $authors[] = $a['author']['id'];
+                    }
+                }
+
+                $OSCOM_Cache = new Cache();
+                $OSCOM_Cache->delete('apps-listing-NS');
+                $OSCOM_Cache->delete('apps-info-' . $data['public_id']);
+                $OSCOM_Cache->delete('apps-authors-' . $data['public_id']);
+
+                foreach ($authors as $a) {
+                    $OSCOM_Cache->delete('apps-user-' . $a . '-apps');
+                    $OSCOM_Cache->delete('apps-user-' . $a . '-contributions');
+                }
 
                 return 1;
             }
@@ -615,6 +747,11 @@ class Apps
                     $modified = true;
                 }
             }
+        }
+
+        if ($modified === true) {
+            $OSCOM_Cache = new Cache();
+            $OSCOM_Cache->delete('apps-authors-' . $public_id);
         }
 
         return $modified;

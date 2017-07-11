@@ -28,13 +28,6 @@ class GetCategories
             $Qcategories->bindValue(':version_code', $params['version']);
         }
 
-        $cache_name = 'apps-categories';
-
-        if (isset($params['version'])) {
-            $cache_name .= '-v' . $params['version'];
-        }
-
-        $Qcategories->setCache($cache_name);
         $Qcategories->execute();
 
         return $Qcategories->fetchAll();

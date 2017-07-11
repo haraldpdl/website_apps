@@ -39,6 +39,7 @@ button_save = Save
 button_submit = Submit
 button_undo = Undo
 
+tag_ambassador = ♥ ambassador
 tag_certified = certified
 tag_open = open
 

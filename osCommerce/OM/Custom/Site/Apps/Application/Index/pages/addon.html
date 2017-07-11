@@ -145,6 +145,7 @@
 <script>
 $(function() {
   var public_id = {raw json_encode}addon public_id{raw};
+  var user_profile_url = "{link}||Profile&USER_ID-NAME_SLUG{link}";
   var images = {raw json_encode}addon screenshot_images{raw};
   var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
   var files = {raw json_encode}addon_files{raw};
@@ -176,6 +177,7 @@ $(function() {
 
   $('#aButtons').append('<p class="mt-3 mb-0">' + Mustache.render({lang json_encode}updated_by_on{lang}, {
     'name': files[0].author.formatted_name,
+    'link': files[0].author.id > 0 ? user_profile_url.replace('USER_ID', files[0].author.id).replace('NAME_SLUG', files[0].author.name_slug) : null,
     'date': moment(files[0].date_added, 'YYYYMMDD').format('Do MMMM YYYY')
   }) + '</p>');
 
@@ -221,6 +223,7 @@ $(function() {
       value.counter = files_counter;
       value.download_url = files_download_url.replace('FILE_CODE', value.public_id);
       value.date_added_formatted = moment(value.date_added, 'YYYYMMDD').format('Do MMMM YYYY');
+      value.author.profile_url = value.author.id > 0 ? user_profile_url.replace('USER_ID', value.author.id).replace('NAME_SLUG', value.author.name_slug) : null,
 
       $('#aFiles').append(Mustache.render(template, value));
 

@@ -1,0 +1,466 @@
+<div class="row">
+  <div class="col-12">
+    <nav class="breadcrumb">
+      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
+      <a class="breadcrumb-item active" href="{link}||{raw}user_profile id{raw}-{raw}user_profile name_slug{raw}{link}">{value}user_profile formatted_name{value}</a>
+    </nav>
+  </div>
+</div>
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
+      <div class="card-block">
+        <div class="float-left">
+          <h2 class="card-title"><a href="{link}||{raw}user_profile id{raw}-{raw}user_profile name_slug{raw}{link}" class="text-white">{value}user_profile name{value}</a> {iftrue user_profile is_ambassador}<small><span class="badge badge-success">{lang}tag_ambassador{lang}</span></small>{iftrue}</h2>
+
+          <p class="card-text">{lang}member_joined date="{value}user_profile joined{value}"{lang}</p>
+        </div>
+
+        <div class="float-right">
+          <img src="{value}user_profile photo_url{value}" class="img-fluid rounded-circle" style="max-height: 80px;" title="{value}user_profile name{value}">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row pb-4">
+  <div class="col-12">
+    <div class="float-right text-right">
+      <a href="https://forums.oscommerce.com/profile/{value}user_profile id{value}-{value}user_profile name_slug{value}/" class="btn btn-primary text-white">{lang}button_view_profile{lang}</a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-2">
+    <div id="filterNav" class="sticky-top">
+      <form>
+        <div class="form-group">
+          <select id="verNav" class="form-control"></select>
+        </div>
+      </form>
+
+      <ul id="catNav" class="nav nav-pills flex-column"></ul>
+    </div>
+  </div>
+
+  <div class="col-10">
+    <div id="aAppsListing" class="row d-none">
+      <div class="col">
+        <div class="row">
+          <div class="col">
+            <h4 class="pb-3">{lang}heading_user_apps{lang}</h4>
+          </div>
+        </div>
+
+        <div class="row" id="qfApps"></div>
+
+        <div class="row" id="qfAppsListingContainer">
+          <div class="col">
+            <table id="qfAppsListing" class="table table-hover">
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div id="aContributionsListing" class="col d-none">
+        <div class="row">
+          <div class="col">
+            <h4 class="pb-3">{lang}heading_user_contributions{lang}</h4>
+          </div>
+        </div>
+
+        <div class="row" id="qfContributionsListingContainer">
+          <div class="col">
+            <table id="qfContributionsListing" class="table table-hover">
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="qfAppsAlertContainer" class="row d-none">
+      <div class="col">
+        <div class="alert alert-warning" role="alert">{lang}empty_resultset{lang}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script id="qfTemplate" type="x-tmpl-mustache">
+<div class="col-md-4 mb-4 d-none" data-version="{{version_code}}" data-category="{{category_code}}">
+  <div class="card h-100">
+    <div class="qfCardImageBlock rounded-top" style="position: relative; {{^cover_image}}background-color: {{card_background_color}};{{/cover_image}}">
+      <a href="{{url}}" class="white">
+
+        {{#cover_image}}
+        <img class="card-img-top img-fluid" src="{{cover_image}}" alt="{{title}}">
+        {{/cover_image}}
+
+        {{^cover_image}}
+        <div class="card-img-overlay">
+          <h4 class="card-title" style="word-wrap: break-word;">{{title}}</h4>
+        </div>
+        {{/cover_image}}
+      </a>
+    </div>
+
+    <div class="card-block">
+      {{#certified}}<span class="badge badge-warning float-right">{lang}tag_certified{lang}</span>{{/certified}}
+
+      <p class="card-text" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;">
+        <a href="{{url}}" style="color: #000; text-decoration: none;">{{title}}</a>
+      </p>
+
+      <p class="card-text" style="word-wrap: break-word;">
+        {{short_description}}
+      </p>
+
+      <p class="card-text">
+        <small class="text-muted">{lang}last_updated date="{{last_update_date_formatted}}"{lang}</small>
+      </p>
+    </div>
+  </div>
+</div>
+</script>
+
+<script id="qfListingTemplate" type="x-tmpl-mustache">
+<tr class="d-none" data-version="{{version_code}}" data-category="{{category_code}}">
+  <td>
+    <a href="{{url}}">{{title}}</a>
+
+    {{#certified}}<span class="badge badge-warning">{lang}tag_certified{lang}</span>{{/certified}}
+  </td>
+  <td align="right">{{last_update_date_formatted}}</td>
+</tr>
+</script>
+
+<script>
+$(function() {
+  $('#filterNav').Stickyfill();
+
+  $('#memberJoinDate').html(moment($('#memberJoinDate').data('date')).fromNow());
+
+  var historyData = {
+    v: {raw json_encode}current_version{raw},
+    c: {raw json_encode}current_category{raw}
+  };
+
+  var main_url = {raw json_encode}main_url{raw};
+
+  var appsHighlights = [];
+  var showAppsHighlights = {raw json_encode}user_profile_show_highlights{raw};
+
+  var versions = {raw json_encode}versions{raw};
+
+  $('#verNav').append('<option value="">' + {lang json_encode}all_versions{lang} + '</option>');
+
+  var categories = {raw json_encode}categories{raw};
+
+  $('#catNav').append('<li class="nav-item" data-code=""><a class="nav-link" href="#">' + {lang json_encode}all_categories{lang} + '</a></li>');
+
+  var cardBackgroundColors = [
+    'f44336',
+    'b71c1c',
+    'e91e63',
+    '880e4f',
+    '9c27b0',
+    '4a148c',
+    '673ab7',
+    '3f51b5',
+    '1a237e',
+    '2196f3',
+    '03a9f4',
+    '00bcd4',
+    '009688',
+    '4caf50',
+    '1b5e20',
+    '8bc34a',
+    'cddc39',
+    'ffeb3b',
+    'ffc107',
+    'ff9800',
+    'e65100',
+    'ff5722',
+    '795548',
+    '3e2723',
+    '607d8b',
+    '263238'
+  ];
+
+  var apps = {raw json_encode}user_profile_apps{raw};
+  var contributions = {raw json_encode}user_profile_contributions{raw};
+  var apps_versions = [];
+  var apps_categories = [];
+
+  var addon_url = {raw json_encode}addon_url{raw};
+  var addon_image_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+
+  apps.forEach(function(value) {
+    if (apps_versions.indexOf(value.version_code) === -1) {
+      apps_versions.push(value.version_code);
+    }
+
+    if (apps_categories.indexOf(value.category_code) === -1) {
+      apps_categories.push(value.category_code);
+    }
+
+    value.url = addon_url.replace('ADDON_CODE', value.public_id);
+    value.url = value.url.replace('ADDON_SLUG', value.title_slug);
+    value.last_update_date_formatted = moment(value.last_update_date, 'YYYYMMDD HHmmss').fromNow();
+
+    value.certified = (value.certified == '1');
+    value.open_flag = (value.open_flag == '1');
+
+    if (showAppsHighlights === true) {
+      appsHighlights.push(value);
+
+      if (appsHighlights.length === 4) {
+        appsHighlights.sort(function (a, b) {
+          return moment(a.last_update_date, 'YYYYMMDD HHmmss').valueOf() > moment(b.last_update_date, 'YYYYMMDD HHmmss').valueOf() ? 1 : -1;
+        });
+
+        appsHighlights.shift();
+      }
+    }
+  });
+
+  if ((showAppsHighlights === true) && (appsHighlights.length > 0)) {
+    appsHighlights.sort(function (a, b) {
+      return moment(b.last_update_date, 'YYYYMMDD HHmmss').valueOf() > moment(a.last_update_date, 'YYYYMMDD HHmmss').valueOf() ? 1 : -1;
+    });
+
+    var template = $('#qfTemplate').html();
+    Mustache.parse(template);
+
+    appsHighlights.forEach(function(value) {
+      var pos = ((value.title.charAt(0).toLowerCase()).charCodeAt(0) - 97) + 1;
+      var colorIndex = ((pos > 0 && pos < 27) ? pos : 5) - 1;
+
+      if (typeof cardBackgroundColors[colorIndex] == 'undefined') {
+        colorIndex = 0;
+      }
+
+      if (value.cover_image !== null) {
+        value.cover_image = addon_image_url.replace('IMAGE_PATH', value.public_id.substring(0, 1) + '/' + value.public_id.substring(0, 2) + '/' + value.public_id + '-' + value.cover_image);
+      }
+
+      value.card_background_color = '#' + cardBackgroundColors[colorIndex];
+
+      $('#qfApps').append(Mustache.render(template, value));
+
+      apps.splice(apps.indexOf(value), 1);
+    });
+  }
+
+  var listingTemplate = $('#qfListingTemplate').html();
+  Mustache.parse(listingTemplate);
+
+  apps.forEach(function(value) {
+    $('#qfAppsListing tbody').append(Mustache.render(listingTemplate, value));
+  });
+
+  contributions.forEach(function(value) {
+    if (apps_versions.indexOf(value.version_code) === -1) {
+      apps_versions.push(value.version_code);
+    }
+
+    if (apps_categories.indexOf(value.category_code) === -1) {
+      apps_categories.push(value.category_code);
+    }
+
+    value.url = addon_url.replace('ADDON_CODE', value.public_id);
+    value.url = value.url.replace('ADDON_SLUG', value.title_slug);
+    value.last_update_date_formatted = moment(value.last_update_date, 'YYYYMMDD HHmmss').fromNow();
+
+    value.certified = (value.certified == '1');
+    value.open_flag = (value.open_flag == '1');
+
+    $('#qfContributionsListing tbody').append(Mustache.render(listingTemplate, value));
+  });
+
+  versions.forEach(function (value) {
+    if (apps_versions.indexOf(value.code) !== -1) {
+      $('#verNav').append('<option value="' + value.code + '"' + (historyData.v == value.code ? ' selected' : '') + '>' + value.title + '</option>');
+    }
+  });
+
+  $('#verNav').change(function() {
+    historyData.v = this.value;
+
+    history.pushState(historyData, null, main_url + ((historyData.v != '') ? '&v=' + historyData.v : '') + ((historyData.c != '') ? '&c=' + historyData.c : ''));
+
+    filterListingVersion();
+  });
+
+  categories.forEach(function(value) {
+    if (apps_categories.indexOf(value.code) !== -1) {
+      $('#catNav').append('<li class="nav-item" data-code="' + value.code + '"><a class="nav-link" href="#">' + value.title + '</a></li>');
+    }
+  });
+
+  if (historyData.c == '') {
+    $('#catNav li[data-code=""] a.nav-link').addClass('active');
+  } else {
+    $('#catNav li[data-code="' + historyData.c + '"] a.nav-link').addClass('active');
+  }
+
+  $('#catNav li a').click(function(e) {
+    e.preventDefault();
+
+    historyData.c = $(this).parent('li').data('code');
+
+    history.pushState(historyData, null, main_url + ((historyData.v != '') ? '&v=' + historyData.v : '') + ((historyData.c != '') ? '&c=' + historyData.c : ''));
+
+    filterListingCategory();
+  });
+
+  filterListingVersion();
+  filterListingCategory();
+
+  window.onpopstate = function(event) {
+    historyData.v = event.state ? event.state.v : '';
+    historyData.c = event.state ? event.state.c : '';
+
+    filterListingVersion();
+    filterListingCategory();
+  };
+
+  function filterListingVersion() {
+    if ($('#verNav option:selected').val() != historyData.v) {
+      $('#verNav').val(historyData.v);
+    }
+
+    if (historyData.v == '') {
+      if (historyData.c == '') {
+        $('#qfApps > div.d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr.d-none').removeClass('d-none');
+      } else {
+        $('#qfApps > div[data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+      }
+    } else {
+      if (historyData.c == '') {
+        $('#qfApps > div:not([data-version="' + historyData.v + '"])').addClass('d-none');
+        $('#qfApps > div[data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr:not([data-version="' + historyData.v + '"])').addClass('d-none');
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+      } else {
+        $('#qfApps > div[data-category="' + historyData.c + '"]:not([data-version="' + historyData.v + '"])').addClass('d-none');
+        $('#qfApps > div[data-category="' + historyData.c + '"][data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-category="' + historyData.c + '"]:not([data-version="' + historyData.v + '"])').addClass('d-none');
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-category="' + historyData.c + '"][data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+      }
+    }
+
+    refreshListings();
+  }
+
+  function filterListingCategory() {
+    if ($('#catNav li a.active').parent('li').data('code') != historyData.c) {
+      $('#catNav li a.active').removeClass('active');
+      $('#catNav li[data-code="' + historyData.c + '"] a').addClass('active');
+    }
+
+    if (historyData.c == '') {
+      if (historyData.v == '') {
+        $('#qfApps > div.d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr.d-none').removeClass('d-none');
+      } else {
+        $('#qfApps > div[data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-version="' + historyData.v + '"].d-none').removeClass('d-none');
+      }
+    } else {
+      if (historyData.v == '') {
+        $('#qfApps > div:not([data-category="' + historyData.c + '"])').addClass('d-none');
+        $('#qfApps > div[data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr:not([data-category="' + historyData.c + '"])').addClass('d-none');
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+      } else {
+        $('#qfApps > div[data-version="' + historyData.v + '"]:not([data-category="' + historyData.c + '"])').addClass('d-none');
+        $('#qfApps > div[data-version="' + historyData.v + '"][data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-version="' + historyData.v + '"]:not([data-category="' + historyData.c + '"])').addClass('d-none');
+        $('#qfAppsListing, #qfContributionsListing').find('tbody > tr[data-version="' + historyData.v + '"][data-category="' + historyData.c + '"].d-none').removeClass('d-none');
+      }
+    }
+
+    refreshListings();
+  }
+
+  function refreshListings() {
+    if ($('#qfApps > div:not(".d-none")').length > 0) {
+      if ($('#qfApps').hasClass('d-none')) {
+        $('#qfApps').removeClass('d-none');
+      }
+    } else {
+      if ($('#qfApps').hasClass('d-none') === false) {
+        $('#qfApps').addClass('d-none');
+      }
+    }
+
+    if ($('#qfAppsListing tbody > tr:not(".d-none")').length > 0) {
+      if ($('#qfAppsListingContainer').hasClass('d-none')) {
+        $('#qfAppsListingContainer').removeClass('d-none');
+      }
+    } else {
+      if ($('#qfAppsListingContainer').hasClass('d-none') === false) {
+        $('#qfAppsListingContainer').addClass('d-none');
+      }
+    }
+
+    if ($('#qfContributionsListing tbody > tr:not(".d-none")').length > 0) {
+      if ($('#qfContributionsListingContainer').hasClass('d-none')) {
+        $('#qfContributionsListingContainer').removeClass('d-none');
+      }
+    } else {
+      if ($('#qfContributionsListingContainer').hasClass('d-none') === false) {
+        $('#qfContributionsListingContainer').addClass('d-none');
+      }
+    }
+
+    if (($('#qfApps > div:not(".d-none")').length < 1) && ($('#qfAppsListing tbody > tr:not(".d-none")').length < 1)) {
+      if ($('#aAppsListing').hasClass('d-none') === false) {
+        $('#aAppsListing').addClass('d-none');
+      }
+    } else {
+      if ($('#aAppsListing').hasClass('d-none')) {
+        $('#aAppsListing').removeClass('d-none');
+      }
+    }
+
+    if ($('#qfContributionsListing tbody > tr:not(".d-none")').length < 1) {
+      if ($('#aContributionsListing').hasClass('d-none') === false) {
+        $('#aContributionsListing').addClass('d-none');
+      }
+    } else {
+      if ($('#aContributionsListing').hasClass('d-none')) {
+        $('#aContributionsListing').removeClass('d-none');
+      }
+    }
+
+    if ($('#aAppsListing').hasClass('d-none') && $('#aContributionsListing').hasClass('d-none')) {
+      if ($('#qfAppsAlertContainer').hasClass('d-none')) {
+        $('#qfAppsAlertContainer').removeClass('d-none');
+      }
+    } else {
+      if ($('#qfAppsAlertContainer').hasClass('d-none') === false) {
+        $('#qfAppsAlertContainer').addClass('d-none');
+      }
+    }
+  }
+});
+</script>

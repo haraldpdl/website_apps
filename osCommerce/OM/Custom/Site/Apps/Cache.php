@@ -168,8 +168,12 @@ class Cache
         return $this->instance->set($this->key, $value, $ttl);
     }
 
-    public function delete()
+    public function delete(string $key = null)
     {
+        if (isset($key)) {
+            $this->setKey($key);
+        }
+
         if (!isset($this->key)) {
             trigger_error('Cache::delete(): Key has not yet been set.');
 

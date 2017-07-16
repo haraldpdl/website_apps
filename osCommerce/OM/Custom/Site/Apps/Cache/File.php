@@ -14,7 +14,7 @@ use osCommerce\OM\Core\{
     OSCOM
 };
 
-class File implements \Psr\SimpleCache\CacheInterface
+class File implements \osCommerce\OM\Core\Site\Apps\CacheInterface
 {
     protected $server_id;
     protected $key_prefix;

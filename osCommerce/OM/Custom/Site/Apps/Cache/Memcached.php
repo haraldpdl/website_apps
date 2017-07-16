@@ -10,7 +10,7 @@ namespace osCommerce\OM\Core\Site\Apps\Cache;
 
 use osCommerce\OM\Core\OSCOM;
 
-class Memcached implements \Psr\SimpleCache\CacheInterface
+class Memcached implements \osCommerce\OM\Core\Site\Apps\CacheInterface
 {
     protected static $links = [];
     protected $server_id;

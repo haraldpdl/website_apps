@@ -87,6 +87,11 @@ class Memcached implements \Psr\SimpleCache\CacheInterface
         return static::$links[$this->server_id]->delete($key);
     }
 
+    public function cleanup($key)
+    {
+        return true;
+    }
+
     public function clear()
     {
         return static::$links[$this->server_id]->flush();

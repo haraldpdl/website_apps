@@ -197,7 +197,7 @@ class Cache
                 }
             }
 
-            $this->instance->delete($this->key); // Some drivers can cleanup themselves (eg, File)
+            $this->instance->cleanup($this->key); // Some drivers can cleanup themselves (eg, File)
 
             return true;
         }

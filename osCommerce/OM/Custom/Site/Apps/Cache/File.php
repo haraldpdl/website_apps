@@ -120,6 +120,11 @@ class File implements \Psr\SimpleCache\CacheInterface
         return $result;
     }
 
+    public function cleanup($key)
+    {
+        return $this->delete($key);
+    }
+
     public function clear()
     {
         return FileSystem::rmdir($this->path);

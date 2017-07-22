@@ -112,7 +112,7 @@ class File implements \osCommerce\OM\Core\Site\Apps\CacheInterface
                 $result = unlink($filename);
             }
 
-            if (FileSystem::isDirectoryEmpty(dirname($filename))) {
+            if (is_dir(dirname($filename)) && FileSystem::isDirectoryEmpty(dirname($filename))) {
                 FileSystem::rmdir(dirname($filename));
             }
         }

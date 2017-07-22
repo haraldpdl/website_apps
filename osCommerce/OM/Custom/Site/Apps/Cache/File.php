@@ -174,7 +174,7 @@ class File implements \osCommerce\OM\Core\Site\Apps\CacheInterface
         return is_file($filename);
     }
 
-    public function canUse()
+    public function canUse(): bool
     {
         if (!is_dir($this->path)) {
             mkdir($this->path, 0777, true);

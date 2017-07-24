@@ -21,9 +21,14 @@ class Get
     public static function execute(ApplicationAbstract $application)
     {
         $OSCOM_MessageStack = Registry::get('MessageStack');
+        $OSCOM_Session = Registry::get('Session');
         $OSCOM_Template = Registry::get('Template');
 
         header('X-Robots-Tag: none');
+
+        if (!$OSCOM_Session->hasStarted()) {
+            $OSCOM_Session->start();
+        }
 
         $download = [];
 

@@ -39,20 +39,27 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
 
         $OSCOM_Session = Registry::get('Session');
         $OSCOM_Session->setLifeTime(3600);
-        $OSCOM_Session->start();
-
-        if (!isset($_SESSION['Website']['public_token'])) {
-            $_SESSION['Website']['public_token'] = Hash::getRandomString(32);
-        }
 
         if (!OSCOM::isRPC()) {
-            if (!isset($_SESSION['Website']['Account'])) {
+            if (isset($_COOKIE[$OSCOM_Session->getName()])) {
+                $OSCOM_Session->start();
+
+                if (!isset($_SESSION['Website']['Account']) && (OSCOM::getSiteApplication() != 'Account')) {
+                    $OSCOM_Session->kill();
+                }
+            }
+
+            if (!$OSCOM_Session->hasStarted() || !isset($_SESSION['Website']['Account'])) {
                 $user = Invision::canAutoLogin();
 
                 if (is_array($user) && isset($user['id'])) {
 //                    Events::fire('auto_login-before', $user);
 
                     if (($user['verified'] === true) && ($user['banned'] === false)) {
+                        if (!$OSCOM_Session->hasStarted()) {
+                            $OSCOM_Session->start();
+                        }
+
                         $_SESSION['Website']['Account'] = $user;
 
                         $OSCOM_Session->recreate();
@@ -89,7 +96,7 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
         $OSCOM_Template->setValue('html_base_href', $OSCOM_Template->getBaseUrl());
         $OSCOM_Template->setValue('html_header_tags', $OSCOM_Template->getHtmlElements('header'));
         $OSCOM_Template->setValue('current_year', date('Y'));
-        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token']);
+        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token'] ?? null);
 
         if (isset($_SESSION['Website']['Account'])) {
             $OSCOM_Template->setValue('user', $_SESSION['Website']['Account']);

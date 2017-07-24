@@ -17,7 +17,12 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
 {
     protected function initialize()
     {
+        $OSCOM_Session = Registry::get('Session');
         $OSCOM_Template = Registry::get('Template');
+
+        if (!$OSCOM_Session->hasStarted()) {
+            $OSCOM_Session->start();
+        }
 
         $OSCOM_Template->addHtmlElement('header', '<meta name="robots" content="noindex, nofollow">');
 

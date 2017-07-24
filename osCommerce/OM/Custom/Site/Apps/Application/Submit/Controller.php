@@ -20,7 +20,12 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
     protected function initialize()
     {
         $OSCOM_MessageStack = Registry::get('MessageStack');
+        $OSCOM_Session = Registry::get('Session');
         $OSCOM_Template = Registry::get('Template');
+
+        if (!$OSCOM_Session->hasStarted()) {
+            $OSCOM_Session->start();
+        }
 
         $this->setPageParameters();
 

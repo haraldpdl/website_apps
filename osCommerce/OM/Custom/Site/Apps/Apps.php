@@ -258,7 +258,17 @@ class Apps
             'strict' => true
         ];
 
-        return OSCOM::callDB('Apps\CheckPublicId', $params, 'Site');
+        $CACHE_Check = new Cache('apps-check-' . $public_id);
+
+        if (($result = $CACHE_Check->get()) === false) {
+            $result = OSCOM::callDB('Apps\CheckPublicId', $params, 'Site');
+
+            if ($result === true) {
+                $CACHE_Check->set($result);
+            }
+        }
+
+        return $result;
     }
 
     public static function fileExists(string $addon_public_id, string $public_id): bool

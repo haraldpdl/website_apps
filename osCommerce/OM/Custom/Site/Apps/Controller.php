@@ -62,6 +62,10 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
 
                         $_SESSION['Website']['Account'] = $user;
 
+                        if (!isset($_SESSION['Website']['public_token'])) {
+                            $_SESSION['Website']['public_token'] = Hash::getRandomString(32);
+                        }
+
                         $OSCOM_Session->recreate();
 
 //                        Events::fire('auto_login-after');
@@ -96,7 +100,7 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
         $OSCOM_Template->setValue('html_base_href', $OSCOM_Template->getBaseUrl());
         $OSCOM_Template->setValue('html_header_tags', $OSCOM_Template->getHtmlElements('header'));
         $OSCOM_Template->setValue('current_year', date('Y'));
-        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token'] ?? null);
+        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token']);
 
         if (isset($_SESSION['Website']['Account'])) {
             $OSCOM_Template->setValue('user', $_SESSION['Website']['Account']);

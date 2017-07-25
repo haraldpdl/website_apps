@@ -273,7 +273,11 @@ $(function() {
   });
 
   {iftrue initiate_download}
-  $('#dl-{value}download_file app{value}{value}download_file file{value}').click();
+  if ($('#dl-{value}download_file app{value}{value}download_file file{value}').length === 1) {
+    $('#dl-{value}download_file app{value}{value}download_file file{value}').click();
+  } else {
+    $('#aDownloadButton').click();
+  }
   {iftrue}
 });
 </script>

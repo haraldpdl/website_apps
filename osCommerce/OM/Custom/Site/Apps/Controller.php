@@ -100,7 +100,7 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
         $OSCOM_Template->setValue('html_base_href', $OSCOM_Template->getBaseUrl());
         $OSCOM_Template->setValue('html_header_tags', $OSCOM_Template->getHtmlElements('header'));
         $OSCOM_Template->setValue('current_year', date('Y'));
-        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token']);
+        $OSCOM_Template->setValue('public_token', $_SESSION['Website']['public_token'] ?? null);
 
         if (isset($_SESSION['Website']['Account'])) {
             $OSCOM_Template->setValue('user', $_SESSION['Website']['Account']);

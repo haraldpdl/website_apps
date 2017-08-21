@@ -1,9 +1,9 @@
 <?php
 /**
- * osCommerce Website
+ * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2016 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/bsdlicense.txt
+ * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
+ * @license BSD; https://www.oscommerce.com/license/bsd.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\SQL\ANSI;
@@ -29,8 +29,11 @@ class GetShowcase
                 $vendor = $Qshowcase->value('provider');
                 $app = $Qshowcase->value('app');
 
-                if (($vendor == 'paypal') && ($app == 'app')) {
+                if ($vendor == 'paypal') {
                     $vendor = 'PayPal';
+                }
+
+                if (($vendor == 'PayPal') && ($app == 'app')) {
                     $app = 'PayPal';
                 }
 

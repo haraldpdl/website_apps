@@ -2,10 +2,13 @@ html_page_title_app = :title | Apps Marketplace | osCommerce
 html_page_title_category = :title | Apps Marketplace | osCommerce
 html_page_title_search = Search Results for ":keywords" | Apps Marketplace | osCommerce
 
+heading_showcase = Showcase
 heading_new_and_updated = New and Updated
 heading_search_results = Search Results
 heading_files = Files
 heading_changelog = Changelog
+
+showcase_view_more = view more
 
 link_home = <i class="fa fa-angle-double-left" aria-hidden="true"></i> Home
 link_download = Download Latest

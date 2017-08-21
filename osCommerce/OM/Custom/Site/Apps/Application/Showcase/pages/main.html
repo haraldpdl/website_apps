@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="col-12">
+    <nav class="breadcrumb">
+      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
+      <a class="breadcrumb-item active" href="{link}Showcase{link}">{lang}breadcrumb_showcase{lang}</a>
+    </nav>
+  </div>
+</div>
+
+<h2 class="pb-2">{lang}title_showcase{lang}</h2>
+
+<div id="showcaseListing" class="row pb-4"></div>
+
+<script id="showcaseAppBlockTemplate" type="x-tmpl-mustache">
+<div class="col-4 pb-5 center-block text-center">
+  <a href="{{link}}"><img src="{{image}}" title="{{title}}: {{description}}" class="img-fluid"></a>
+  <span class="label label-{{label_type}}">{{label_text}}</span>
+</div>
+</script>
+
+<script>
+$(function() {
+  var showcase = {raw json_encode}showcase{raw};
+  var showcaseLink = '{link}Profile|Apps|CODE{link}';
+  var showcaseImage = '{publiclink}images/showcase/IMAGE{publiclink}';
+
+  var template = $('#showcaseAppBlockTemplate').html();
+  Mustache.parse(template);
+
+  showcase.forEach(function(value) {
+    $('#showcaseListing').append(Mustache.render(template, {
+      image: showcaseImage.replace('IMAGE', value.image),
+      title: value.title,
+      description: value.description,
+      link: showcaseLink.replace('CODE', value.code)
+    }));
+  });
+});
+</script>

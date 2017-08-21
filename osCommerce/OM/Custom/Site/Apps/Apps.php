@@ -885,4 +885,78 @@ class Apps
 
         return $result;
     }
+
+    public static function providerExists(string $provider): bool
+    {
+        $CACHE_Check = new Cache('apps-provider-' . $provider . '-check');
+
+        if (($result = $CACHE_Check->get()) === false) {
+            $params = [
+                'provider' => $provider
+            ];
+
+            $result = OSCOM::callDB('Apps\CheckProvider', $params, 'Site');
+
+            if ($result === true) {
+                $CACHE_Check->set($result);
+            }
+        }
+
+        return $result;
+    }
+
+    public static function getProvider(string $provider): array
+    {
+        $CACHE_Provider = new Cache('apps-provider-' . $provider);
+
+        if (($result = $CACHE_Provider->get()) === false) {
+            $params = [
+                'provider' => $provider
+            ];
+
+            $result = OSCOM::callDB('Apps\GetProvider', $params, 'Site');
+
+            if ($result['code'] == 'paypal') { // compatibility
+                $result['code'] = 'PayPal';
+            }
+
+            $CACHE_Provider->set($result);
+        }
+
+        if (!is_array($result)) {
+            $result = [];
+        }
+
+        return $result;
+    }
+
+    public static function getProviderApps(string $provider): array
+    {
+        $CACHE_Apps = new Cache('apps-provider-' . $provider . '-apps');
+
+        if (($result = $CACHE_Apps->get()) === false) {
+            $slugify = new Slugify();
+
+            $params = [
+                'provider' => $provider
+            ];
+
+            $result = OSCOM::callDB('Apps\GetProviderApps', $params, 'Site');
+
+            foreach ($result as &$r) {
+                $r['title'] = preg_replace('/\s+/u', ' ', $r['title']);
+                $r['title_slug'] = $slugify->slugify($r['title']);
+
+                $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+            }
+
+            $CACHE_Apps->set($result);
+        }
+
+        if (!is_array($result)) {
+            $result = [];
+        }
+
+        return $result;
+    }
 }

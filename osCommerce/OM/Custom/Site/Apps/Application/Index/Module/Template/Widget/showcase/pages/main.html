@@ -1,0 +1,51 @@
+<div class="row pb-4">
+  <div class="col">
+    <h4 class="pb-3">{lang}heading_showcase{lang}</h4>
+
+    <div id="carouselFrontpage" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner" role="listbox" style="max-height: 140px;"></div>
+      <a class="carousel-control-prev d-none" href="#carouselFrontpage" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next d-none" href="#carouselFrontpage" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+  var carousel = {raw json_encode}carousel-frontpage{raw};
+  var carouselCounter = 0;
+
+  carousel.forEach(function (value) {
+    if (carouselCounter === 0) {
+      $('#carouselFrontpage div.carousel-inner').append('<div class="carousel-item"><div class="row">');
+    }
+
+    $('#carouselFrontpage div.carousel-inner div.carousel-item:last div.row').append('<div class="col-6"><a href="' + value.url + '"><img class="d-block img-fluid" src="' + value.image + '" alt="' + value.title + '" title="' + value.title + '"></a></div>');
+
+    carouselCounter += 1;
+
+    if (carouselCounter === 2) {
+      $('#carouselFrontpage div.carousel-inner').append('</div></div>');
+
+      carouselCounter = 0;
+    }
+  });
+
+  if ($('#carouselFrontpage div.carousel-inner div.carousel-item:last div.row div.col-6').length === 1) {
+    $('#carouselFrontpage div.carousel-inner div.carousel-item:last div.row').append('<div class="col-6"><div style="background-color: #DB7093; height: 100%; width: 100%;" class="d-flex align-items-center justify-content-center"><a href="{link}Showcase{link}" class="text-white" style="font-size: 1.5em;">' + {lang json_encode}showcase_view_more{lang} + '</a></div></div>');
+  }
+
+  if ($('#carouselFrontpage div.carousel-inner div.carousel-item').length > 1) {
+    $('#carouselFrontpage a.carousel-control-prev').removeClass('d-none');
+    $('#carouselFrontpage a.carousel-control-next').removeClass('d-none');
+  }
+
+  $('#carouselFrontpage div.carousel-inner div.carousel-item:first').addClass('active');
+});
+</script>

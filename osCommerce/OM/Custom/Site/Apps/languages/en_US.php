@@ -14,6 +14,7 @@ navbar_verify_account = Verify Account
 navbar_log_out = Log Out
 
 breadcrumb_home = All
+breadcrumb_showcase = Showcase
 
 redirect_cancel_return_to_site = or cancel and return to the Apps Marketplace
 

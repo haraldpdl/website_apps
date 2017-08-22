@@ -16,6 +16,8 @@ link_view_changelog = View Changelog
 link_upload_update = Submit Update
 link_edit_app = Edit App
 
+button_support_topic = <span class="fa fa-question-circle"></span> Support Topic
+
 sort_by = Sort by
 sort_relevancy = Relevancy
 sort_last_updated = Last Updated

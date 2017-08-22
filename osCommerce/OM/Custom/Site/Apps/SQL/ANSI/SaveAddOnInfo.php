@@ -20,6 +20,7 @@ class SaveAddOnInfo
             'title' => $data['title'],
             'short_description' => $data['short_description'],
             'description' => $data['description'],
+            'support_topic' => $data['support_topic'],
             'cover_image' => $data['cover_image'],
             'screenshot_images' => $data['screenshot_images'],
             'public_flag' => $data['public_flag']

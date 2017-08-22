@@ -314,6 +314,26 @@ class Apps
 
             $result['screenshot_images'] = !empty($result['screenshot_images']) ? explode(',', $result['screenshot_images']) : [];
 
+            if (!empty($result['support_topic'])) {
+                $support_topic = json_decode($result['support_topic'], true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $result['support_topic'] = $support_topic;
+                } else {
+                    $result['support_topic'] = null;
+                }
+            }
+
+            if (!empty($result['support_forum'])) {
+                $support_forum = json_decode($result['support_forum'], true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $result['support_forum'] = $support_forum;
+                } else {
+                    $result['support_forum'] = null;
+                }
+            }
+
             $CACHE_Listing->set($result);
         }
 
@@ -569,6 +589,7 @@ class Apps
             'title' => $data['title'],
             'short_description' => $data['short_description'],
             'description' => $data['description'],
+            'support_topic' => $data['support_topic'],
             'cover_image' => $data['cover_image'],
             'screenshot_images' => $data['screenshot_images'],
             'public_flag' => ($data['submit_type'] == 'public') ? '1' : '0',
@@ -666,6 +687,7 @@ class Apps
             'title' => $data['title'],
             'short_description' => $data['short_description'] ?? null,
             'description' => $data['description'],
+            'support_topic' => $data['support_topic'] ?? null,
             'user_id' => $data['user_id'],
             'versions_id' => $data['version_id'] ?? null,
             'categories_id' => $data['category_id'] ?? null,

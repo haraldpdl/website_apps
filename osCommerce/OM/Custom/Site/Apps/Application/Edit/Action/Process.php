@@ -17,7 +17,10 @@ use osCommerce\OM\Core\{
 
 use osCommerce\OM\Core\Site\Apps\Apps;
 
-use osCommerce\OM\Core\Site\Website\Users;
+use osCommerce\OM\Core\Site\Website\{
+    Invision,
+    Users
+};
 
 class Process
 {
@@ -41,6 +44,7 @@ class Process
             $title = isset($_POST['title']) ? trim(str_replace(array("\r\n", "\n", "\r"), '', $_POST['title'])) : '';
             $short_description = isset($_POST['short_description']) ? trim($_POST['short_description']) : '';
             $description = isset($_POST['description']) ? trim($_POST['description']) : '';
+            $support_topic = isset($_POST['support_topic']) ? trim($_POST['support_topic']) : null;
             $cover_image = isset($_POST['cover_image']) ? trim($_POST['cover_image']) : null;
             $screenshot_images = isset($_POST['screenshot_images']) ? trim($_POST['screenshot_images']) : '';
             $submit_type = isset($_POST['submit_type']) ? trim($_POST['submit_type']) : '';
@@ -55,6 +59,34 @@ class Process
                 "\r\n\r\n",
                 ' '
             ], $description);
+
+            if (!empty($support_topic)) {
+                $support_topic = json_decode($support_topic, true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    if (isset($support_topic['id']) && is_numeric($support_topic['id']) && ($support_topic['id'] > 0)) {
+                        if (!isset($addon['support_topic']) || !is_array($addon['support_topic']) || ($addon['support_topic'] !== $support_topic)) {
+                            $topic = Invision::getMemberTopic($_SESSION['Website']['Account']['id'], $support_topic['id'], Invision::FORUM_ADDONS_CATEGORY_IDS);
+
+                            if (!empty($topic)) {
+                                $support_topic = json_encode([
+                                    'id' => $topic['id'],
+                                    'title' => $topic['title'] . ' (' . $topic['forum_title'] . ')',
+                                    'title_seo' => $topic['title_seo']
+                                ]);
+                            } else {
+                                $support_topic = null;
+                            }
+                        } else {
+                            $support_topic = json_encode($support_topic);
+                        }
+                    } else {
+                        $support_topic = null;
+                    }
+                } else {
+                    $support_topic = null;
+                }
+            }
 
             if (empty($cover_image)) {
                 $cover_image = null;
@@ -220,6 +252,7 @@ class Process
                 'title' => HTML::sanitize($title),
                 'short_description' => HTML::sanitize($short_description),
                 'description' => $description,
+                'support_topic' => $support_topic,
                 'cover_image' => $uploads['cover'] ?? $cover_image,
                 'screenshot_images' => $screenshot_images,
                 'submit_type' => $submit_type,

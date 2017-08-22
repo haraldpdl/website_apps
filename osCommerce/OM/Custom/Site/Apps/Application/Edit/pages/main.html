@@ -86,6 +86,13 @@
             <textarea id="aEditDescription" name="description" maxlength="{value}aDescriptionLength{value}" class="form-control" rows="15" aria-describedby="aEditDescriptionInfo">{post}description|addon description{post}</textarea>
             <p id="aEditDescriptionInfo" class="form-text text-muted small">{lang}field_description_info{lang}</p>
           </div>
+
+          <div class="form-group">
+            <label for="aEditSupportTopic">{lang}field_support_topic{lang}</label>
+            <p id="aEditSupportTopicContainer" class="d-none"></p>
+            <input id="aEditSupportTopic" type="text" class="form-control" aria-describedby="aEditSupportTopicInfo" placeholder="{lang}field_support_topic_placeholder{lang}">
+            <p id="aEditSupportTopicInfo" class="form-text text-muted small">{lang}field_support_topic_info{lang}</p>
+          </div>
         </form>
       </div>
     </div>
@@ -229,6 +236,50 @@ $(function() {
   var aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
 
   var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+
+  $('#aEditSupportTopic').autocomplete({
+    serviceUrl: '{rpclink}FindMemberTopics{rpclink}',
+    type: 'POST',
+    deferRequestBy: 300,
+    params: {
+      public_token: '{value md5}public_token{value}'
+    },
+    onSelect: function (sel) {
+      $('#aEditSupportTopic').val('');
+
+      if (sel.id > 0) {
+        $('#aEditSupportTopicContainer').html(
+          '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="' + sel.link + '" target="_blank">' + sel.value + '</a>' +
+          '<input type="hidden" name="support_topic">'
+        ).removeClass('d-none');
+
+        $('#aEditSupportTopicContainer input[name="support_topic"]').val(JSON.stringify({
+          id: sel.id,
+          title: sel.value,
+          title_seo: sel.title_seo
+        }));
+      }
+    }
+  });
+
+  $('#aEditSupportTopic').bind('keypress', function(e) {
+    if (e.keyCode == 13) {
+      e.preventDefault();
+    }
+  });
+
+{ifvalue addon support_topic}
+  $('#aEditSupportTopicContainer').html(
+    '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="https://forums.oscommerce.com/topic/{value}addon support_topic id{value}-{value}addon support_topic title_seo{value}" target="_blank">{value}addon support_topic title{value}</a>' +
+    '<input type="hidden" name="support_topic">'
+  ).removeClass('d-none');
+
+  $('#aEditSupportTopicContainer input[name="support_topic"]').val(JSON.stringify({
+    id: {raw json_encode}addon support_topic id{raw},
+    title: {raw json_encode}addon support_topic title{raw},
+    title_seo: {raw json_encode}addon support_topic title_seo{raw}
+  }));
+{ifvalue}
 
 {ifvalue addon cover_image}
   $('#aCoverImage .card img[data-imagetype="cover"]').attr('src', images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-{value}addon cover_image{value}')).removeClass('invisible');

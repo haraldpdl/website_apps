@@ -16,6 +16,9 @@ field_short_description = Short Description
 field_short_description_info = A length between {value number_format}aShortDescriptionMinLength{value} and {value number_format}aShortDescriptionLength{value} characters is allowed. New lines are ignored. The following characters are not allowed: &lt; &gt;
 field_description = Description
 field_description_info = A length between {value number_format}aDescriptionMinLength{value} and {value number_format}aDescriptionLength{value} characters is allowed.
+field_support_topic = Support Topic
+field_support_topic_placeholder = Enter title of topic
+field_support_topic_info = Select the topic from the auto-suggestion list. This must be authored by yourself in the Add-Ons forum channel.
 field_version = OSCOM Version
 field_category = Category
 field_cover_image = Cover Image
@@ -71,3 +74,5 @@ for_oscom_version = for osCommerce Online Merchant v:version
 button_cancel_update_submission = or cancel
 
 ms_error_update_no_access = Access has not been granted to edit the App.
+
+error_topic_not_found = No topics found

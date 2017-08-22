@@ -19,6 +19,7 @@ class SavePrepareAddOn
         $row = [
             'title' => $data['title'],
             'description' => $data['description'],
+            'support_topic' => $data['support_topic'],
             'user_id' => (int)$data['user_id'],
             'public_flag' => $data['public_flag'],
             'date_added' => 'now()',

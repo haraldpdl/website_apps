@@ -56,3 +56,7 @@ label {
 .autocomplete-selected {
   background: #F0F0F0;
 }
+
+#appBarLinks:not(:empty) {
+  padding-bottom: 15px;
+}

@@ -95,6 +95,7 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
         $OSCOM_Template->setApplication(Registry::get('Application'));
 
         $OSCOM_Template->setValue('html_tags', $OSCOM_Template->getHtmlTags());
+        $OSCOM_Template->setValue('html_head_tags', $OSCOM_Template->getHtmlElements('head'));
         $OSCOM_Template->setValue('html_page_title', $OSCOM_Template->getPageTitle());
         $OSCOM_Template->setValue('html_page_contents_file', $OSCOM_Template->getPageContentsFile());
         $OSCOM_Template->setValue('html_base_href', $OSCOM_Template->getBaseUrl());

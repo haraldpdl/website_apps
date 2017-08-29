@@ -49,6 +49,59 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
                 $OSCOM_Template->addHtmlElement('header', '<link rel="canonical" href="' . OSCOM::getLink('Apps', 'Index', $current_app . '&' . $addon['title_slug'], 'SSL', false) . '">');
             }
 
+            $OSCOM_Template->addHtmlElement('head', 'prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# product: http://ogp.me/ns/product#"');
+            $OSCOM_Template->addHtmlElement('header', '<meta property="og:type" content="og:product">');
+            $OSCOM_Template->addHtmlElement('header', '<meta property="og:title" content="' . HTML::outputProtected($addon['title']) . '">');
+
+            if (isset($addon['cover_image'])) {
+                $OSCOM_Template->addHtmlElement('header', '<meta property="og:image" content="' . $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['cover_image']) . '">');
+            }
+
+            $OSCOM_Template->addHtmlElement('header', '<meta property="og:description" content="' . HTML::outputProtected($addon['short_description']) . '">');
+            $OSCOM_Template->addHtmlElement('header', '<meta property="og:url" content="' . OSCOM::getLink('Apps', 'Index', $current_app . '&' . $addon['title_slug'], 'SSL', false) . '">');
+
+            $sd_schema = [
+                [
+                    '@context' => 'http://schema.org/',
+                    '@type' => 'Product',
+                    'name' => $addon['title'],
+                    'description' => $addon['short_description'],
+                    'offers' => [
+                        '@type' => 'Offer',
+                        'priceCurrency' => 'EUR',
+                        'price' => '0.00',
+                        'url' => OSCOM::getLink('Apps', 'Index', $current_app . '&' . $addon['title_slug'], 'SSL', false)
+                    ]
+                ], [
+                    '@context' => 'http://schema.org',
+                    '@type' => 'BreadcrumbList',
+                    'itemListElement' => [
+                        [
+                            '@type' => 'ListItem',
+                            'position' => 1,
+                            'item' => [
+                                '@id' => OSCOM::getLink('Apps', 'Index', null, 'SSL', false),
+                                'name' => OSCOM::getDef('breadcrumb_home')
+                            ]
+                        ],
+                        [
+                            '@type' => 'ListItem',
+                            'position' => 2,
+                            'item' => [
+                                '@id' => OSCOM::getLink('Apps', 'Index', 'c=' . $addon['category_code'], 'SSL', false),
+                                'name' => $addon['category_title']
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+
+            if (isset($addon['cover_image'])) {
+                $sd_schema[0]['image'] = $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['cover_image']);
+            }
+
+            $OSCOM_Template->addHtmlElement('footer', '<script type="application/ld+json">' . json_encode($sd_schema) . '</script>');
+
             $this->_page_contents = 'addon.html';
             $this->_page_title = OSCOM::getDef('html_page_title_app', [
                 ':title' => $addon['title']

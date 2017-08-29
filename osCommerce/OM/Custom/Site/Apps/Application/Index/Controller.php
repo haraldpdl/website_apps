@@ -53,7 +53,11 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
             $OSCOM_Template->addHtmlElement('header', '<meta property="og:type" content="og:product">');
             $OSCOM_Template->addHtmlElement('header', '<meta property="og:title" content="' . HTML::outputProtected($addon['title']) . '">');
 
-            if (isset($addon['cover_image'])) {
+            if (isset($addon['screenshot_images']) && !empty($addon['screenshot_images'])) {
+                $OSCOM_Template->addHtmlElement('header', '<meta property="og:image" content="' . $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['screenshot_images'][0]) . '">');
+                $OSCOM_Template->addHtmlElement('header', '<meta property="og:image:width" content="1280">');
+                $OSCOM_Template->addHtmlElement('header', '<meta property="og:image:height" content="720">');
+            } elseif (isset($addon['cover_image']) && !empty($addon['cover_image'])) {
                 $OSCOM_Template->addHtmlElement('header', '<meta property="og:image" content="' . $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['cover_image']) . '">');
                 $OSCOM_Template->addHtmlElement('header', '<meta property="og:image:width" content="320">');
                 $OSCOM_Template->addHtmlElement('header', '<meta property="og:image:height" content="180">');
@@ -98,7 +102,9 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
                 ]
             ];
 
-            if (isset($addon['cover_image'])) {
+            if (isset($addon['screenshot_images']) && !empty($addon['screenshot_images'])) {
+                $sd_schema[0]['image'] = $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['screenshot_images'][0]);
+            } elseif (isset($addon['cover_image']) && !empty($addon['cover_image'])) {
                 $sd_schema[0]['image'] = $OSCOM_Template->getBaseUrl() . OSCOM::getPublicSiteLink('schokoladenseite/' . substr($addon['public_id'], 0, 1) . '/' . substr($addon['public_id'], 0, 2) . '/' . $addon['public_id'] . '-' . $addon['cover_image']);
             }
 

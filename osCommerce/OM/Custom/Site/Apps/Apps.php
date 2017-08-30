@@ -812,6 +812,10 @@ class Apps
             unset($new['ip_address']);
         }
 
+        if (isset($orig['support_topic'])) {
+            $orig['support_topic'] = json_encode($orig['support_topic']);
+        }
+
         $orig['public_flag'] = ($orig['open_flag'] == '1') ? '1' : '0';
         unset($orig['open_flag']);
 

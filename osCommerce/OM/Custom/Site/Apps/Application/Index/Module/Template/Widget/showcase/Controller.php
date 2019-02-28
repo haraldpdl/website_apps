@@ -18,6 +18,7 @@ class Controller extends \osCommerce\OM\Core\Template\WidgetAbstract
     public static function execute($param = null)
     {
         $OSCOM_Language = Registry::get('Language');
+        $OSCOM_PDO = Registry::get('PDO');
         $OSCOM_Template = Registry::get('Template');
 
         $qf_pageset = $OSCOM_Template->getValue('qf_pageset');
@@ -46,7 +47,7 @@ class Controller extends \osCommerce\OM\Core\Template\WidgetAbstract
 
             $carousels = [];
 
-            foreach (OSCOM::callDB('Website\GetFrontPageCarousel', $data, 'Site') as $c) {
+            foreach ($OSCOM_PDO->call('Site\\Website\\GetFrontPageCarousel', $data) as $c) {
                 if ($c['partner_id'] > 0) {
                     foreach ($languages as $l) {
                         if (file_exists(OSCOM::getConfig('dir_fs_public', 'OSCOM') . 'sites/' . OSCOM::getSite() . '/images/carousel-frontpage/' . $l . '/' . $c['image'])) {

@@ -1,0 +1,24 @@
+osCommerce
+
+Problem Encountered With Submission at the osCommerce Apps Marketplace
+{value}app_name{value}
+
+  {value}user_name{value},
+
+  thank you for uploading a submission to the osCommerce Apps Marketplace.
+  There was unfortunately a problem with the contents of the uploaded
+  submission, described as follows:
+
+  {value}error_key{value}
+  {value}error_message{value}
+
+  Please address the described issue and try submitting the upload again. If
+  problems persist, please contact us by replying to this email and further
+  help will be provided.
+
+  Kind regards,
+
+  osCommerce, https://www.oscommerce.com
+  Remscheider Str. 96, 42659 Solingen, Germany
+
+This is an automatically generated email.

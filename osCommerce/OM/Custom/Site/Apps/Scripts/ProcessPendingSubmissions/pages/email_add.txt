@@ -1,0 +1,16 @@
+osCommerce
+
+App Update Submission at osCommerce
+
+  {value}user_name{value},
+
+  thank you for submitting an update to "{value}app_name{value}" at the osCommerce Apps Marketplace. The update is now online at the following url:
+
+  {value}app_url_raw{value}
+
+  Kind regards,
+
+  osCommerce, https://www.oscommerce.com
+  Remscheider Str. 96, 42659 Solingen, Germany
+
+This is an automatically generated email.

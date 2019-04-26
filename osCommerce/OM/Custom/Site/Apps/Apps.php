@@ -624,7 +624,7 @@ class Apps
             }
 
             if (OSCOM::callDB('Apps\SaveAddOnInfo', $fields, 'Site') === true) {
-                if (isset($addon['cover_image']) && !isset($fields['cover_image'])) { // delete flagged image
+                if (isset($addon['cover_image']) && (!isset($fields['cover_image']) || ($addon['cover_image'] != $fields['cover_image']))) { // delete flagged image
                     static::deleteImageFile($addon['cover_image'], $data['public_id']);
                 }
 

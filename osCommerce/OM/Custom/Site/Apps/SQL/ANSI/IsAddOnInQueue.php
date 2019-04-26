@@ -16,7 +16,7 @@ class IsAddOnInQueue
     {
         $OSCOM_PDO = Registry::get('PDO');
 
-        $Qcheck = $OSCOM_PDO->prepare('select id from :table_website_apps_pending where public_id = :public_id or parent_public_id = :parent_public_id limit 1');
+        $Qcheck = $OSCOM_PDO->prepare('select id from :table_website_apps_pending where (public_id = :public_id or parent_public_id = :parent_public_id) and process_status is null limit 1');
         $Qcheck->bindValue(':public_id', $params['public_id']);
         $Qcheck->bindValue(':parent_public_id', $params['public_id']);
         $Qcheck->execute();

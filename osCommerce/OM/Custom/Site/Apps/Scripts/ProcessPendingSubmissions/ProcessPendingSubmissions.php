@@ -556,7 +556,7 @@ class ProcessPendingSubmissions implements \osCommerce\OM\Core\RunScriptInterfac
             foreach ($DL->getFiles() as $f) {
                 $class = 'osCommerce\\OM\\Core\\Site\\Apps\\Scripts\\ProcessPendingSubmissions\\FileChecks\\' . basename($f['name'], '.php');
 
-                if (class_exists($class) && is_subclass_of($class, 'osCommerce\\OM\\Core\\Site\\Apps\\Scripts\\ProcessPendingSubmissions\\FileChecksInterface')) {
+                if (class_exists($class) && is_subclass_of($class, 'osCommerce\\OM\\Core\\Site\\Apps\\Scripts\\ProcessPendingSubmissions\\FileChecksAbstract')) {
                     $priority = isset($class::$priority) ? $class::$priority : (!empty(static::$file_check_modules) ? max(array_keys(static::$file_check_modules))+1 : 0);
 
                     do {
@@ -577,8 +577,10 @@ class ProcessPendingSubmissions implements \osCommerce\OM\Core\RunScriptInterfac
 
         if (is_array(static::$file_check_modules) && !empty(static::$file_check_modules)) {
             foreach (static::$file_check_modules as $class) {
-                if (forward_static_call([$class, 'execute'], $file) === false) {
-                    return $class::$public_fail_error ?? 'Failed';
+                $obj = new $class($file);
+
+                if ($obj->execute() === false) {
+                    return $obj->public_fail_error;
                 }
             }
         } else {

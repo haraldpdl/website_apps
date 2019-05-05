@@ -13,16 +13,17 @@ use osCommerce\OM\Core\{
     RunScript
 };
 
-class PhpLint implements \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksInterface
+class PhpLint extends \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksAbstract
 {
     public static $priority = 300;
-    public static $public_fail_error = 'PHP syntax error detected';
 
-    public static function execute(string $file): bool
+    public $public_fail_error = 'PHP syntax error detected';
+
+    public function execute(): bool
     {
         $pass = true;
 
-        $ext = pathinfo($file, \PATHINFO_EXTENSION);
+        $ext = pathinfo($this->file, \PATHINFO_EXTENSION);
 
         if (strtolower($ext) !== 'zip') {
             return true;
@@ -34,7 +35,7 @@ class PhpLint implements \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSub
         FileSystem::rmdir($tmp_directory);
 
         $zip = new \ZipArchive();
-        $zip->open($file);
+        $zip->open($this->file);
         $zip->extractTo($tmp_directory);
         $zip->close();
 
@@ -53,7 +54,7 @@ class PhpLint implements \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSub
                         $o = str_replace($tmp_directory, '', $o);
                     }
 
-                    static::$public_fail_error = implode("\n", $output);
+                    $this->public_fail_error = implode("\n", $output);
 
                     $pass = false;
 

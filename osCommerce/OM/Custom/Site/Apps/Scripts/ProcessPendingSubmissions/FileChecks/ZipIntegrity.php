@@ -8,35 +8,36 @@
 
 namespace osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecks;
 
-class ZipIntegrity implements \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksInterface
+class ZipIntegrity extends \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksAbstract
 {
     public static $priority = 200;
-    public static $public_fail_error = 'General error';
 
-    public static function execute(string $file): bool
+    public $public_fail_error = 'General error';
+
+    public function execute(): bool
     {
-        $ext = pathinfo($file, \PATHINFO_EXTENSION);
+        $ext = pathinfo($this->file, \PATHINFO_EXTENSION);
 
         if (strtolower($ext) !== 'zip') {
             return true;
         }
 
         $zip = new \ZipArchive();
-        $res = $zip->open($file, \ZipArchive::CHECKCONS);
+        $res = $zip->open($this->file, \ZipArchive::CHECKCONS);
         $zip->close();
 
         if ($res !== true) {
             switch ($res) {
                 case \ZipArchive::ER_NOZIP:
-                    static::$public_fail_error = 'Not ZIP file';
+                    $this->public_fail_error = 'Not ZIP file';
                     break;
 
                 case \ZipArchive::ER_INCONS :
-                    static::$public_fail_error = 'Consistency check failed';
+                    $this->public_fail_error = 'Consistency check failed';
                     break;
 
                 case \ZipArchive::ER_CRC :
-                    static::$public_fail_error = 'Checksum failed';
+                    $this->public_fail_error = 'Checksum failed';
                     break;
             }
 

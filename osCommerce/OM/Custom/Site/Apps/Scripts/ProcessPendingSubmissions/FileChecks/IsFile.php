@@ -8,13 +8,14 @@
 
 namespace osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecks;
 
-class IsFile implements \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksInterface
+class IsFile extends \osCommerce\OM\Core\Site\Apps\Scripts\ProcessPendingSubmissions\FileChecksAbstract
 {
     public static $priority = 10;
-    public static $public_fail_error = 'File not found';
 
-    public static function execute(string $file): bool
+    public $public_fail_error = 'File not found';
+
+    public function execute(): bool
     {
-        return is_file($file);
+        return is_file($this->file);
     }
 }

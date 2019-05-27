@@ -2,28 +2,21 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps;
 
 use osCommerce\OM\Core\{
-    Cache,
 //    Events,
     Hash,
     HTML,
     OSCOM,
-    PDO,
     Registry
 };
 
-use osCommerce\OM\Core\Site\Website\{
-    Invision,
-    Language,
-    Session,
-    Template
-};
+use osCommerce\OM\Core\Site\Website\Invision;
 
 class Controller implements \osCommerce\OM\Core\SiteInterface
 {
@@ -31,11 +24,13 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
 
     public static function initialize()
     {
-        Registry::set('MessageStack', new MessageStack());
-        Registry::set('Cache', new Cache());
-        Registry::set('PDO', PDO::initialize());
-        Registry::set('PDO_OLD', PDO::initialize(OSCOM::getConfig('legacy_db_server'), OSCOM::getConfig('legacy_db_server_username'), OSCOM::getConfig('legacy_db_server_password'), OSCOM::getConfig('legacy_db_database')));
-        Registry::set('Session', Session::load());
+        Registry::addAliases([
+            'Cache' => 'Core\Site\Website\Registry\Cache',
+            'Language' => 'Core\Site\Website\Registry\Language',
+            'PDO' => 'Core\Site\Website\Registry\PDO',
+            'Session' => 'Core\Site\Website\Registry\Session',
+            'Template' => 'Core\Site\Website\Registry\Template'
+        ]);
 
         $OSCOM_Session = Registry::get('Session');
         $OSCOM_Session->setLifeTime(3600);
@@ -75,9 +70,6 @@ class Controller implements \osCommerce\OM\Core\SiteInterface
                 }
             }
         }
-
-        Registry::set('Language', new Language());
-        Registry::set('Template', new Template());
 
         $OSCOM_Template = Registry::get('Template');
         $OSCOM_Template->set('Covfefe');

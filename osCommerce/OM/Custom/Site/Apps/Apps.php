@@ -547,9 +547,22 @@ class Apps
 
     public static function filterSearchKeywords(string $keywords): string
     {
-        $result = '';
-
         $keys = [];
+
+        // filter special characters causing innodb fulltext fts_terms errors
+        $keywords = str_replace([
+            '+',
+            '-',
+            '@',
+            '<',
+            '>',
+            '(',
+            ')',
+            '~',
+            '*',
+            '\'',
+            '"'
+        ], ' ', $keywords);
 
         if (!empty($keywords)) {
             $counter = 0;

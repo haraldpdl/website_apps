@@ -1,9 +1,11 @@
 <div class="row">
   <div class="col-12">
-    <nav class="breadcrumb">
-      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
-      <a class="breadcrumb-item" href="{value}addon category_url{value}">{value}addon category_title{value}</a>
-      <a class="breadcrumb-item active" href="{link}||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}">{value}addon title{value}</a>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{link}Index{link}">{lang}breadcrumb_home{lang}</a></li>
+        <li class="breadcrumb-item"><a href="{value}addon category_url{value}">{value}addon category_title{value}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="{link}||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-muted">{value}addon title{value}</a></li>
+      </ol>
     </nav>
   </div>
 </div>
@@ -12,30 +14,27 @@
 
 <div class="row pb-4">
   <div class="col-12">
-    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
-      <div class="card-block">
+    <div class="card bg-dark text-white">
+      <div class="card-body">
         <div class="float-left">
           <h2 class="card-title"><a href="{link}||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-white">{value}addon title{value}</a> {ifvalue addon certified}<small><span class="badge badge-warning">{lang}tag_certified{lang}</span></small>{ifvalue}</h2>
           <p class="card-text">{lang}for_oscom_version version="{value}addon version_title{value}"{lang}</p>
         </div>
 
         <div id="aButtons" class="d-none float-right text-right">
-          <div class="btn-group">
-            <button id="aButtonMenuButton" type="button" class="btn text-white dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <div class="dropdown-menu">
-              <a id="aDownloadLink" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="dropdown-item" download>{lang}link_download{lang}</a>
-              <a id="aViewFilesLink" role="button" class="dropdown-item">{lang}link_view_changelog{lang}</a>
+          <button id="aButtonMenuButton" type="button" class="btn text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</button>
 
-              {iftrue can_upload_update}
-              <a class="dropdown-item" href="{link}Submit|Apps|{raw}addon public_id{raw}{link}">{lang}link_upload_update{lang}</a>
-              {iftrue}
+          <div class="dropdown-menu">
+            <a id="aDownloadLink" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="dropdown-item" download>{lang}link_download{lang}</a>
+            <a id="aViewFilesLink" role="button" class="dropdown-item">{lang}link_view_changelog{lang}</a>
 
-              {iftrue is_owner}
-              <a class="dropdown-item" href="{link}Edit|Apps|{raw}addon public_id{raw}{link}">{lang}link_edit_app{lang}</a>
-              {iftrue}
-            </div>
+            {iftrue can_upload_update}
+            <a class="dropdown-item" href="{link}Submit|Apps|{raw}addon public_id{raw}{link}">{lang}link_upload_update{lang}</a>
+            {iftrue}
+
+            {iftrue is_owner}
+            <a class="dropdown-item" href="{link}Edit|Apps|{raw}addon public_id{raw}{link}">{lang}link_edit_app{lang}</a>
+            {iftrue}
           </div>
         </div>
       </div>
@@ -43,7 +42,7 @@
   </div>
 </div>
 
-<div class="row pb-4">
+<div class="row">
   <div class="col-12">
     <div id="aImageCover" class="card card-outline-primary float-right d-none">
       <a role="button" data-toggle="modal" data-target="#aModalImages">
@@ -61,7 +60,7 @@
 </div>
 
 <div class="modal fade" id="aModalImages" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-body">
         <div id="aCarouselImages" class="carousel slide" data-interval="false">
@@ -85,7 +84,7 @@
 
 <div id="aFilesListing" class="row d-none">
   <div class="col-12">
-    <h3 id="aFilesHeading" class="pb-4">
+    <h3 id="aFilesHeading" class="pt-4 pb-4">
       {ifvalue addon open_flag}
         {lang}heading_files{lang}
       {else}
@@ -97,31 +96,7 @@
   </div>
 </div>
 
-<script id="afTemplate" type="x-tmpl-mustache">
-<div class="card">
-  <div class="card-header" role="tab" id="afHeading{{counter}}">
-    <span class="float-right">{{date_added_formatted}}</span>
-
-    <a class="collapsed" data-toggle="collapse" href="#afBody{{counter}}" aria-expanded="false" aria-controls="afBody{{counter}}">
-      {{title}}
-    </a>
-  </div>
-
-  <div id="afBody{{counter}}" class="collapse no-transition" role="tabpanel" aria-labelledby="afHeading{{counter}}">
-    <div class="card-block">
-      <div class="float-right">
-        <a href="{{download_url}}" id="dl-{value}addon public_id{value}{{public_id}}" class="btn btn-sm btn-primary text-white" download>{lang}button_download{lang}</a>
-      </div>
-
-      {{#author.name}}
-      <p class="text-muted">{lang}uploaded_by name="{{author.formatted_name}}"{lang}</p>
-      {{/author.name}}
-
-      <div style="white-space: pre-wrap">{{description}}</div>
-    </div>
-  </div>
-</div>
-</script>
+{mustache afTemplate}{raw}addon_file_card_file{raw}{mustache}
 
 <div id="aModalDownloadFile" class="modal">
   <div class="modal-dialog modal-lg" role="document">
@@ -145,141 +120,154 @@
 </div>
 
 <script>
-$(function() {
-  var public_id = {raw json_encode}addon public_id{raw};
-  var user_profile_url = "{link}||Profile&USER_ID-NAME_SLUG{link}";
-  var images = {raw json_encode}addon screenshot_images{raw};
-  var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
-  var files = {raw json_encode}addon_files{raw};
-  var files_download_url = {raw json_encode}addon_download_url{raw};
-  var open_flag = {raw json_encode}addon open_flag{raw};
-  var files_counter = 0;
+const public_id = {raw json_encode}addon public_id{raw};
+const user_profile_url = "{link}||Profile&USER_ID-NAME_SLUG{link}";
+const images = {raw json_encode}addon screenshot_images{raw};
+const images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+const files = {raw json_encode}addon_files{raw};
+const files_download_url = {raw json_encode}addon_download_url{raw};
+const open_flag = {raw json_encode}addon open_flag{raw};
 
-  if ((open_flag === '') || (files.length < 2)) {
-    $('#aButtons .btn-group').prepend('<a id="aDownloadButton" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="btn btn-primary text-white" download>' + {lang json_encode}button_download{lang} + '</a>');
-    $('#aButtonMenuButton').addClass('btn-primary');
+const lang_button_download = {lang json_encode}button_download{lang};
+const lang_uploaded_by = {lang json_encode}uploaded_by{lang};
 
-    $('#aDownloadLink').remove();
+OSCOM.ready(() => {
+    if ((open_flag === '') || (files.length < 2)) {
+        document.querySelector('#aButtons').insertAdjacentHTML('afterbegin', '<a id="aDownloadButton" href="{link}Index|Apps|Get&{raw}addon public_id{raw}{link}" class="btn btn-primary text-white" download>' + {lang json_encode}button_download{lang} + '</a>');
+        document.querySelector('#aButtonMenuButton').classList.add('btn-primary');
 
-    if (files.length < 2) {
-      $('#aViewFilesLink').remove();
+        document.querySelector('#aDownloadLink').remove();
+
+        if (files.length < 2) {
+            document.querySelector('#aViewFilesLink').remove();
+        }
+    } else {
+        document.querySelector('#aButtons').insertAdjacentHTML('afterbegin', '<a id="aViewFilesButton" role="button" class="btn btn-info text-white">' + {lang json_encode}button_view_files{lang} + '</a>');
+        document.querySelector('#aButtonMenuButton').classList.add('btn-info');
+
+        document.querySelector('#aViewFilesLink').remove();
     }
-  } else {
-    $('#aButtons .btn-group').prepend('<a id="aViewFilesButton" role="button" class="btn btn-info text-white">' + {lang json_encode}button_view_files{lang} + '</a>');
-    $('#aButtonMenuButton').addClass('btn-info');
 
-    $('#aViewFilesLink').remove();
-  }
+    if (document.querySelectorAll('#aButtons .dropdown-menu a').length < 1) {
+        document.querySelector('#aButtonMenuButton, #aButtons .dropdown-menu').remove();
+    }
 
-  if ($('#aButtons .btn-group .dropdown-menu a').length < 1) {
-    $('#aButtonMenuButton, #aButtons .btn-group .dropdown-menu').remove();
-  }
+    document.querySelector('#aButtons').classList.remove('d-none');
 
-  $('#aButtons').removeClass('d-none');
+    document.querySelector('#aButtons').insertAdjacentHTML('beforeend', '<p class="mt-3 mb-0">' + Mustache.render({lang json_encode}updated_by_on{lang}, {
+        'name': files[0].author.formatted_name,
+        'link': files[0].author.id > 0 ? user_profile_url.replace('USER_ID', files[0].author.id).replace('NAME_SLUG', files[0].author.name_slug) : null,
+        'date': files[0].date_added_formatted
+    }) + '</p>');
 
-  $('#aButtons').append('<p class="mt-3 mb-0">' + Mustache.render({lang json_encode}updated_by_on{lang}, {
-    'name': files[0].author.formatted_name,
-    'link': files[0].author.id > 0 ? user_profile_url.replace('USER_ID', files[0].author.id).replace('NAME_SLUG', files[0].author.name_slug) : null,
-    'date': moment(files[0].date_added, 'YYYYMMDD').format('Do MMMM YYYY')
-  }) + '</p>');
+    if (images.length > 0) {
+        const image_cover = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + images[0]);
 
-  if (images.length > 0) {
-    var image_cover = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + images[0]);
+        document.querySelector('#aImageCover a[data-toggle="modal"]').insertAdjacentHTML('afterbegin', '<img src="' + image_cover + '" class="card-img img-fluid m-1" style="width: 320px; height: 180px;">');
 
-    $('#aImageCover a[data-toggle="modal"]').prepend('<img src="' + image_cover + '" class="card-img img-fluid m-1" style="width: 320px; height: 180px;">');
+        let images_counter = 0;
 
-    var images_counter = 0;
+        for (let value of images) {
+            const image = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value);
 
-    images.forEach(function(value) {
-      var image = images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value);
+            document.querySelector('#aCarouselImages .carousel-inner').insertAdjacentHTML('beforeend', '<div class="carousel-item"><img class="d-block img-fluid" src="' + image + '" alt="" style="width: 100%; height: 100%;"></div>');
 
-      $('#aCarouselImages .carousel-inner').append('<div class="carousel-item"><img class="d-block img-fluid" src="' + image + '" alt="" style="width: 100%; height: 100%;"></div>');
+            document.querySelector('#aCarouselImages .carousel-indicators').insertAdjacentHTML('beforeend', '<li data-target="#aCarouselImages" data-slide-to="' + images_counter + '"></li>');
 
-      $('#aCarouselImages .carousel-indicators').append('<li data-target="#aCarouselImages" data-slide-to="' + images_counter + '"></li>');
+            images_counter += 1;
+        };
 
-      images_counter += 1;
-    });
+        document.querySelector('#aCarouselImages .carousel-inner .carousel-item:first-child').classList.add('active');
 
-    $('#aCarouselImages .carousel-inner .carousel-item:first').addClass('active');
+        document.querySelector('#aCarouselImages .carousel-indicators li:first-child').classList.add('active');
 
-    $('#aCarouselImages .carousel-indicators li:first').addClass('active');
+        document.querySelector('#aImageCover').classList.remove('d-none');
+    }
 
-    $('#aImageCover').removeClass('d-none');
-  }
+    if (files.length > 1) {
+        document.querySelector('#aFilesListing').classList.remove('d-none');
 
-  if (files.length > 1) {
-    $('#aFilesListing').removeClass('d-none');
+        document.querySelector('#aViewFilesButton, #aViewFilesLink').addEventListener('click', function (e) {
+            e.preventDefault();
 
-    $('#aViewFilesButton, #aViewFilesLink').click(function(e) {
-      e.preventDefault();
+            document.querySelector('#aFilesHeading').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
 
-      $('html, body').stop().animate({
-        scrollTop: $('#aFilesHeading').offset().top - 100
-      }, 300);
-    });
+        const template = document.querySelector('#afTemplate').innerHTML;
+        Mustache.parse(template);
 
-    var template = $('#afTemplate').html();
-    Mustache.parse(template);
+        let files_counter = 0;
 
-    files.forEach(function (value) {
-      value.counter = files_counter;
-      value.download_url = files_download_url.replace('FILE_CODE', value.public_id);
-      value.date_added_formatted = moment(value.date_added, 'YYYYMMDD').format('Do MMMM YYYY');
-      value.author.profile_url = value.author.id > 0 ? user_profile_url.replace('USER_ID', value.author.id).replace('NAME_SLUG', value.author.name_slug) : null,
+        for (let value of files) {
+            value.main_public_id = public_id;
+            value.counter = files_counter;
+            value.download_url = files_download_url.replace('FILE_CODE', value.public_id);
+            value.author.profile_url = value.author.id > 0 ? user_profile_url.replace('USER_ID', value.author.id).replace('NAME_SLUG', value.author.name_slug) : null,
 
-      $('#aFiles').append(Mustache.render(template, value));
+            value.button_download = lang_button_download;
+            value.uploaded_by = Mustache.render(lang_uploaded_by, value);
 
-      files_counter += 1;
-    });
+            document.querySelector('#aFiles').insertAdjacentHTML('beforeend', Mustache.render(template, value));
 
-    $('#afBody0').collapse('show');
-  }
+            files_counter += 1;
+        };
 
-  var redirect_count = 5;
-  var redirect_timer;
+        document.querySelector('#afHeading0 a').classList.remove('collapsed');
+        document.querySelector('#afHeading0 a').setAttribute('aria-expanded', true);
+        document.querySelector('#afBody0').classList.add('show');
+    }
 
-  $('a[download]').on('click', function (e) {
-    e.preventDefault();
+    let redirect_count = 5;
+    let redirect_timer = null;
 
-{ifvalue user}
-    $('#downloadForm').attr('action', $(this).attr('href'));
+    for (let aDownload of document.querySelectorAll('a[download]')) {
+        aDownload.addEventListener('click', function (e) {
+            e.preventDefault();
 
-    redirect_timer = setInterval(function() {
-      if ( --redirect_count < 1 ) {
+        {ifvalue user}
+            document.querySelector('#downloadForm').setAttribute('action', aDownload.getAttribute('href'));
+
+            redirect_timer = setInterval(function() {
+                if ( --redirect_count < 1 ) {
+                    clearInterval(redirect_timer);
+                    document.querySelector('#downloadForm').dispatchEvent(new Event('submit'));
+                }
+
+                document.querySelector('#redirect_counter').innerHTML = redirect_count;
+            }, 1000);
+
+            $('#aModalDownloadFile').modal('show');
+        {else}
+            window.location = aDownload.getAttribute('href');
+            return false;
+        {ifvalue}
+        });
+    };
+
+    document.querySelector('#downloadForm').addEventListener('submit', function (e) {
         clearInterval(redirect_timer);
-        $('#downloadForm').submit();
-      }
 
-      $('#redirect_counter').text(redirect_count);
-    }, 1000);
+        document.querySelector('#redirect_counter').innerHTML = '0';
+    });
 
-    $('#aModalDownloadFile').modal('show');
-{else}
-    window.location = $(this).attr('href');
-    return false;
-{ifvalue}
-  });
+    $('#aModalDownloadFile').on('show.bs.modal', function (e) {
+        redirect_count = 5;
 
-  $('#downloadForm').submit(function() {
-    clearInterval(redirect_timer);
-    $('#redirect_counter').text(0);
-  });
+        document.querySelector('#redirect_counter').innerHTML = redirect_count;
+    });
 
-  $('#aModalDownloadFile').on('show.bs.modal', function (e) {
-    redirect_count = 5;
-    $('#redirect_counter').text(redirect_count);
-  });
+    $('#aModalDownloadFile').on('hide.bs.modal', function (e) {
+        clearInterval(redirect_timer);
+    });
 
-  $('#aModalDownloadFile').on('hide.bs.modal', function (e) {
-    clearInterval(redirect_timer);
-  });
-
-  {iftrue initiate_download}
-  if ($('#dl-{value}download_file app{value}{value}download_file file{value}').length === 1) {
-    $('#dl-{value}download_file app{value}{value}download_file file{value}').click();
-  } else {
-    $('#aDownloadButton').click();
-  }
-  {iftrue}
+    {iftrue initiate_download}
+    if (document.querySelectorAll('#dl-{value}download_file app{value}{value}download_file file{value}').length === 1) {
+        document.querySelector('#dl-{value}download_file app{value}{value}download_file file{value}').dispatchEvent(new Event('click'));
+    } else {
+        document.querySelector('#aDownloadButton').dispatchEvent(new Event('click'));
+    }
+    {iftrue}
 });
 </script>

@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Showcase;
@@ -39,8 +39,8 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
         $OSCOM_Template->setValue('showcase', $showcase);
 
         $js = <<<EOD
-$(function() {
-  $('#nbShowcase').addClass('active');
+OSCOM.ready(() => {
+    document.querySelector('#nbShowcase').classList.add('active');
 });
 EOD;
 

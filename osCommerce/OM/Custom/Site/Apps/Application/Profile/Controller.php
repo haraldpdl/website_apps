@@ -2,13 +2,14 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Profile;
 
 use osCommerce\OM\Core\{
+    DateTime,
     HTML,
     OSCOM,
     Registry
@@ -96,6 +97,8 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
             $OSCOM_Template->setValue('user_profile', $user);
             $OSCOM_Template->setValue('user_profile_apps', $user_apps);
             $OSCOM_Template->setValue('user_profile_contributions', $user_contributions);
+
+            $OSCOM_Template->setValue('user_profile_joined_short', DateTime::getRelative(new \DateTime($user['joined'])));
 
             $OSCOM_Template->setValue('user_profile_show_highlights', in_array($user['group_id'], [
                 Users::GROUP_ADMIN_ID,

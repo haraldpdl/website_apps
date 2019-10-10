@@ -11,12 +11,55 @@
 
 <link rel="icon" type="image/png" href="{publiclink}images/favicon.ico{publiclink}">
 
-<link rel="stylesheet" href="{publiclink}external/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css{publiclink}" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<link rel="stylesheet" href="{publiclink}external/font-awesome/4.7.0/css/font-awesome.min.css{publiclink}">
+<link rel="stylesheet" href="{publiclink}external/bootstrap/4.3.1/css/bootstrap.min.css{publiclink}">
 
-<link rel="stylesheet" href="{publiclink}templates/Covfefe/stylesheets/site.css||v=20170823{publiclink}">
+<link rel="stylesheet" href="{publiclink}external/font-awesome/5.10.1/css/all.min.css{publiclink}">
 
-<script src="{publiclink}external/jquery-3.2.1.min.js{publiclink}" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="{publiclink}templates/Covfefe/stylesheets/site.min.css||v=20191010{publiclink}">
+
+<script src="{publiclink}external/jquery-3.4.1.min.js{publiclink}"></script>
+
+<script>
+let OSCOM = {
+    ready: callback️ => {
+        if (callback️ && typeof callback️ === 'function') {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (document.readyState === 'interactive' || document.readyState === 'complete') {
+                    return callback️();
+                }
+            });
+        }
+    },
+    cardBackgroundColors: [
+        'f44336',
+        'b71c1c',
+        'e91e63',
+        '880e4f',
+        '9c27b0',
+        '4a148c',
+        '673ab7',
+        '3f51b5',
+        '1a237e',
+        '2196f3',
+        '03a9f4',
+        '00bcd4',
+        '009688',
+        '4caf50',
+        '1b5e20',
+        '8bc34a',
+        'cddc39',
+        'ffeb3b',
+        'ffc107',
+        'ff9800',
+        'e65100',
+        'ff5722',
+        '795548',
+        '3e2723',
+        '607d8b',
+        '263238'
+    ]
+};
+</script>
 
 {ifvalue html_header_tags}
   {raw}html_header_tags{raw}
@@ -26,21 +69,22 @@
 <body>
 
 <header class="pb-3">
-  <nav class="navbar navbar-toggleable-md">
+  <nav class="navbar navbar-expand-md">
     <div class="container">
-      <button class="navbar-toggler navbar-toggler-right navbar-light" type="button" data-toggle="collapse" data-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
+      <a href="{link}Index{link}" class="navbar-brand"><img src="{publiclink}images/oscommerce.png{publiclink}" id="logo" class="img-fluid"></a>
+
+      <button class="navbar-toggler navbar-light bg-light" type="button" data-toggle="collapse" data-target="#navbarLinks" aria-controls="navbarLinks" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-
-      <a href="{link}Index{link}" class="navbar-brand"><img src="{publiclink}images/oscommerce.png{publiclink}" id="logo" class="img-fluid"></a>
 
       <div class="collapse navbar-collapse justify-content-end" id="navbarLinks">
         <ul class="navbar-nav nav-pills">
           <li class="nav-item"><a href="{link}Index{link}" class="nav-link">{lang}navbar_home{lang}</a></li>
           <li class="nav-item"><a id="nbShowcase" href="{link}Showcase{link}" class="nav-link">{lang}navbar_showcase{lang}</a></li>
           <li class="nav-item"><a id="nbSubmit" href="{link}Submit{link}" class="nav-link">{lang}navbar_submit{lang}</a></li>
+          <li class="nav-item"><a id="btnAmbassadors" href="{link}_|Website|Ambassadors{link}" class="nav-link text-danger"><i class="fas fa-heart"></i></a></li>
           <li class="nav-item dropdown" id="btnAccountContainer">
-            <a href="{link}Account{link}" id="btnAccount" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user"></i></a>
+            <a href="#" id="btnAccount" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i></a>
             <div class="dropdown-menu" aria-labelledby="btnAccount">
 
 {ifvalue user}
@@ -63,25 +107,22 @@
   {import}{value}html_page_contents_file{value}{import}
 </div>
 
-<footer class="pt-3 mt-3 pb-3 text-center">
+<footer class="pt-3 mt-3 pb-3">
   <div class="container">
-    {lang}copyright_footer{lang}
-
     <p id="footerSocialLinks">
-      <a href="https://www.oscommerce.com/newsletter/subscribe" title="{lang}social_newsletter_title{lang}"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #669c41;"></i><i class="fa fa-file-text fa-stack-1x fa-inverse"></i></span></a>
-      <a href="https://plus.google.com/+osCommerce" rel="publisher" target="_blank" title="{lang}social_googleplus_title{lang}"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #f63e28;"></i><i class="fa fa-google-plus fa-stack-1x fa-inverse"></i></span></a>
-      <a href="https://twitter.com/osCommerce" target="_blank" title="{lang}social_twitter_title{lang}"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #2daae1;"></i><i class="fa fa-twitter fa-stack-1x fa-inverse"></i></span></a>
-      <a href="https://www.facebook.com/pages/osCommerce/33387373079" target="_blank" title="{lang}social_facebook_title{lang}"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #3c5b9b;"></i><i class="fa fa-facebook fa-stack-1x fa-inverse"></i></span></a>
-      <a href="https://github.com/osCommerce" target="_blank" title="{lang}social_github_title{lang}"><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x" style="color: #000;"></i><i class="fa fa-github-alt fa-stack-1x fa-inverse"></i></span></a>
+      <a href="{link}Contact|Website|Newsletter{link}" title="{escape}{lang}social_newsletter_title{lang}{escape}" class="text-success"><i class="fas fa-envelope"></i></a>
+      <a href="https://twitter.com/osCommerce" target="_blank" title="{escape}{lang}social_twitter_title{lang}{escape}" class="text-info"><i class="fab fa-twitter"></i></a>
+      <a href="https://www.facebook.com/pages/osCommerce/33387373079" target="_blank" title="{escape}{lang}social_facebook_title{lang}{escape}" class="text-primary"><i class="fab fa-facebook"></i></a>
+      <a href="https://github.com/osCommerce" target="_blank" title="{escape}{lang}social_github_title{lang}{escape}" class="text-dark"><i class="fab fa-github"></i></a>
     </p>
+
+    {lang}copyright_footer{lang}
   </div>
 </footer>
 
-<script src="{publiclink}external/stickyfill-1.1.4.min.js{publiclink}"></script>
-<script src="{publiclink}external/mustache-2.3.0.min.js{publiclink}"></script>
-<script src="{publiclink}external/tether/1.4.0/tether.min.js{publiclink}" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="{publiclink}external/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js{publiclink}" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-<script src="{publiclink}external/moment-2.18.1.min.js{publiclink}"></script>
+<script src="{publiclink}external/stickyfill-2.1.0.min.js{publiclink}"></script>
+<script src="{publiclink}external/mustache-3.0.2.min.js{publiclink}"></script>
+<script src="{publiclink}external/bootstrap/4.3.1/js/bootstrap.bundle.min.js{publiclink}"></script>
 
 {ifvalue html_footer_tags}
   {raw}html_footer_tags{raw}

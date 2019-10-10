@@ -1,9 +1,9 @@
 <?php
 /**
- * osCommerce Website
+ * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2016 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/bsdlicense.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Index\RPC;

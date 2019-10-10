@@ -6,7 +6,7 @@ breadcrumb_home = Home
 heading_user_apps = My Apps
 heading_user_contributions = My Contributions
 
-member_joined = member since <span id="memberJoinDate" data-date=":date">..</span>
+member_joined = member since :date
 last_updated = Last updated :date
 
 empty_resultset = No Apps are available with this criteria.

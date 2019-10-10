@@ -510,6 +510,16 @@ class ProcessPendingSubmissions implements \osCommerce\OM\Core\RunScriptInterfac
                 'submit_type' => ($app['public_flag'] == '1') ? 'public' : 'private'
             ];
 
+            if (isset($app['versions_id']) && isset($app['prev_versions_id'])) {
+                $data['version_id'] = $app['versions_id'];
+                $data['prev_version_id'] = $app['prev_versions_id'];
+            }
+
+            if (isset($app['categories_id']) && isset($app['prev_categories_id'])) {
+                $data['category_id'] = $app['categories_id'];
+                $data['prev_category_id'] = $app['prev_categories_id'];
+            }
+
             if (Apps::saveAddOnInfo($data, true)) {
                 if (isset($app['cover_image']) && ($app['cover_image'] !== $orig['cover_image'])) {
                     $file = Apps::UPLOAD_PENDING_PATH . '/' . (int)$app['user_id'] . '-' . basename($app['cover_image']);

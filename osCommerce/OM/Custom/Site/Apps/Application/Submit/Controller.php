@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Submit;
@@ -54,12 +54,12 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
         $OSCOM_Template->setValue('aScreenshotImageHeight', Apps::SCREENSHOT_IMAGE_HEIGHT);
         $OSCOM_Template->setValue('aUploadSizeMb', Apps::UPLOAD_SIZE_MB);
 
-        $OSCOM_Template->addHtmlElement('header', '<link rel="stylesheet" href="' . OSCOM::getPublicSiteLink('external/dropzone/5.0.0/dropzone.min.css') . '">');
-        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/dropzone/5.0.0/dropzone.min.js') . '"></script>');
+        $OSCOM_Template->addHtmlElement('header', '<link rel="stylesheet" href="' . OSCOM::getPublicSiteLink('external/dropzone/5.5.0/dropzone.min.css') . '">');
+        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/dropzone/5.5.0/dropzone.min.js') . '"></script>');
 
         $js = <<<EOD
-$(function() {
-  $('#nbSubmit').addClass('active');
+OSCOM.ready(() => {
+    document.querySelector('#nbSubmit').classList.add('active');
 });
 EOD;
 

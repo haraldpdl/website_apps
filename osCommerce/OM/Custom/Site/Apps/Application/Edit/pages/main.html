@@ -1,9 +1,11 @@
 <div class="row">
   <div class="col-12">
-    <nav class="breadcrumb">
-      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
-      <a class="breadcrumb-item" href="{value}addon category_url{value}">{value}addon category_title{value}</a>
-      <a class="breadcrumb-item active" href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}">{value}addon title{value}</a>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{link}Index{link}">{lang}breadcrumb_home{lang}</a></li>
+        <li class="breadcrumb-item"><a href="{value}addon category_url{value}">{value}addon category_title{value}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-muted">{value}addon title{value}</a></li>
+      </ol>
     </nav>
   </div>
 </div>
@@ -12,8 +14,8 @@
 
 <div class="row pb-4">
   <div class="col-12">
-    <div class="card card-inverse" style="background-color: #333; border-color: #333;">
-      <div class="card-block">
+    <div class="card bg-dark text-white">
+      <div class="card-body">
         <div class="float-left">
           <h2 class="card-title"><a href="{link}Index||{raw}addon public_id{raw}&{raw}addon title_slug{raw}{link}" class="text-white">{value}addon title{value}</a> {ifvalue addon certified}<small><span class="badge badge-warning">{lang}tag_certified{lang}</span></small>{ifvalue}</h2>
           <p class="card-text">{lang}for_oscom_version version="{value}addon version_title{value}"{lang}</p>
@@ -42,22 +44,38 @@
 </ul>
 
 <div class="tab-content pt-4">
-  <div class="tab-pane active" id="app" role="tabpanel">
+  <div class="tab-pane show active" id="app" role="tabpanel">
     <div class="row">
       <div class="col">
         <form id="aEdit" action="{link}Edit||Process&{raw}addon public_id{raw}{link}" method="post">{formprotect}public_token{formprotect}
           <div class="row">
             <div class="col-4">
               <div class="form-group">
+                {ifvalue addon prev_versions_id}
                 <label>{lang}field_version{lang}</label>
                 <p class="form-control-static">{value}addon version_title{value}</p>
+                {else}
+                <label for="verNav">{lang}field_version{lang}</label>
+                <select id="verNav" name="version" class="custom-select" aria-describedby="aEditVersionInfo">
+                  <option value="">{lang}select_list_default{lang}</option>
+                </select>
+                <p id="aEditVersionInfo" class="form-text text-muted small">{lang}field_version_info{lang}</p>
+                {ifvalue}
               </div>
             </div>
 
             <div class="col-4">
               <div class="form-group">
+                {ifvalue addon prev_categories_id}
                 <label>{lang}field_category{lang}</label>
                 <p class="form-control-static">{value}addon category_title{value}</p>
+                {else}
+                <label for="catNav">{lang}field_category{lang}</label>
+                <select id="catNav" name="category" class="custom-select" aria-describedby="aEditCategoryInfo">
+                  <option value="">{lang}select_list_default{lang}</option>
+                </select>
+                <p id="aEditCategoryInfo" class="form-text text-muted small">{lang}field_category_info{lang}</p>
+                {ifvalue}
               </div>
             </div>
 
@@ -133,7 +151,7 @@
 <div class="card" style="max-width: 25%;" data-code="{{code}}" data-status="1">
   <img class="card-img-top" data-imagetype="screenshot" src="{{url}}">
   <div class="card-footer">
-    <a role="button" data-action="rearrangeScreenshot" data-toggle="tooltip" data-animation="false" title="{lang}button_drag_rearrange{lang}" class="aScreenshotDragHandle sortableDragHandle"><span class="badge badge-pill badge-default"><i class="fa fa-arrows"></i></span></a>
+    <a role="button" data-action="rearrangeScreenshot" data-toggle="tooltip" data-animation="false" title="{lang}button_drag_rearrange{lang}" class="aScreenshotDragHandle sortableDragHandle"><span class="badge badge-pill badge-default"><i class="fa fa-arrows-alt"></i></span></a>
     <a role="button" data-action="delScreenshot" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></a>
   </div>
 </div>
@@ -168,43 +186,34 @@
 
         <p><strong>{lang}field_uploaders{lang}</strong></p>
 
-        <div class="form-group row">
-          <div class="col-sm-1 text-center">
-            <div class="form-check">
-              <label class="form-check-label">
-                <input id="submitTypePrivate" type="radio" class="form-check-input" name="submitType" value="private">
-              </label>
+        <div class="row">
+          <div class="col-6">
+            <div class="custom-control custom-radio">
+              <input id="submitTypePrivate" type="radio" class="custom-control-input" name="submitType" value="private">
+              <label for="submitTypePrivate" class="custom-control-label">{lang}field_uploaders_private{lang}</label>
             </div>
-          </div>
 
-          <div class="col-sm-11">
-            <label for="submitTypePrivate">{lang}field_uploaders_private{lang}</label>
-
-            <ol id="aMaintainersList" class="list-unstyled">
+            <ul id="aMaintainersList" class="list-group pt-2">
             {ifvalue addon_authors}
               {loop addon_authors}
-              <li data-aid="#id#" data-status="1">#name# <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a></li>
+              <li data-aid="#id#" data-status="1" class="list-group-item d-flex justify-content-between align-items-center">#name# <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title="{lang}button_delete{lang}"><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a></li>
               {loop}
             {ifvalue}
-            </ol>
+            </ul>
 
-            <div class="form-group">
+            <div class="form-group pt-2">
               <label for="aNewAuthorInput">{lang}field_uploaders_private_add_member{lang}</label>
               <input type="text" class="form-control" id="aNewAuthorInput" name="aNewAuthor" placeholder="{lang}field_uploaders_private_add_member_placeholder{lang}" aria-describedby="aNewAuthorInfo">
               <small id="aNewAuthorInfo" class="form-text text-muted">{lang}field_uploaders_private_add_member_info max_members="{value}aMaxMaintainersUploaders{value}"{lang}</small>
             </div>
           </div>
-        </div>
 
-        <div class="form-group row">
-          <div class="col-sm-1 text-center">
-            <div class="form-check">
-              <label class="form-check-label">
-                <input id="submitTypePublic" type="radio" class="form-check-input" name="submitType" value="public">
-              </label>
+          <div class="col-6">
+            <div class="custom-control custom-radio">
+              <input id="submitTypePublic" type="radio" class="custom-control-input" name="submitType" value="public">
+              <label for="submitTypePublic" class="custom-control-label">{lang}field_uploaders_public{lang}</label>
             </div>
           </div>
-          <label for="submitTypePublic" class="col-sm-11">{lang}field_uploaders_public{lang}</label>
         </div>
       </div>
     </div>
@@ -221,427 +230,530 @@
 </div>
 
 <script>
-$(function() {
-  $('body').tooltip({
-    selector: '[data-toggle="tooltip"]'
-  });
+const public_id = {raw json_encode}addon public_id{raw};
 
-  var public_id = {raw json_encode}addon public_id{raw};
+const aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
+const aTitleLength = {raw json_encode}aTitleLength{raw};
+const aShortDescriptionMinLength = {raw json_encode}aShortDescriptionMinLength{raw};
+const aShortDescriptionLength = {raw json_encode}aShortDescriptionLength{raw};
+const aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
+const aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
 
-  var aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
-  var aTitleLength = {raw json_encode}aTitleLength{raw};
-  var aShortDescriptionMinLength = {raw json_encode}aShortDescriptionMinLength{raw};
-  var aShortDescriptionLength = {raw json_encode}aShortDescriptionLength{raw};
-  var aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
-  var aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
+const images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
 
-  var images_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+{ifvalue addon prev_versions_id}
+{else}
+const versions = {raw json_encode}versions{raw};
+const versions_selected = "{post}version|addon version_code{post}";
 
-  $('#aEditSupportTopic').autocomplete({
-    serviceUrl: '{rpclink}FindMemberTopics{rpclink}',
-    type: 'POST',
-    deferRequestBy: 300,
-    params: {
-      public_token: '{value md5}public_token{value}'
-    },
-    onSelect: function (sel) {
-      $('#aEditSupportTopic').val('');
+let versions_content = '';
+let version_group_iterator;
 
-      if (sel.id > 0) {
-        $('#aEditSupportTopicContainer').html(
-          '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="' + sel.link + '" target="_blank">' + sel.value + '</a>' +
-          '<input type="hidden" name="support_topic">'
-        ).removeClass('d-none');
+for (let value of versions) {
+    if (value.group_title !== version_group_iterator) {
+        if (typeof version_group_iterator !== 'undefined') {
+            versions_content += '</optgroup>';
+        }
 
-        $('#aEditSupportTopicContainer input[name="support_topic"]').val(JSON.stringify({
-          id: sel.id,
-          title: sel.value,
-          title_seo: sel.title_seo
-        }));
-      }
+        versions_content += '<optgroup label="' + value.group_title + '">';
+
+        version_group_iterator = value.group_title;
     }
-  });
 
-  $('#aEditSupportTopic').bind('keypress', function(e) {
-    if (e.keyCode == 13) {
-      e.preventDefault();
-    }
-  });
+    versions_content += '<option value="' + value.code + '"' + (versions_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>';
+};
+
+versions_content += '</optgroup>';
+
+document.querySelector('#verNav').insertAdjacentHTML('beforeend', versions_content);
+{ifvalue}
+
+{ifvalue addon prev_categories_id}
+{else}
+const categories = {raw json_encode}categories{raw};
+const categories_selected = "{post}category|addon category_code{post}";
+
+for (let value of categories) {
+    document.querySelector('#catNav').insertAdjacentHTML('beforeend', '<option value="' + value.code + '"' + (categories_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>');
+};
+{ifvalue}
+
+OSCOM.ready(() => {
+    $('body').tooltip({
+        selector: '[data-toggle="tooltip"]'
+    });
+
+    $('#aEditSupportTopic').autocomplete({
+        serviceUrl: '{rpclink}FindMemberTopics{rpclink}',
+        type: 'POST',
+        deferRequestBy: 300,
+        params: {
+            public_token: '{value md5}public_token{value}'
+        },
+        onSelect: function (sel) {
+            document.querySelector('#aEditSupportTopic').value = '';
+
+            if (sel.id > 0) {
+                document.querySelector('#aEditSupportTopicContainer').innerHTML =
+                    '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="' + sel.link + '" target="_blank">' + sel.value + '</a>' +
+                    '<input type="hidden" name="support_topic">';
+
+                document.querySelector('#aEditSupportTopicContainer').classList.remove('d-none');
+
+                document.querySelector('#aEditSupportTopicContainer input[name="support_topic"]').value = JSON.stringify({
+                    id: sel.id,
+                    title: sel.value,
+                    title_seo: sel.title_seo
+                });
+            }
+        }
+    });
+
+    document.querySelector('#aEditSupportTopic').addEventListener('keypress', function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+        }
+    });
 
 {ifvalue addon support_topic}
-  $('#aEditSupportTopicContainer').html(
-    '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="https://forums.oscommerce.com/topic/{value}addon support_topic id{value}-{value}addon support_topic title_seo{value}" target="_blank">{value}addon support_topic title{value}</a>' +
-    '<input type="hidden" name="support_topic">'
-  ).removeClass('d-none');
+    document.querySelector('#aEditSupportTopicContainer').innerHTML =
+        '<span class="fa fa-comments fa-fw text-primary pr-2"></span><a href="https://forums.oscommerce.com/topic/{value}addon support_topic id{value}-{value}addon support_topic title_seo{value}" target="_blank">{value}addon support_topic title{value}</a>' +
+        '<input type="hidden" name="support_topic">';
 
-  $('#aEditSupportTopicContainer input[name="support_topic"]').val(JSON.stringify({
-    id: {raw json_encode}addon support_topic id{raw},
-    title: {raw json_encode}addon support_topic title{raw},
-    title_seo: {raw json_encode}addon support_topic title_seo{raw}
-  }));
+    document.querySelector('#aEditSupportTopicContainer').classList.remove('d-none');
+
+    document.querySelector('#aEditSupportTopicContainer input[name="support_topic"]').value = JSON.stringify({
+        id: {raw json_encode}addon support_topic id{raw},
+        title: {raw json_encode}addon support_topic title{raw},
+        title_seo: {raw json_encode}addon support_topic title_seo{raw}
+    });
 {ifvalue}
 
 {ifvalue addon cover_image}
-  $('#aCoverImage .card img[data-imagetype="cover"]').attr('src', images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-{value}addon cover_image{value}')).removeClass('invisible');
+    document.querySelector('#aCoverImage .card img[data-imagetype="cover"]').setAttribute('src', images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-{value}addon cover_image{value}'));
+    document.querySelector('#aCoverImage .card img[data-imagetype="cover"]').classList.remove('invisible');
 
-  $('#aCoverImage .card a[data-action="delCoverImage"]').on('click', function (e) {
-    e.preventDefault();
+    document.querySelector('#aCoverImage .card a[data-action="delCoverImage"]').addEventListener('click', function (e) {
+        e.preventDefault();
 
-    var badge = $(this).find('.badge');
-    var icon = $(badge).find('.fa');
+        const badge = this.querySelector('.badge');
+        const icon = badge.querySelector('.fa');
 
-    if ($(this).closest('.card').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
-      $(badge).removeClass('badge-default').addClass('badge-danger');
-      $(icon).removeClass('fa-times').addClass('fa-undo');
+        if (this.closest('.card').getAttribute('data-status') == '1') {
+            badge.classList.remove('badge-default');
+            badge.classList.add('badge-danger');
 
-      $(this).closest('.card').attr('data-status', '0');
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-undo');
 
-      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
-    } else {
-      $(badge).removeClass('badge-danger').addClass('badge-default');
-      $(icon).removeClass('fa-undo').addClass('fa-times');
+            this.closest('.card').setAttribute('data-status', '0');
 
-      $(this).closest('.card').attr('data-status', '1');
+            this.setAttribute('title', {lang json_encode}button_undo{lang});
+            $(this).tooltip('dispose').tooltip('show');
+        } else {
+            badge.classList.remove('badge-danger');
+            badge.classList.add('badge-default');
 
-      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
-    }
-  });
+            icon.classList.remove('fa-undo');
+            icon.classList.add('fa-times');
+
+            this.closest('.card').setAttribute('data-status', '1');
+
+            this.setAttribute('title', {lang json_encode}button_delete{lang});
+            $(this).tooltip('dispose').tooltip('show');
+        }
+    });
 {ifvalue}
 
 {ifvalue addon screenshot_images}
-  var aScreenshotImages = {raw json_encode}addon screenshot_images{raw};
+    const aScreenshotImages = {raw json_encode}addon screenshot_images{raw};
 
-  var aScreenshotTemplate = $('#aScreenshotImagePreview').html();
-  Mustache.parse(aScreenshotTemplate);
+    const aScreenshotTemplate = document.querySelector('#aScreenshotImagePreview').innerHTML;
+    Mustache.parse(aScreenshotTemplate);
 
-  aScreenshotImages.forEach(function (value) {
-    var data = {
-      code: value,
-      url: images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value)
+    for (let value of aScreenshotImages) {
+        document.querySelector('#aScreenshotImages').insertAdjacentHTML('beforeend', Mustache.render(aScreenshotTemplate, {
+            code: value,
+            url: images_url.replace('IMAGE_PATH', public_id.substring(0, 1) + '/' + public_id.substring(0, 2) + '/' + public_id + '-' + value)
+        }));
     };
 
-    $('#aScreenshotImages').append(Mustache.render(aScreenshotTemplate, data));
-  });
+    for (let value of document.querySelectorAll('#aScreenshotImages .card a[data-action="rearrangeScreenshot"]')) {
+        value.addEventListener('mousedown', function (e) {
+            $(this).tooltip('dispose');
+        });
+    };
 
-  $('#aScreenshotImages').on('mousedown', '.card a[data-action="rearrangeScreenshot"]', function (e) {
-    $(this).tooltip('dispose');
-  });
+    for (let value of document.querySelectorAll('#aScreenshotImages .card a[data-action="delScreenshot"]')) {
+        value.addEventListener('click', function (e) {
+            e.preventDefault();
 
-  $('#aScreenshotImages').on('click', '.card a[data-action="delScreenshot"]', function (e) {
-    e.preventDefault();
+            const badge = this.querySelector('.badge');
+            const icon = badge.querySelector('.fa');
 
-    var badge = $(this).find('.badge');
-    var icon = $(badge).find('.fa');
+            if (this.closest('.card').getAttribute('data-status') == '1') {
+                badge.classList.remove('badge-default');
+                badge.classList.add('badge-danger');
 
-    if ($(this).closest('.card').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
-      $(badge).removeClass('badge-default').addClass('badge-danger');
-      $(icon).removeClass('fa-times').addClass('fa-undo');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-undo');
 
-      $(this).closest('.card').attr('data-status', '0');
+                this.closest('.card').setAttribute('data-status', '0');
 
-      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
-    } else {
-      $(badge).removeClass('badge-danger').addClass('badge-default');
-      $(icon).removeClass('fa-undo').addClass('fa-times');
+                this.setAttribute('title', {lang json_encode}button_undo{lang});
+                $(this).tooltip('dispose').tooltip('show');
+            } else {
+                badge.classList.remove('badge-danger');
+                badge.classList.add('badge-default');
 
-      $(this).closest('.card').attr('data-status', '1');
+                icon.classList.remove('fa-undo');
+                icon.classList.add('fa-times');
 
-      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
-    }
-  });
+                this.closest('.card').setAttribute('data-status', '1');
+
+                this.setAttribute('title', {lang json_encode}button_delete{lang});
+                $(this).tooltip('dispose').tooltip('show');
+            }
+        });
+    };
 {ifvalue}
 
-  var aOpenFlag = {raw json_encode}addon open_flag{raw};
-  var aAuthors = {raw json_encode}addon_authors_names{raw};
+    const aOpenFlag = {raw json_encode}addon open_flag{raw};
+    const aAuthors = {raw json_encode}addon_authors_names{raw};
 
-  if (aOpenFlag === "1") {
-    $('#submitTypePublic').prop('checked', true);
-  } else {
-    $('#submitTypePrivate').prop('checked', true);
-  }
-
-  $('#aNewAuthorInput').bind('keypress', function(e) {
-    if (e.keyCode == 13) {
-      e.preventDefault();
-    }
-  });
-
-  if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
-    $('#aNewAuthorInput').prop('disabled', true);
-  }
-
-  $('#aMaintainersList').on('click', 'li a[data-action="delUploader"]', function (e) {
-    e.preventDefault();
-
-    var badge = $(this).find('.badge');
-    var icon = $(badge).find('.fa');
-
-    if ($(this).closest('li').attr('data-status') == '1') { // .data() uses an internal jquery cached value whereas .attr('data-*') uses the dom directly
-      $(badge).removeClass('badge-default').addClass('badge-danger');
-      $(icon).removeClass('fa-times').addClass('fa-undo');
-
-      $(this).closest('li').attr('data-status', '0');
-
-      $(this).attr('title', {lang json_encode}button_undo{lang}).tooltip('dispose').tooltip('show');
+    if (aOpenFlag === '1') {
+        document.querySelector('#submitTypePublic').checked = true;
     } else {
-      if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
-        return false;
-      }
-
-      $(badge).removeClass('badge-danger').addClass('badge-default');
-      $(icon).removeClass('fa-undo').addClass('fa-times');
-
-      $(this).closest('li').attr('data-status', '1');
-
-      $(this).attr('title', {lang json_encode}button_delete{lang}).tooltip('dispose').tooltip('show');
+        document.querySelector('#submitTypePrivate').checked = true;
     }
 
-    if ($('#aNewAuthorInput').prop('disabled') === true) {
-      if ($('#aMaintainersList li[data-status="1"]').length < 15) {
-        $('#aNewAuthorInput').prop('disabled', false);
-      }
-    } else if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
-      $('#aNewAuthorInput').prop('disabled', true);
-    }
-  });
-
-  $('#aNewAuthorInput').autocomplete({
-    serviceUrl: '{rpclink}FindMembers{rpclink}',
-    type: 'POST',
-    deferRequestBy: 300,
-    params: {
-      public_token: '{value md5}public_token{value}'
-    },
-    onSelect: function (sel) {
-      $('#aNewAuthorInput').val('');
-
-      if ($('#aMaintainersList li[data-aid="' + sel.id + '"]').length === 0) {
-        $('#aMaintainersList').append($('<li>', {
-          'data-aid': sel.id,
-          'data-status': '1'
-        }).text(sel.value));
-
-        $('#aMaintainersList li[data-aid="' + sel.id + '"]').append(' <a role="button" data-action="delUploader" data-toggle="tooltip" data-animation="false" title=' + {lang json_encode}button_delete{lang} + '><small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small></a>');
-
-        if ($('#aMaintainersList li[data-status="1"]').length >= 15) {
-          $('#aNewAuthorInput').prop('disabled', true);
+    document.querySelector('#aNewAuthorInput').addEventListener('keypress', function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
         }
-      }
-    }
-  });
+    });
 
-  $('#aEditSubmit').click(function(e) {
-    e.preventDefault();
-
-    $('#aEdit').submit();
-  });
-
-  $('#aEdit').submit(function(event) {
-    var errors = [];
-
-    var title = $('#aEditTitle').val();
-
-    if ((title.length < aTitleMinLength) || (title.length > aTitleLength)) {
-      errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
+    if (document.querySelectorAll('#aMaintainersList li[data-status="1"]').length >= 15) {
+        document.querySelector('#aNewAuthorInput').disabled = true;
     }
 
-    var short_description = $('#aEditShortDescription').val();
+    function maintainerDelUploaderEventClick(e) {
+        e.preventDefault();
 
-    if ((short_description.length < aShortDescriptionMinLength) || (short_description.length > aShortDescriptionLength)) {
-      errors.push({lang json_encode}ms_error_short_description min_length="{value number_format}aShortDescriptionMinLength{value}" length="{value number_format}aShortDescriptionLength{value}"{lang});
-    }
+        const badge = this.querySelector('.badge');
+        const icon = badge.querySelector('.fa');
 
-    var description = $('#aEditDescription').val();
+        if (this.closest('li').getAttribute('data-status') == '1') {
+            badge.classList.remove('badge-default');
+            badge.classList.add('badge-danger');
 
-    if ((description.length < aDescriptionMinLength) || (description.length > aDescriptionLength)) {
-      errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
-    }
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-undo');
 
-    if (errors.length > 0) {
-      if ($('#msgStk_Submit').length) {
-        $('#msgStk_Submit .alert').empty();
-      } else {
-        $('#aEdit').before('<div id="msgStk_Submit"></div>');
-        $('#msgStk_Submit').html('<div class="alert alert-danger" role="alert"></div>');
-      }
+            this.closest('li').setAttribute('data-status', '0');
 
-      var alerts = $('#msgStk_Submit .alert.alert-danger');
+            this.setAttribute('title', {lang json_encode}button_undo{lang});
+            $(this).tooltip('dispose').tooltip('show');
+        } else {
+            if (document.querySelectorAll('#aMaintainersList li[data-status="1"]').length >= 15) {
+                return false;
+            }
 
-      errors.forEach(function (value) {
-        alerts.append('<p>' + value + '</p>');
-      });
+            badge.classList.remove('badge-danger');
+            badge.classList.add('badge-default');
 
-      alerts.find('p:last').addClass('mb-0');
+            icon.classList.remove('fa-undo');
+            icon.classList.add('fa-times');
 
-      $('html, body').stop().animate({
-        scrollTop: $('#msgStk_Submit').offset().top - 100
-      }, 300);
+            this.closest('li').setAttribute('data-status', '1');
 
-      return false;
-    }
+            this.setAttribute('title', {lang json_encode}button_delete{lang});
+            $(this).tooltip('dispose').tooltip('show');
+        }
 
-    if (aUploaded.cover.length > 0) {
-      $('#aEdit').append('<input type="hidden" name="upload_cover" value="' + aUploaded.cover[0] + '">');
-    }
+        if (document.querySelector('#aNewAuthorInput').disabled === true) {
+            if (documnt.querySelectorAll('#aMaintainersList li[data-status="1"]').length < 15) {
+                document.querySelector('#aNewAuthorInput').disabled = false;
+            }
+        } else if (document.querySelectorAll('#aMaintainersList li[data-status="1"]').length >= 15) {
+            document.querySelector('#aNewAuthorInput').disabled = true;
+        }
+    };
 
-    if (aUploaded.images.length > 0) {
-      $('#aEdit').append('<input type="hidden" name="upload_images" value="' + aUploaded.images.join(',') + '">');
-    }
+    for (let value of document.querySelectorAll('#aMaintainersList li a[data-action="delUploader"]')) {
+        value.addEventListener('click', maintainerDelUploaderEventClick);
+    };
+
+    $('#aNewAuthorInput').autocomplete({
+        serviceUrl: '{rpclink}FindMembers{rpclink}',
+        type: 'POST',
+        deferRequestBy: 300,
+        params: {
+            public_token: '{value md5}public_token{value}'
+        },
+        onSelect: function (sel) {
+            document.querySelector('#aNewAuthorInput').value = '';
+
+            if (document.querySelectorAll('#aMaintainersList li[data-aid="' + sel.id + '"]').length === 0) {
+                let aML_li = document.createElement('li');
+                aML_li.dataset.aid = sel.id;
+                aML_li.dataset.status = 1;
+                aML_li.classList.add('list-group-item');
+                aML_li.classList.add('d-flex');
+                aML_li.classList.add('justify-content-between');
+                aML_li.classList.add('align-items-center');
+                aML_li.textContent = sel.value;
+
+                document.querySelector('#aMaintainersList').appendChild(aML_li);
+
+                let aML_li_a = document.createElement('a');
+                aML_li_a.role = 'button';
+                aML_li_a.dataset.action = 'delUploader';
+                aML_li_a.dataset.toggle = 'tooltip';
+                aML_li_a.dataset.animation = 'false';
+                aML_li_a.title = {lang json_encode}button_delete{lang};
+                aML_li_a.innerHTML = '<small><span class="badge badge-pill badge-default"><i class="fa fa-times"></i></span></small>';
+
+                aML_li_a.addEventListener('click', maintainerDelUploaderEventClick);
+
+                document.querySelector('#aMaintainersList li[data-aid="' + sel.id + '"]').appendChild(aML_li_a);
+
+                if (document.querySelectorAll('#aMaintainersList li[data-status="1"]').length >= 15) {
+                    document.querySelector('#aNewAuthorInput').disabled = true;
+                }
+            }
+        }
+    });
+
+    document.querySelector('#aEditSubmit').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector('#aEdit').dispatchEvent(new Event('submit'));
+    });
+
+    document.querySelector('#aEdit').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const errors = [];
+
+        const title = document.querySelector('#aEditTitle').value;
+
+        if ((title.length < aTitleMinLength) || (title.length > aTitleLength)) {
+            errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
+        }
+
+        const short_description = document.querySelector('#aEditShortDescription').value;
+
+        if ((short_description.length < aShortDescriptionMinLength) || (short_description.length > aShortDescriptionLength)) {
+            errors.push({lang json_encode}ms_error_short_description min_length="{value number_format}aShortDescriptionMinLength{value}" length="{value number_format}aShortDescriptionLength{value}"{lang});
+        }
+
+        const description = document.querySelector('#aEditDescription').value;
+
+        if ((description.length < aDescriptionMinLength) || (description.length > aDescriptionLength)) {
+            errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
+        }
+
+        if (errors.length > 0) {
+            if (document.querySelector('#msgStk_Submit')) {
+                document.querySelector('#msgStk_Submit').innerHTML = '';
+            } else {
+                document.querySelector('#aEdit').insertAdjacentHTML('beforebegin', '<div id="msgStk_Submit" class="alert alert-danger" role="alert"></div>');
+            }
+
+            let alerts = document.querySelector('#msgStk_Submit');
+
+            for (let value of errors) {
+                alerts.insertAdjacentHTML('beforeend', `<p>${value}</p>`);
+            };
+
+            alerts.querySelector('p:last-child').classList.add('mb-0');
+
+            document.querySelector('#topContentAnchor').scrollIntoView({
+                behavior: 'smooth'
+            });
+
+            return false;
+        }
+
+        if (aUploaded.cover.length > 0) {
+            if (document.querySelector('#aEdit input[name="upload_cover"]')) {
+                document.querySelector('#aEdit input[name="upload_cover"]').value = aUploaded.cover[0];
+            } else {
+                document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="upload_cover" value="' + aUploaded.cover[0] + '">');
+            }
+        } else if (document.querySelector('#aEdit input[name="upload_cover"]')) {
+            document.querySelector('#aEdit input[name="upload_cover"]').remove();
+        }
+
+        if (aUploaded.images.length > 0) {
+            document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="upload_images" value="' + aUploaded.images.join(',') + '">');
+        }
 
 {ifvalue addon cover_image}
-    var cover_image = ($('#aCoverImage .card').attr('data-status') == '1') ? {raw json_encode}addon cover_image{raw} : '';
+        const cover_image = (document.querySelector('#aCoverImage .card').getAttribute('data-status') == '1') ? {raw json_encode}addon cover_image{raw} : '';
 
-    if ($('#aEdit input[name="cover_image"]').length === 0) {
-      $('#aEdit').append('<input type="hidden" name="cover_image">');
-    }
+        if (document.querySelectorAll('#aEdit input[name="cover_image"]').length === 0) {
+            document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="cover_image">');
+        }
 
-    $('#aEdit input[name="cover_image"]').val(cover_image);
+        document.querySelector('#aEdit input[name="cover_image"]').value = cover_image;
 {ifvalue}
 
 {ifvalue addon screenshot_images}
-    var images = [];
+        const images = [];
 
-    $('#aScreenshotImages .card[data-status="1"]').each(function (index) {
-      images.push($(this).data('code'));
-    });
+        for (let value of document.querySelectorAll('#aScreenshotImages .card[data-status="1"]')) {
+            images.push(value.dataset.code);
+        };
 
-    if ($('#aEdit input[name="screenshot_images"]').length === 0) {
-      $('#aEdit').append('<input type="hidden" name="screenshot_images">');
-    }
+        if (document.querySelectorAll('#aEdit input[name="screenshot_images"]').length === 0) {
+            document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="screenshot_images">');
+        }
 
-    $('#aEdit input[name="screenshot_images"]').val(images.join(','));
+        document.querySelector('#aEdit input[name="screenshot_images"]').value = images.join(',');
 {ifvalue}
 
-    if ($('#aEdit input[name="submit_type"]').length === 0) {
-      $('#aEdit').append('<input type="hidden" name="submit_type">');
-    }
+        if (document.querySelectorAll('#aEdit input[name="submit_type"]').length === 0) {
+            document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="submit_type">');
+        }
 
-    $('#aEdit input[name="submit_type"]').val($('#maintainers input[name="submitType"]:checked').val());
+        document.querySelector('#aEdit input[name="submit_type"]').value = document.querySelector('#maintainers input[name="submitType"]:checked').value;
 
-    var uploaders = [];
+        const uploaders = [];
 
-    $('#aMaintainersList li[data-status="1"]').each(function (index) {
-      uploaders.push($(this).data('aid'));
+        for (let value of document.querySelectorAll('#aMaintainersList li[data-status="1"]')) {
+            uploaders.push(value.dataset.aid);
+        };
+
+        if (document.querySelectorAll('#aEdit input[name="uploaders"]').length === 0) {
+            document.querySelector('#aEdit').insertAdjacentHTML('beforeend', '<input type="hidden" name="uploaders">');
+        }
+
+        document.querySelector('#aEdit input[name="uploaders"]').value = uploaders.join(',');
+
+        document.querySelector('#aEdit').submit();
     });
 
-    if ($('#aEdit input[name="uploaders"]').length === 0) {
-      $('#aEdit').append('<input type="hidden" name="uploaders">');
-    }
-
-    $('#aEdit input[name="uploaders"]').val(uploaders.join(','));
-  });
-
 {ifvalue addon screenshot_images}
-  Sortable.create(document.getElementById('aScreenshotImages'), {
-    handle: '.aScreenshotDragHandle',
-    ghostClass: 'sortablePlaceholder'
-  });
+    Sortable.create(document.getElementById('aScreenshotImages'), {
+        handle: '.aScreenshotDragHandle',
+        ghostClass: 'sortablePlaceholder'
+    });
 {ifvalue}
 });
 
-var aUploaded = {
+const aUploaded = {
   cover: [],
   images: []
 };
 
 Dropzone.options.aEditFiles = {
-  acceptedFiles: '.jpg,.png',
-  maxFiles: 8,
-  maxFilesize: {raw json_encode}aUploadSizeMb{raw},
-  addRemoveLinks: true,
-  init: function() {
-    this.on('error', function(file) {
-      if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
-        if (file.xhr.status == 500) {
-          this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
-        }
-      }
-    });
-
-    this.on('success', function(file, response) {
-      if (typeof response.rpcStatus != 'undefined') {
-        if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
-          var file_ext = response.filename.substr(response.filename.lastIndexOf('.') + 1);
-
-          if ((file_ext == 'png') || (file_ext == 'jpg')) {
-            if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
-              if (aUploaded.cover.length < 1) {
-                file.oscomName = response.filename;
-
-                aUploaded.cover.push(file.oscomName);
-
-                $('#aUploadCoverIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
-              } else {
-                this.defaultOptions.error(file, {lang json_encode}ms_error_cover_image_multiple{lang});
-
-                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-                  public_token: '{value md5}public_token{value}',
-                  file: response.filename
-                });
-              }
-            } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
-              if (aUploaded.images.length < 7) {
-                file.oscomName = response.filename;
-
-                if (aUploaded.images.length < 1) {
-                  $('#aUploadImagesIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
+    acceptedFiles: '.jpg,.png',
+    maxFiles: 8,
+    maxFilesize: {raw json_encode}aUploadSizeMb{raw},
+    addRemoveLinks: true,
+    init: function() {
+        this.on('error', function(file) {
+            if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
+                if (file.xhr.status == 500) {
+                    this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
                 }
-
-                aUploaded.images.push(file.oscomName);
-              } else {
-                this.defaultOptions.error(file, {lang json_encode}ms_error_screenshot_image_max_allowed{lang});
-
-                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-                  public_token: '{value md5}public_token{value}',
-                  file: response.filename
-                });
-              }
-            } else {
-              this.defaultOptions.error(file, {lang json_encode}error_image_invalid_dimensions{lang});
             }
-          }
-        }
-      } else {
-        this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
-      }
-    });
-
-    this.on('removedfile', function(file) {
-      if (typeof file.oscomName != 'undefined') {
-        $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-          public_token: '{value md5}public_token{value}',
-          file: file.oscomName
         });
 
-        var file_ext = file.oscomName.substr(file.oscomName.lastIndexOf('.') + 1);
+        this.on('success', function(file, response) {
+            if (typeof response.rpcStatus != 'undefined') {
+                if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
+                    const file_ext = response.filename.substr(response.filename.lastIndexOf('.') + 1);
 
-        if ((file_ext == 'png') || (file_ext == 'jpg')) {
-          if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
-            if (aUploaded.cover.length > 0) {
-              var pos = aUploaded.cover.indexOf(file.oscomName);
+                    if ((file_ext == 'png') || (file_ext == 'jpg')) {
+                        if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+                            if (aUploaded.cover.length < 1) {
+                                file.oscomName = response.filename;
 
-              if (pos >= 0) {
-                aUploaded.cover.splice(pos, 1);
+                                aUploaded.cover.push(file.oscomName);
 
-                $('#aUploadCoverIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
-              }
+                                document.querySelector('#aUploadCoverIcon').classList.remove('fa-minus-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('fa-check-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('text-success');
+                            } else {
+                                this.defaultOptions.error(file, {lang json_encode}ms_error_cover_image_multiple{lang});
+
+                                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                                    public_token: '{value md5}public_token{value}',
+                                    file: response.filename
+                                });
+                            }
+                        } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+                            if (aUploaded.images.length < 7) {
+                                file.oscomName = response.filename;
+
+                                if (aUploaded.images.length < 1) {
+                                    document.querySelector('#aUploadImagesIcon').classList.remove('fa-minus-square');
+                                    document.querySelector('#aUploadImagesIcon').classList.add('fa-check-square');
+                                    document.querySelector('#aUploadImagesIcon').classList.add('text-success');
+                                }
+
+                                aUploaded.images.push(file.oscomName);
+                            } else {
+                                this.defaultOptions.error(file, {lang json_encode}ms_error_screenshot_image_max_allowed{lang});
+
+                                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                                    public_token: '{value md5}public_token{value}',
+                                    file: response.filename
+                                });
+                            }
+                        } else {
+                            this.defaultOptions.error(file, {lang json_encode}error_image_invalid_dimensions{lang});
+                        }
+                    }
+                }
+            } else {
+              this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
             }
-          } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
-            if (aUploaded.images.length > 0) {
-              var pos = aUploaded.images.indexOf(file.oscomName);
+        });
 
-              if (pos >= 0) {
-                aUploaded.images.splice(pos, 1);
-              }
+        this.on('removedfile', function(file) {
+            if (typeof file.oscomName != 'undefined') {
+                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                    public_token: '{value md5}public_token{value}',
+                    file: file.oscomName
+                });
 
-              if (aUploaded.images.length < 1) {
-                $('#aUploadImagesIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
-              }
+                const file_ext = file.oscomName.substr(file.oscomName.lastIndexOf('.') + 1);
+
+                if ((file_ext == 'png') || (file_ext == 'jpg')) {
+                    if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+                        if (aUploaded.cover.length > 0) {
+                            const pos = aUploaded.cover.indexOf(file.oscomName);
+
+                            if (pos >= 0) {
+                                aUploaded.cover.splice(pos, 1);
+
+                                document.querySelector('#aUploadCoverIcon').classList.remove('text-success');
+                                document.querySelector('#aUploadCoverIcon').classList.remove('fa-check-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('fa-minus-square');
+                            }
+                        }
+                    } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+                        if (aUploaded.images.length > 0) {
+                            const pos = aUploaded.images.indexOf(file.oscomName);
+
+                            if (pos >= 0) {
+                                aUploaded.images.splice(pos, 1);
+                            }
+
+                            if (aUploaded.images.length < 1) {
+                                document.querySelector('#aUploadImagesIcon').classList.remove('text-success');
+                                document.querySelector('#aUploadImagesIcon').classList.remove('fa-check-square');
+                                document.querySelector('#aUploadImagesIcon').classList.add('fa-minus-square');
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
-    });
-  }
+        });
+    }
 };
 </script>

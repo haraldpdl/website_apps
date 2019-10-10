@@ -1,8 +1,10 @@
 <div class="row">
   <div class="col-12">
-    <nav class="breadcrumb">
-      <a class="breadcrumb-item" href="{link}Index{link}">{lang}breadcrumb_home{lang}</a>
-      <a class="breadcrumb-item active" href="{link}Showcase{link}">{lang}breadcrumb_showcase{lang}</a>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{link}Index{link}">{lang}breadcrumb_home{lang}</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a href="{link}Showcase{link}" class="text-muted">{lang}breadcrumb_showcase{lang}</a></li>
+      </ol>
     </nav>
   </div>
 </div>
@@ -19,21 +21,21 @@
 </script>
 
 <script>
-$(function() {
-  var showcase = {raw json_encode}showcase{raw};
-  var showcaseLink = '{link}Profile|Apps|CODE{link}';
-  var showcaseImage = '{publiclink}images/showcase/IMAGE{publiclink}';
+const showcase = {raw json_encode}showcase{raw};
+const showcaseLink = '{link}Profile|Apps|CODE{link}';
+const showcaseImage = '{publiclink}images/showcase/IMAGE{publiclink}';
 
-  var template = $('#showcaseAppBlockTemplate').html();
-  Mustache.parse(template);
+OSCOM.ready(() => {
+    const template = document.querySelector('#showcaseAppBlockTemplate').innerHTML;
+    Mustache.parse(template);
 
-  showcase.forEach(function(value) {
-    $('#showcaseListing').append(Mustache.render(template, {
-      image: showcaseImage.replace('IMAGE', value.image),
-      title: value.title,
-      description: value.description,
-      link: showcaseLink.replace('CODE', value.code)
-    }));
-  });
+    for (let value of showcase) {
+        document.querySelector('#showcaseListing').insertAdjacentHTML('beforeend', Mustache.render(template, {
+            image: showcaseImage.replace('IMAGE', value.image),
+            title: value.title,
+            description: value.description,
+            link: showcaseLink.replace('CODE', value.code)
+        }));
+    };
 });
 </script>

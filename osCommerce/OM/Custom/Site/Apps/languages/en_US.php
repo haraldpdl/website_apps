@@ -18,7 +18,7 @@ breadcrumb_showcase = Showcase
 
 redirect_cancel_return_to_site = or cancel and return to the Apps Marketplace
 
-copyright_footer = <p>Copyright (c) 2000-{value}current_year{value} osCommerce (<a href="{link}Us|Website|Legal{link}">legal</a>)</p>
+copyright_footer = <p><a href="{link}Us|Website{link}">Us</a> | <a href="{link}Us|Website|Legal{link}">Legal Policies</a> | &copy; {value}current_year{value} osCommerce</p>
 
 social_newsletter = Newsletter
 social_newsletter_title = Subscribe to our Newsletter

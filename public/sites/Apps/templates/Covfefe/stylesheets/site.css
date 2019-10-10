@@ -1,5 +1,18 @@
+#logo {
+  max-height: 50px;
+}
+
+footer {
+  font-size: 0.75em;
+  text-align: right;
+}
+
+footer #footerSocialLinks {
+    margin-bottom: 5px;
+}
+
 footer #footerSocialLinks a {
-  margin-right: 10px;
+  font-size: 1.7em;
 }
 
 footer #footerSocialLinks a:last-of-type {

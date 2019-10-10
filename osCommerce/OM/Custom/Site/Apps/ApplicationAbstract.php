@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps;
@@ -54,7 +54,8 @@ abstract class ApplicationAbstract extends \osCommerce\OM\Core\ApplicationAbstra
         foreach (Apps::getVersions() as $v) {
             $versions[] = [
                 'code' => $v['code'],
-                'title' => $v['title']
+                'title' => $v['title'],
+                'group_title' => $v['group_title']
             ];
         }
 

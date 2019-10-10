@@ -2,14 +2,15 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps;
 
 use osCommerce\OM\Core\{
     AuditLog,
+    DateTime,
     HTML,
     OSCOM
 };
@@ -94,6 +95,8 @@ class Apps
                     $r['title_slug'] = $slugify->slugify($r['title']);
 
                     $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+
+                    $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
                 }
 
                 $CACHE_Listing->set($result);
@@ -137,6 +140,8 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+
+                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
         }
 
@@ -238,6 +243,17 @@ class Apps
         }
 
         return -1;
+    }
+
+    public static function getVersionCode(int $id): string
+    {
+        foreach (static::getVersions() as $v) {
+            if ($v['id'] == $id) {
+                return $v['code'];
+            }
+        }
+
+        return '';
     }
 
     public static function getVersionTitle(string $code): string
@@ -395,6 +411,8 @@ class Apps
                     "\r\n\r\n",
                     ' '
                 ], $r['description']);
+
+                $r['date_added_formatted'] = \DateTime::createFromFormat('Ymd', $r['date_added'])->format('jS F Y');
             }
 
             $CACHE_Listing->set($result);
@@ -466,6 +484,17 @@ class Apps
         return $result['id'];
     }
 
+    public static function getPublicId(int $package_id): string
+    {
+        $params = [
+            'id' => $package_id
+        ];
+
+        $result = OSCOM::callDB('Apps\GetAddOnPublicId', $params, 'Site');
+
+        return $result['public_id'];
+    }
+
     public static function getUserApps(int $user_id): array
     {
         $CACHE_Listing = new Cache('apps-user-' . $user_id . '-apps');
@@ -488,6 +517,8 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+
+                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Listing->set($result, 10080);
@@ -522,6 +553,8 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+
+                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Listing->set($result, 10080);
@@ -603,6 +636,10 @@ class Apps
             'short_description' => $data['short_description'],
             'description' => $data['description'],
             'support_topic' => $data['support_topic'],
+            'version_id' => $data['version_id'] ?? null,
+            'prev_version_id' => $data['prev_version_id'] ?? null,
+            'category_id' => $data['category_id'] ?? null,
+            'prev_category_id' => $data['prev_category_id'] ?? null,
             'cover_image' => $data['cover_image'],
             'screenshot_images' => $data['screenshot_images'],
             'public_flag' => ($data['submit_type'] == 'public') ? '1' : '0',
@@ -672,6 +709,16 @@ class Apps
                 $OSCOM_Cache->delete('apps-info-' . $data['public_id']);
                 $OSCOM_Cache->delete('apps-authors-' . $data['public_id']);
 
+                $OSCOM_Cache->delete('apps-categories');
+
+                if (isset($data['version_id'])) {
+                    $OSCOM_Cache->delete('apps-categories-v' . static::getVersionCode($data['version_id']));
+                }
+
+                if (isset($data['prev_version_id'])) {
+                    $OSCOM_Cache->delete('apps-categories-v' . static::getVersionCode($data['prev_version_id']));
+                }
+
                 foreach ($authors as $a) {
                     $OSCOM_Cache->delete('apps-user-' . $a . '-apps');
                     $OSCOM_Cache->delete('apps-user-' . $a . '-contributions');
@@ -703,7 +750,9 @@ class Apps
             'support_topic' => $data['support_topic'] ?? null,
             'user_id' => $data['user_id'],
             'versions_id' => $data['version_id'] ?? null,
+            'prev_versions_id' => $data['prev_version_id'] ?? null,
             'categories_id' => $data['category_id'] ?? null,
+            'prev_categories_id' => $data['prev_category_id'] ?? null,
             'zip_file' => null,
             'cover_image' => null,
             'screenshot_images' => null,
@@ -987,6 +1036,8 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+
+                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Apps->set($result);

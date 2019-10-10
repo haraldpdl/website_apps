@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Edit\Action;
@@ -41,6 +41,8 @@ class Process
         }
 
         if (empty($errors)) {
+            $version = isset($_POST['version']) ? trim($_POST['version']) : '';
+            $category = isset($_POST['category']) ? trim($_POST['category']) : '';
             $title = isset($_POST['title']) ? trim(str_replace(array("\r\n", "\n", "\r"), '', $_POST['title'])) : '';
             $short_description = isset($_POST['short_description']) ? trim($_POST['short_description']) : '';
             $description = isset($_POST['description']) ? trim($_POST['description']) : '';
@@ -120,6 +122,18 @@ class Process
 
                 if (count($uploads['images']) > Apps::MAX_SCREENSHOT_IMAGES) {
                     $uploads['images'] = array_slice($uploads['images'], 0, Apps::MAX_SCREENSHOT_IMAGES);
+                }
+            }
+
+            if (empty($addon['prev_versions_id'])) {
+                if (empty($version) || !Apps::isVersion($version)) {
+                    $errors[] = OSCOM::getDef('ms_error_version');
+                }
+            }
+
+            if (empty($addon['prev_categories_id'])) {
+                if (empty($category) || !Apps::isCategory($category)) {
+                    $errors[] = OSCOM::getDef('ms_error_category');
                 }
             }
 
@@ -258,6 +272,16 @@ class Process
                 'submit_type' => $submit_type,
                 'uploaders' => $uploaders_array
             ];
+
+            if (empty($addon['prev_versions_id']) && (Apps::getVersionId($addon['version_code']) !== Apps::getVersionId($version))) {
+                $data['version_id'] = Apps::getVersionId($version);
+                $data['prev_version_id'] = Apps::getVersionId($addon['version_code']);
+            }
+
+            if (empty($addon['prev_categories_id']) && (Apps::getCategoryId($addon['category_code']) !== Apps::getCategoryId($category))) {
+                $data['category_id'] = Apps::getCategoryId($category);
+                $data['prev_category_id'] = Apps::getCategoryId($addon['category_code']);
+            }
 
             $result = Apps::saveAddOnInfo($data);
 

@@ -25,7 +25,7 @@ sort_last_updated = Last Updated
 
 for_oscom_version = for osCommerce Online Merchant v:version
 uploaded_by = Uploaded by {{#author.profile_url}}<a href="{{author.profile_url}}" class="text-muted">{{author.formatted_name}}</a>{{/author.profile_url}}{{^author.profile_url}}{{author.formatted_name}}{{/author.profile_url}}
-updated_by_on = Updated by {{#link}}<a href="{{link}}" class="card-text">{{name}}</a>{{/link}}{{^link}}{{name}}{{/link}} on {{date}}
+updated_by_on = Updated by {{#link}}<a href="{{link}}" class="text-white">{{name}}</a>{{/link}}{{^link}}{{name}}{{/link}} on {{date}}
 last_updated = Last updated :date
 
 login_text_download = <p>Log in or <a href="{link}Account|Website|Create{link}">create a free account</a> to start downloading Apps from the Apps Marketplace.</p>

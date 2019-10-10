@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\SQL\ANSI;
@@ -25,6 +25,16 @@ class SaveAddOnInfo
             'screenshot_images' => $data['screenshot_images'],
             'public_flag' => $data['public_flag']
         ];
+
+        if (isset($data['version_id']) && isset($data['prev_version_id'])) {
+            $row['contrib_versions_id'] = $data['version_id'];
+            $row['prev_contrib_versions_id'] = $data['prev_version_id'];
+        }
+
+        if (isset($data['category_id']) && isset($data['prev_category_id'])) {
+            $row['contrib_categories_id'] = $data['category_id'];
+            $row['prev_contrib_categories_id'] = $data['prev_category_id'];
+        }
 
         return $OSCOM_PDO_OLD->save('contrib_packages', $row, [
             'public_id' => $data['public_id']

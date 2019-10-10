@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\Application\Edit;
@@ -61,10 +61,10 @@ class Controller extends \osCommerce\OM\Core\Site\Apps\ApplicationAbstract
 
         $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/Sortable-1.6.0.min.js') . '"></script>');
 
-        $OSCOM_Template->addHtmlElement('header', '<link rel="stylesheet" href="' . OSCOM::getPublicSiteLink('external/dropzone/5.0.0/dropzone.min.css') . '">');
-        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/dropzone/5.0.0/dropzone.min.js') . '"></script>');
+        $OSCOM_Template->addHtmlElement('header', '<link rel="stylesheet" href="' . OSCOM::getPublicSiteLink('external/dropzone/5.5.0/dropzone.min.css') . '">');
+        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/dropzone/5.5.0/dropzone.min.js') . '"></script>');
 
-        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/jquery.autocomplete-1.4.1.min.js') . '"></script>');
+        $OSCOM_Template->addHtmlElement('header', '<script src="' . OSCOM::getPublicSiteLink('external/jquery.autocomplete-1.4.10.min.js') . '"></script>');
 
         $current_app = $OSCOM_Template->getValue('current_app');
 

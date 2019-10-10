@@ -1,4 +1,4 @@
-<div class="row">
+<div id="topContentAnchor" class="row">
   <div class="col">
     <h4 class="pb-3">{lang}heading_new_submission{lang}</h4>
   </div>
@@ -9,9 +9,20 @@
     {widget}message_stack|Submit{widget}
 
     <form id="aNew" action="{link}Submit|Apps|Process{link}" method="post">{formprotect}public_token{formprotect}
+      <div class="alert alert-warning pb-4">
+        <p><strong>Terms</strong></p>
+
+        <div class="custom-control custom-checkbox">
+          <input id="termsCheckbox" name="terms" class="custom-control-input" type="checkbox" value="1">
+          <label class="custom-control-label" for="termsCheckbox" style="font-weight: 500;">
+            {lang}field_terms{lang}
+          </label>
+        </div>
+      </div>
+
       <div class="form-group">
         <label for="licenseNav">{lang}field_license{lang}</label>
-        <select id="licenseNav" name="license" class="form-control" aria-describedby="aNewLicenseInfo">
+        <select id="licenseNav" name="license" class="custom-select" aria-describedby="aNewLicenseInfo">
           <optgroup label="{lang}field_license_group_free{lang}">
             <option value="gpl" selected>{lang}field_license_option_open_source_gpl{lang}</option>
           </optgroup>
@@ -39,7 +50,7 @@
 
       <div class="form-group">
         <label for="verNav">{lang}field_version{lang}</label>
-        <select id="verNav" name="version" class="form-control" aria-describedby="aNewVersionInfo">
+        <select id="verNav" name="version" class="custom-select" aria-describedby="aNewVersionInfo">
           <option value="">{lang}select_list_default{lang}</option>
         </select>
         <p id="aNewVersionInfo" class="form-text text-muted small">{lang}field_version_info{lang}</p>
@@ -47,7 +58,7 @@
 
       <div class="form-group">
         <label for="catNav">{lang}field_category{lang}</label>
-        <select id="catNav" name="category" class="form-control" aria-describedby="aNewCategoryInfo">
+        <select id="catNav" name="category" class="custom-select" aria-describedby="aNewCategoryInfo">
           <option value="">{lang}select_list_default{lang}</option>
         </select>
         <p id="aNewCategoryInfo" class="form-text text-muted small">{lang}field_category_info{lang}</p>
@@ -80,276 +91,304 @@
 </div>
 
 <div class="row pt-4">
-  <div class="col-12">
-    <div class="form-check alert alert-warning pb-4">
-      <p><strong>Terms</strong></p>
-      <label class="form-check-label" style="font-weight: 500;">
-        <input id="termsCheckbox" class="form-check-input" type="checkbox" value="1">
-        {lang}field_terms{lang}
-      </label>
-    </div>
-  </div>
-</div>
-
-<div class="row pt-4">
   <div class="col">
     <p><button id="aNewSubmit" type="submit" class="btn btn-success">{lang}button_submit{lang}</button></p>
   </div>
 </div>
 
 <script>
-$(function() {
-  var aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
-  var aTitleLength = {raw json_encode}aTitleLength{raw};
-  var aShortDescriptionMinLength = {raw json_encode}aShortDescriptionMinLength{raw};
-  var aShortDescriptionLength = {raw json_encode}aShortDescriptionLength{raw};
-  var aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
-  var aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
+const aTitleMinLength = {raw json_encode}aTitleMinLength{raw};
+const aTitleLength = {raw json_encode}aTitleLength{raw};
+const aShortDescriptionMinLength = {raw json_encode}aShortDescriptionMinLength{raw};
+const aShortDescriptionLength = {raw json_encode}aShortDescriptionLength{raw};
+const aDescriptionMinLength = {raw json_encode}aDescriptionMinLength{raw};
+const aDescriptionLength = {raw json_encode}aDescriptionLength{raw};
 
-  if ("{post}terms{post}" == "1") {
-    $('#termsCheckbox').prop('checked', true);
-  }
+if ("{post}terms{post}" == "1") {
+    document.querySelector('#termsCheckbox').checked = true;
+}
 
-  $('#aNewSubmit').click(function(e) {
+document.querySelector('#aNewSubmit').addEventListener('click', function (e) {
     e.preventDefault();
 
-    $('#aNew').submit();
-  });
+    document.querySelector('#aNew').dispatchEvent(new Event('submit'));
+});
 
-  $('#aNew').submit(function(event) {
-    var errors = [];
+document.querySelector('#aNew').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-    var title = $('#aNewTitle').val();
+    let errors = [];
+
+    if (document.querySelector('#termsCheckbox').checked !== true) {
+        errors.push({lang json_encode}ms_error_terms{lang});
+    }
+
+    const title = document.querySelector('#aNewTitle').value;
 
     if ((title.length < aTitleMinLength) || (title.length > aTitleLength)) {
-      errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
+        errors.push({lang json_encode}ms_error_title min_length="{value number_format}aTitleMinLength{value}" length="{value number_format}aTitleLength{value}"{lang});
     }
 
-    var shortDescription = $('#aNewShortDescription').val();
+    const shortDescription = document.querySelector('#aNewShortDescription').value;
 
     if ((shortDescription.length < aShortDescriptionMinLength) || (shortDescription.length > aShortDescriptionLength)) {
-      errors.push({lang json_encode}ms_error_short_description min_length="{value number_format}aShortDescriptionMinLength{value}" length="{value number_format}aShortDescriptionLength{value}"{lang});
+        errors.push({lang json_encode}ms_error_short_description min_length="{value number_format}aShortDescriptionMinLength{value}" length="{value number_format}aShortDescriptionLength{value}"{lang});
     }
 
-    var description = $('#aNewDescription').val();
+    const description = document.querySelector('#aNewDescription').value;
 
     if ((description.length < aDescriptionMinLength) || (description.length > aDescriptionLength)) {
-      errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
+        errors.push({lang json_encode}ms_error_description min_length="{value number_format}aDescriptionMinLength{value}" length="{value number_format}aDescriptionLength{value}"{lang});
     }
 
-    var version = $('#verNav option:selected').val();
+    const version = document.querySelector('#verNav').value;
 
     if (version == '') {
-      errors.push({lang json_encode}ms_error_version{lang});
+        errors.push({lang json_encode}ms_error_version{lang});
     }
 
-    var category = $('#catNav option:selected').val();
+    const category = document.querySelector('#catNav').value;
 
     if (category == '') {
-      errors.push({lang json_encode}ms_error_category{lang});
+        errors.push({lang json_encode}ms_error_category{lang});
     }
 
     if (aUploaded.zip.length < 1) {
-      errors.push({lang json_encode}ms_error_zip_required{lang});
-    }
-
-    if ($("#termsCheckbox").is(':checked') !== true) {
-      errors.push({lang json_encode}ms_error_terms{lang});
+        errors.push({lang json_encode}ms_error_zip_required{lang});
     }
 
     if (errors.length > 0) {
-      if ($('#msgStk_Submit').length) {
-        $('#msgStk_Submit .alert').empty();
-      } else {
-        $('#aNew').before('<div id="msgStk_Submit"></div>');
-        $('#msgStk_Submit').html('<div class="alert alert-danger" role="alert"></div>');
-      }
+        if (document.querySelector('#msgStk_Submit')) {
+            document.querySelector('#msgStk_Submit').innerHTML = '';
+        } else {
+            document.querySelector('#aNew').insertAdjacentHTML('beforebegin', '<div id="msgStk_Submit" class="alert alert-danger" role="alert"></div>');
+        }
 
-      var alerts = $('#msgStk_Submit .alert.alert-danger');
+        let alerts = document.querySelector('#msgStk_Submit');
 
-      errors.forEach(function (value) {
-        alerts.append('<p>' + value + '</p>');
-      });
+        for (let value of errors) {
+            alerts.insertAdjacentHTML('beforeend', `<p>${value}</p>`);
+        };
 
-      alerts.find('p:last').addClass('mb-0');
+        alerts.querySelector('p:last-child').classList.add('mb-0');
 
-      $('html, body').stop().animate({
-        scrollTop: $('#msgStk_Submit').offset().top - 100
-      }, 300);
+        document.querySelector('#topContentAnchor').scrollIntoView({
+            behavior: 'smooth'
+        });
 
-      return false;
+        return false;
     }
 
-    $('#aNew').append('<input type="hidden" name="upload_zip" value="' + aUploaded.zip[0] + '">');
+    if (document.querySelector('#aNew input[name="upload_zip"]')) {
+        document.querySelector('#aNew input[name="upload_zip"]').value = aUploaded.zip[0];
+    } else {
+        document.querySelector('#aNew').insertAdjacentHTML('beforeend', '<input type="hidden" name="upload_zip" value="' + aUploaded.zip[0] + '">');
+    }
 
     if (aUploaded.cover.length > 0) {
-      $('#aNew').append('<input type="hidden" name="upload_cover" value="' + aUploaded.cover[0] + '">');
+        if (document.querySelector('#aNew input[name="upload_cover"]')) {
+            document.querySelector('#aNew input[name="upload_cover"]').value = aUploaded.cover[0];
+        } else {
+            document.querySelector('#aNew').insertAdjacentHTML('beforeend', '<input type="hidden" name="upload_cover" value="' + aUploaded.cover[0] + '">');
+        }
+    } else if (document.querySelector('#aNew input[name="upload_cover"]')) {
+        document.querySelector('#aNew input[name="upload_cover"]').remove();
     }
 
     if (aUploaded.images.length > 0) {
-      $('#aNew').append('<input type="hidden" name="upload_images" value="' + aUploaded.images.join(',') + '">');
+        document.querySelector('#aNew').insertAdjacentHTML('beforeend', '<input type="hidden" name="upload_images" value="' + aUploaded.images.join(',') + '">');
     }
 
-    $('#aNew').append('<input type="hidden" name="terms" value="' + $("#termsCheckbox").val() + '">');
-  });
-
-  var versions = {raw json_encode}versions{raw};
-  var versions_selected = "{post}version{post}";
-
-  versions.forEach(function (value) {
-    $('#verNav').append('<option value="' + value.code + '"' + (versions_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>');
-  });
-
-  var categories = {raw json_encode}categories{raw};
-  var categories_selected = "{post}category{post}";
-
-  categories.forEach(function(value) {
-    $('#catNav').append('<option value="' + value.code + '"' + (categories_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>');
-  });
+    document.querySelector('#aNew').submit();
 });
 
-var aUploaded = {
-  zip: [],
-  cover: [],
-  images: []
+const versions = {raw json_encode}versions{raw};
+const versions_selected = "{post}version{post}";
+
+let versions_content = '';
+let version_group_iterator;
+
+for (let value of versions) {
+    if (value.group_title !== version_group_iterator) {
+        if (typeof version_group_iterator !== 'undefined') {
+            versions_content += '</optgroup>';
+        }
+
+        versions_content += '<optgroup label="' + value.group_title + '">';
+
+        version_group_iterator = value.group_title;
+    }
+
+    versions_content += '<option value="' + value.code + '"' + (versions_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>';
+};
+
+versions_content += '</optgroup>';
+
+document.querySelector('#verNav').insertAdjacentHTML('beforeend', versions_content);
+
+const categories = {raw json_encode}categories{raw};
+const categories_selected = "{post}category{post}";
+
+for (let value of categories) {
+    document.querySelector('#catNav').insertAdjacentHTML('beforeend', '<option value="' + value.code + '"' + (categories_selected == value.code ? ' selected' : '') + '>' + value.title + '</option>');
+};
+
+let aUploaded = {
+    zip: [],
+    cover: [],
+    images: []
 };
 
 Dropzone.options.aNewFiles = {
-  acceptedFiles: '.zip,.jpg,.png',
-  maxFiles: 9,
-  maxFilesize: {raw json_encode}aUploadSizeMb{raw},
-  addRemoveLinks: true,
-  accept: function(file, done) {
-    if ($('#termsCheckbox').is(':checked') !== true) {
-      this.removeFile(file);
+    acceptedFiles: '.zip,.jpg,.png',
+    maxFiles: 9,
+    maxFilesize: {raw json_encode}aUploadSizeMb{raw},
+    addRemoveLinks: true,
+    accept: function(file, done) {
+        if (document.querySelector('#termsCheckbox').checked !== true) {
+            this.removeFile(file);
 
-      if ($('#fileUploadTermsNotice').hasClass('d-none')) {
-        $('#fileUploadTermsNotice').removeClass('d-none');
-      }
-    } else if ($('#fileUploadTermsNotice').hasClass('d-none') !== true) {
-      $('#fileUploadTermsNotice').addClass('d-none');
-    }
-
-    return done();
-  },
-  init: function() {
-    this.on('error', function(file) {
-      if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
-        if (file.xhr.status == 500) {
-          this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
-        }
-      }
-    });
-
-    this.on('success', function(file, response) {
-      if (typeof response.rpcStatus != 'undefined') {
-        if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
-          var file_ext = response.filename.substr(response.filename.lastIndexOf('.') + 1);
-
-          if (file_ext == 'zip') {
-            if (aUploaded.zip.length < 1) {
-              file.oscomName = response.filename;
-
-              aUploaded.zip.push(file.oscomName);
-
-              $('#aUploadZipIcon').removeClass('text-danger').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
-            } else {
-              this.defaultOptions.error(file, {lang json_encode}ms_error_zip_multiple{lang});
-
-              $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-                public_token: '{value md5}public_token{value}',
-                file: response.filename
-              });
+            if (document.querySelector('#fileUploadTermsNotice').classList.contains('d-none')) {
+                document.querySelector('#fileUploadTermsNotice').classList.remove('d-none');
             }
-          } else if ((file_ext == 'png') || (file_ext == 'jpg')) {
-            if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
-              if (aUploaded.cover.length < 1) {
-                file.oscomName = response.filename;
+        } else if (document.querySelector('#fileUploadTermsNotice').classList.contains('d-none') !== true) {
+            document.querySelector('#fileUploadTermsNotice').classList.add('d-none');
+        }
 
-                aUploaded.cover.push(file.oscomName);
-
-                $('#aUploadCoverIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
-              } else {
-                this.defaultOptions.error(file, {lang json_encode}ms_error_cover_image_multiple{lang});
-
-                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-                  public_token: '{value md5}public_token{value}',
-                  file: response.filename
-                });
-              }
-            } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
-              if (aUploaded.images.length < 7) {
-                file.oscomName = response.filename;
-
-                if (aUploaded.images.length < 1) {
-                  $('#aUploadImagesIcon').removeClass('fa-minus-square').addClass('fa-check-square').addClass('text-success');
+        return done();
+    },
+    init: function() {
+        this.on('error', function(file) {
+            if ((typeof file.xhr != 'undefined') && (typeof file.xhr.status != 'undefined')) {
+                if (file.xhr.status == 500) {
+                    this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
                 }
-
-                aUploaded.images.push(file.oscomName);
-              } else {
-                this.defaultOptions.error(file, {lang json_encode}ms_error_screenshot_image_max_allowed{lang});
-
-                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-                  public_token: '{value md5}public_token{value}',
-                  file: response.filename
-                });
-              }
-            } else {
-              this.defaultOptions.error(file, {lang json_encode}error_image_invalid_dimensions{lang});
             }
-          }
-        }
-      } else {
-        this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
-      }
-    });
-
-    this.on('removedfile', function(file) {
-      if (typeof file.oscomName != 'undefined') {
-        $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
-          public_token: '{value md5}public_token{value}',
-          file: file.oscomName
         });
 
-        var file_ext = file.oscomName.substr(file.oscomName.lastIndexOf('.') + 1);
+        this.on('success', function(file, response) {
+            if (typeof response.rpcStatus != 'undefined') {
+                if ((response.rpcStatus == 1) && (typeof response.filename != 'undefined')) {
+                    const file_ext = response.filename.substr(response.filename.lastIndexOf('.') + 1);
 
-        if (file_ext == 'zip') {
-          if (aUploaded.zip.length > 0) {
-            var pos = aUploaded.zip.indexOf(file.oscomName);
+                    if (file_ext == 'zip') {
+                        if (aUploaded.zip.length < 1) {
+                            file.oscomName = response.filename;
 
-            if (pos >= 0) {
-              aUploaded.zip.splice(pos, 1);
+                            aUploaded.zip.push(file.oscomName);
 
-              $('#aUploadZipIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square').addClass('text-danger');
+                            document.querySelector('#aUploadZipIcon').classList.remove('text-danger');
+                            document.querySelector('#aUploadZipIcon').classList.remove('fa-minus-square');
+                            document.querySelector('#aUploadZipIcon').classList.add('fa-check-square');
+                            document.querySelector('#aUploadZipIcon').classList.add('text-success');
+                        } else {
+                            this.defaultOptions.error(file, {lang json_encode}ms_error_zip_multiple{lang});
+
+                            $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                                public_token: '{value md5}public_token{value}',
+                                file: response.filename
+                            });
+                        }
+                    } else if ((file_ext == 'png') || (file_ext == 'jpg')) {
+                        if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+                            if (aUploaded.cover.length < 1) {
+                                file.oscomName = response.filename;
+
+                                aUploaded.cover.push(file.oscomName);
+
+                                document.querySelector('#aUploadCoverIcon').classList.remove('fa-minus-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('fa-check-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('text-success');
+                            } else {
+                                this.defaultOptions.error(file, {lang json_encode}ms_error_cover_image_multiple{lang});
+
+                                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                                    public_token: '{value md5}public_token{value}',
+                                    file: response.filename
+                                });
+                            }
+                        } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+                            if (aUploaded.images.length < 7) {
+                                file.oscomName = response.filename;
+
+                                if (aUploaded.images.length < 1) {
+                                    document.querySelector('#aUploadImagesIcon').classList.remove('fa-minus-square');
+                                    document.querySelector('#aUploadImagesIcon').classList.add('fa-check-square');
+                                    document.querySelector('#aUploadImagesIcon').classList.add('text-success');
+                                }
+
+                                aUploaded.images.push(file.oscomName);
+                            } else {
+                                this.defaultOptions.error(file, {lang json_encode}ms_error_screenshot_image_max_allowed{lang});
+
+                                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                                    public_token: '{value md5}public_token{value}',
+                                    file: response.filename
+                                });
+                            }
+                        } else {
+                            this.defaultOptions.error(file, {lang json_encode}error_image_invalid_dimensions{lang});
+                        }
+                    }
+                }
+            } else {
+                this.defaultOptions.error(file, {lang json_encode}error_upload_general{lang});
             }
-          }
-        } else if ((file_ext == 'png') || (file_ext == 'jpg')) {
-          if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
-            if (aUploaded.cover.length > 0) {
-              var pos = aUploaded.cover.indexOf(file.oscomName);
+        });
 
-              if (pos >= 0) {
-                aUploaded.cover.splice(pos, 1);
+        this.on('removedfile', function(file) {
+            if (typeof file.oscomName != 'undefined') {
+                $.post('{rpclink}DeleteUploadedAddOnFile{rpclink}', {
+                    public_token: '{value md5}public_token{value}',
+                    file: file.oscomName
+                });
 
-                $('#aUploadCoverIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
-              }
+                const file_ext = file.oscomName.substr(file.oscomName.lastIndexOf('.') + 1);
+
+                if (file_ext == 'zip') {
+                    if (aUploaded.zip.length > 0) {
+                        const pos = aUploaded.zip.indexOf(file.oscomName);
+
+                        if (pos >= 0) {
+                            aUploaded.zip.splice(pos, 1);
+
+                            document.querySelector('#aUploadZipIcon').classList.remove('text-success');
+                            document.querySelector('#aUploadZipIcon').classList.remove('fa-check-square');
+                            document.querySelector('#aUploadZipIcon').classList.add('fa-minus-square');
+                            document.querySelector('#aUploadZipIcon').classList.add('text-danger');
+                        }
+                    }
+                } else if ((file_ext == 'png') || (file_ext == 'jpg')) {
+                    if ((file.width == {raw json_encode}aCoverImageWidth{raw}) && (file.height == {raw json_encode}aCoverImageHeight{raw})) {
+                        if (aUploaded.cover.length > 0) {
+                            const pos = aUploaded.cover.indexOf(file.oscomName);
+
+                            if (pos >= 0) {
+                                aUploaded.cover.splice(pos, 1);
+
+                                document.querySelector('#aUploadCoverIcon').classList.remove('text-success');
+                                document.querySelector('#aUploadCoverIcon').classList.remove('fa-check-square');
+                                document.querySelector('#aUploadCoverIcon').classList.add('fa-minus-square');
+                            }
+                        }
+                    } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
+                        if (aUploaded.images.length > 0) {
+                            const pos = aUploaded.images.indexOf(file.oscomName);
+
+                            if (pos >= 0) {
+                                aUploaded.images.splice(pos, 1);
+                            }
+
+                            if (aUploaded.images.length < 1) {
+                                document.querySelector('#aUploadImagesIcon').classList.remove('text-success');
+                                document.querySelector('#aUploadImagesIcon').classList.remove('fa-check-square');
+                                document.querySelector('#aUploadImagesIcon').classList.add('fa-minus-square');
+                            }
+                        }
+                    }
+                }
             }
-          } else if ((file.width == {raw json_encode}aScreenshotImageWidth{raw}) && (file.height == {raw json_encode}aScreenshotImageHeight{raw})) {
-            if (aUploaded.images.length > 0) {
-              var pos = aUploaded.images.indexOf(file.oscomName);
-
-              if (pos >= 0) {
-                aUploaded.images.splice(pos, 1);
-              }
-
-              if (aUploaded.images.length < 1) {
-                $('#aUploadImagesIcon').removeClass('text-success').removeClass('fa-check-square').addClass('fa-minus-square');
-              }
-            }
-          }
-        }
-      }
-    });
-  }
+        });
+    }
 };
 </script>

@@ -2,8 +2,8 @@
 /**
  * osCommerce Apps Marketplace Website
  *
- * @copyright (c) 2017 osCommerce; https://www.oscommerce.com
- * @license BSD; https://www.oscommerce.com/license/bsd.txt
+ * @copyright (c) 2019 osCommerce; https://www.oscommerce.com
+ * @license MIT; https://www.oscommerce.com/license/mit.txt
  */
 
 namespace osCommerce\OM\Core\Site\Apps\SQL\ANSI;
@@ -34,8 +34,16 @@ class SavePrepareAddOn
             $row['versions_id'] = (int)$data['versions_id'];
         }
 
+        if (isset($data['prev_versions_id'])) {
+            $row['prev_versions_id'] = (int)$data['prev_versions_id'];
+        }
+
         if (isset($data['categories_id'])) {
             $row['categories_id'] = (int)$data['categories_id'];
+        }
+
+        if (isset($data['prev_categories_id'])) {
+            $row['prev_categories_id'] = (int)$data['prev_categories_id'];
         }
 
         if (isset($data['zip_file'])) {

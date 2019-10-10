@@ -1,40 +1,46 @@
 <div class="row">
   <div class="col-2">
     <div id="filterNav" class="sticky-top">
-      <form id="aSearch" class="pb-3">
-        <input type="search" class="form-control" id="aSearchInput" placeholder="{escape}{lang}placeholder_search{lang}{escape}" value="{value}search_keywords{value}">
-      </form>
-
-      <form>
-        <div class="form-group">
-          <select id="verNav" class="form-control"></select>
-        </div>
-      </form>
+      <select id="verNav" class="custom-select mb-2"></select>
 
       <a href="{link}Index{link}" class="nav-link">{lang}link_home{lang}</a>
     </div>
   </div>
 
   <div class="col-10">
+    <form id="aSearch" class="pb-4">
+      <div class="form-row">
+        <div class="col">
+          <div class="input-group">
+            <input type="search" class="form-control" id="aSearchInput" placeholder="{escape}{lang}placeholder_search{lang}{escape}" value="{value}search_keywords{value}">
+
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4 d-none" id="aSearchOrderLinks">
+          <ul class="nav nav-pills small justify-content-end">
+            <li class="nav-item">
+              <a class="nav-link text-muted">{lang}sort_by{lang}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link{ifvalue search_sort}{else} active{ifvalue}" href="{value}qs_url_relevancy{value}">{lang}sort_relevancy{lang}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link{ifvalue search_sort} active{ifvalue}" href="{value}qs_url_date{value}">{lang}sort_last_updated{lang}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </form>
+
     {widget}message_stack|Index{widget}
 
     <div class="row">
       <div class="col">
         <h4 class="pb-3">{lang}heading_search_results{lang}</h4>
-      </div>
-
-      <div class="col d-none" id="aSearchOrderLinks">
-        <ul class="nav nav-pills small justify-content-end">
-          <li class="nav-item">
-            <a class="nav-link text-muted">{lang}sort_by{lang}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link{ifvalue search_sort}{else} active{ifvalue}" href="{value}qs_url_relevancy{value}">{lang}sort_relevancy{lang}</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link{ifvalue search_sort} active{ifvalue}" href="{value}qs_url_date{value}">{lang}sort_last_updated{lang}</a>
-          </li>
-        </ul>
       </div>
     </div>
 
@@ -58,160 +64,103 @@
   </div>
 </div>
 
-<script id="qfTemplate" type="x-tmpl-mustache">
-<div class="col-md-4 mb-4">
-  <div class="card h-100">
-    <div class="qfCardImageBlock rounded-top" style="position: relative; {{^cover_image}}background-color: {{card_background_color}};{{/cover_image}}">
-      <a href="{{url}}" class="white">
-
-        {{#cover_image}}
-        <img class="card-img-top img-fluid" src="{{cover_image}}" alt="{{title}}">
-        {{/cover_image}}
-
-        {{^cover_image}}
-        <div class="card-img-overlay">
-          <h4 class="card-title" style="word-wrap: break-word;">{{title}}</h4>
-        </div>
-        {{/cover_image}}
-      </a>
-    </div>
-
-    <div class="card-block">
-      {{#certified}}<span class="badge badge-warning float-right">{lang}tag_certified{lang}</span>{{/certified}}
-
-      <p class="card-text" style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600;">
-        <a href="{{url}}" style="color: #000; text-decoration: none;">{{title}}</a>
-      </p>
-
-      <p class="card-text" style="word-wrap: break-word;">
-        {{short_description}}
-      </p>
-
-      <p class="card-text">
-        <small class="text-muted">{lang}last_updated date="{{last_update_date_formatted}}"{lang}</small>
-      </p>
-    </div>
-  </div>
-</div>
-</script>
+{mustache qfTemplate}{raw}main_app_card_file{raw}{mustache}
 
 <script>
-$(function() {
-  $('#filterNav').Stickyfill();
+const main_url = {raw json_encode}main_url{raw};
 
-  var search_url = {raw json_encode}search_url{raw};
+const search_url = {raw json_encode}search_url{raw};
 
-  $('#aSearch').submit(function(e) {
+document.querySelector('#aSearch').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    window.location = search_url.replace('QUERY', $('#aSearchInput').val());
-  });
+    if (document.querySelector('#aSearchInput').value.trim() !== '') {
+        window.location = search_url.replace('QUERY', document.querySelector('#aSearchInput').value.trim());
+    }
+});
 
-  var main_url = {raw json_encode}main_url{raw};
+document.querySelector('#searchButton').addEventListener('click', function (e) {
+    e.preventDefault();
 
-  var versions = {raw json_encode}versions{raw};
-  var versions_current = {raw json_encode}current_version{raw};
-  var versions_url = {raw json_encode}versions_url{raw};
+    document.querySelector('#aSearch').dispatchEvent(new Event('submit'));
+});
 
-  $('#verNav').append('<option value="">' + {lang json_encode}all_versions{lang} + '</option>');
+const versions = {raw json_encode}versions{raw};
+const versions_current = {raw json_encode}current_version{raw};
+const versions_url = {raw json_encode}versions_url{raw};
 
-  versions.forEach(function (value) {
-    $('#verNav').append('<option value="' + value.code + '"' + (versions_current == value.code ? ' selected' : '') + '>' + value.title + '</option>');
-  });
+document.querySelector('#verNav').insertAdjacentHTML('beforeend', '<option value=""' + (versions_current == '' ? ' selected' : '') + '>' + {lang json_encode}all_versions{lang} + '</option>');
 
-  $('#verNav').change(function() {
-    if (this.value == '') {
-      var url = main_url;
+for (let value of versions) {
+    document.querySelector('#verNav').insertAdjacentHTML('beforeend', '<option value="' + value.code + '"' + (versions_current == value.code ? ' selected' : '') + '>' + value.title + '</option>');
+};
+
+document.querySelector('#verNav').addEventListener('change', function (e) {
+    window.location = (this.value == '') ? main_url : versions_url.replace('VERSION_CODE', this.value);
+});
+
+const qf = {raw json_encode}qf{raw};
+const qf_pageset = {raw json_encode}qf_pageset{raw};
+const qf_url = {raw json_encode}qf_url{raw};
+
+const addon_url = {raw json_encode}addon_url{raw};
+const addon_image_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
+
+const lang_tag_certified = {lang json_encode}tag_certified{lang};
+const lang_last_updated = {lang json_encode}last_updated{lang};
+
+OSCOM.ready(() => {
+    Stickyfill.add(document.querySelector('#filterNav'));
+
+    if (qf.length > 0) {
+        document.querySelector('#aSearchOrderLinks').classList.remove('d-none');
+
+        const template = document.querySelector('#qfTemplate').innerHTML;
+        Mustache.parse(template);
+
+        for (let value of qf) {
+            const pos = ((value.title.charAt(0).toLowerCase()).charCodeAt(0) - 97) + 1;
+            const colorIndex = ((pos > 0 && pos < 27) ? pos : 5) - 1;
+
+            if (typeof OSCOM.cardBackgroundColors[colorIndex] == 'undefined') {
+                colorIndex = 0;
+            }
+
+            if (value.cover_image !== null) {
+                value.cover_image = addon_image_url.replace('IMAGE_PATH', value.public_id.substring(0, 1) + '/' + value.public_id.substring(0, 2) + '/' + value.public_id + '-' + value.cover_image);
+            }
+
+            value.url = addon_url.replace('ADDON_CODE', value.public_id);
+            value.url = value.url.replace('ADDON_SLUG', value.title_slug);
+            value.card_background_color = '#' + OSCOM.cardBackgroundColors[colorIndex];
+
+            value.tag_certified = lang_tag_certified;
+            value.last_update_date_formatted = lang_last_updated.replace(':date', value.time_ago);
+
+            value.certified = (value.certified == '1');
+            value.open_flag = (value.open_flag == '1');
+
+            document.querySelector('#qfFiles').insertAdjacentHTML('beforeend', Mustache.render(template, value));
+        };
+
+        document.querySelector('#qfPagesetC span').innerHTML = Mustache.render({lang json_encode}pageset_current_page{lang}, {
+            'number': qf_pageset.current
+        });
+
+        if (qf_pageset.current > 1) {
+            document.querySelector('#qfPagesetP a').setAttribute('href', qf_url.replace('PAGESET', qf_pageset.current - 1));
+            document.querySelector('#qfPagesetP').classList.remove('disabled');
+        }
+
+        if (qf_pageset.has_next === true) {
+            document.querySelector('#qfPagesetN a').setAttribute('href', qf_url.replace('PAGESET', qf_pageset.current + 1));
+        } else {
+            document.querySelector('#qfPagesetN').classList.add('disabled');
+        }
+
+        document.querySelector('#qfPagesetLinks').classList.remove('d-none');
     } else {
-      var url = versions_url.replace('VERSION_CODE', this.value);
+        document.querySelector('#qfFiles').insertAdjacentHTML('beforeend', '<div class="col"><div class="alert alert-danger" role="alert">' + {lang json_encode}search_empty_resultset{lang} + '</div></div>');
     }
-
-    window.location = url;
-  });
-
-  var cardBackgroundColors = [
-    'f44336',
-    'b71c1c',
-    'e91e63',
-    '880e4f',
-    '9c27b0',
-    '4a148c',
-    '673ab7',
-    '3f51b5',
-    '1a237e',
-    '2196f3',
-    '03a9f4',
-    '00bcd4',
-    '009688',
-    '4caf50',
-    '1b5e20',
-    '8bc34a',
-    'cddc39',
-    'ffeb3b',
-    'ffc107',
-    'ff9800',
-    'e65100',
-    'ff5722',
-    '795548',
-    '3e2723',
-    '607d8b',
-    '263238'
-  ];
-
-  var qf = {raw json_encode}qf{raw};
-  var qf_pageset = {raw json_encode}qf_pageset{raw};
-  var qf_url = {raw json_encode}qf_url{raw};
-
-  var addon_url = {raw json_encode}addon_url{raw};
-  var addon_image_url = '{publiclink}schokoladenseite/IMAGE_PATH{publiclink}';
-
-  if (qf.length > 0) {
-    $('#aSearchOrderLinks').removeClass('d-none');
-
-    var template = $('#qfTemplate').html();
-    Mustache.parse(template);
-
-    qf.forEach(function(value) {
-      var pos = ((value.title.charAt(0).toLowerCase()).charCodeAt(0) - 97) + 1;
-      var colorIndex = ((pos > 0 && pos < 27) ? pos : 5) - 1;
-
-      if (typeof cardBackgroundColors[colorIndex] == 'undefined') {
-        colorIndex = 0;
-      }
-
-      if (value.cover_image !== null) {
-        value.cover_image = addon_image_url.replace('IMAGE_PATH', value.public_id.substring(0, 1) + '/' + value.public_id.substring(0, 2) + '/' + value.public_id + '-' + value.cover_image);
-      }
-
-      value.url = addon_url.replace('ADDON_CODE', value.public_id);
-      value.url = value.url.replace('ADDON_SLUG', value.title_slug);
-      value.card_background_color = '#' + cardBackgroundColors[colorIndex];
-      value.last_update_date_formatted = moment(value.last_update_date, 'YYYYMMDD HHmmss').fromNow();
-
-      value.certified = (value.certified == '1');
-      value.open_flag = (value.open_flag == '1');
-
-      $('#qfFiles').append(Mustache.render(template, value));
-    });
-
-    $('#qfPagesetC span').html(Mustache.render({lang json_encode}pageset_current_page{lang}, {
-      'number': qf_pageset.current
-    }));
-
-    if (qf_pageset.current > 1) {
-      $('#qfPagesetP a').attr('href', qf_url.replace('PAGESET', qf_pageset.current - 1));
-      $('#qfPagesetP').removeClass('disabled');
-    }
-
-    if (qf_pageset.has_next === true) {
-      $('#qfPagesetN a').attr('href', qf_url.replace('PAGESET', qf_pageset.current + 1));
-    } else {
-      $('#qfPagesetN').addClass('disabled');
-    }
-
-    $('#qfPagesetLinks').removeClass('d-none');
-  } else {
-    $('#qfFiles').append('<div class="col"><div class="alert alert-danger" role="alert">' + {lang json_encode}search_empty_resultset{lang} + '</div></div>');
-  }
 });
 </script>

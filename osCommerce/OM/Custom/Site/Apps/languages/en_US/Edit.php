@@ -19,8 +19,10 @@ field_description_info = A length between {value number_format}aDescriptionMinLe
 field_support_topic = Support Topic
 field_support_topic_placeholder = Enter title of topic
 field_support_topic_info = Select the topic from the auto-suggestion list. This must be authored by yourself in the Add-Ons forum channel.
-field_version = OSCOM Version
+field_version = Version
+field_version_info = This can only be changed once
 field_category = Category
+field_category_info = This can only be changed once
 field_cover_image = Cover Image
 field_screenshots = Screenshots
 field_upload = Upload
@@ -36,12 +38,16 @@ field_uploaders_private_add_member_placeholder = Enter name of member
 field_uploaders_private_add_member_info = Select the member from the auto-suggestion list to accept uploads from. A maximum of :max_members members can be authorized.
 field_uploaders_public = Open; Anyone can can upload updates.
 
+select_list_default = -- Please Select --
+
 ms_success_saved = The App has been successfully updated!
 ms_success_saved_in_queue = The App has been successfully updated! This is now in queue for further processing and will be made publicly available soon.
 
 ms_error_title = The length of the title must be between :min_length and :length characters.
 ms_error_short_description = The length of the short description must be between :min_length and :length characters.
 ms_error_description = The length of the description must be between :min_length and :length characters.
+ms_error_version = Please select a minimum osCommerce Online Merchant version required.
+ms_error_category = Please select a category.
 ms_error_cover_image_internal_invalid_filename = The processed cover image has an invalid filename. Please try the upload again.
 ms_error_cover_image_internal_nonexistant = The processed cover image does not exist. Please try the upload again.
 ms_error_cover_image_min_size = The cover image does not seem to be a valid image. Please try the upload again with a valid cover image file.

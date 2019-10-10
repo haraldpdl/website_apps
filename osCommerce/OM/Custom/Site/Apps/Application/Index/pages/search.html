@@ -89,11 +89,26 @@ const versions = {raw json_encode}versions{raw};
 const versions_current = {raw json_encode}current_version{raw};
 const versions_url = {raw json_encode}versions_url{raw};
 
-document.querySelector('#verNav').insertAdjacentHTML('beforeend', '<option value=""' + (versions_current == '' ? ' selected' : '') + '>' + {lang json_encode}all_versions{lang} + '</option>');
+let versions_content = '<option value=""' + (versions_current == '' ? ' selected' : '') + '>' + {lang json_encode}all_versions{lang} + '</option>';
+let version_group_iterator;
 
 for (let value of versions) {
-    document.querySelector('#verNav').insertAdjacentHTML('beforeend', '<option value="' + value.code + '"' + (versions_current == value.code ? ' selected' : '') + '>' + value.title + '</option>');
+    if (value.group_title !== version_group_iterator) {
+        if (typeof version_group_iterator !== 'undefined') {
+            versions_content += '</optgroup>';
+        }
+
+        versions_content += '<optgroup label="' + value.group_title + '">';
+
+        version_group_iterator = value.group_title;
+    }
+
+    versions_content += '<option value="' + value.code + '"' + (versions_current == value.code ? ' selected' : '') + '>' + value.title + '</option>';
 };
+
+versions_content += '</optgroup>';
+
+document.querySelector('#verNav').insertAdjacentHTML('beforeend', versions_content);
 
 document.querySelector('#verNav').addEventListener('change', function (e) {
     window.location = (this.value == '') ? main_url : versions_url.replace('VERSION_CODE', this.value);

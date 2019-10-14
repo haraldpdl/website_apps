@@ -95,11 +95,15 @@ class Apps
                     $r['title_slug'] = $slugify->slugify($r['title']);
 
                     $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
-
-                    $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
                 }
 
                 $CACHE_Listing->set($result);
+            }
+        }
+
+        if (isset($result['entries']) && !empty($result['entries'])) {
+            foreach ($result['entries'] as &$r) {
+                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
         }
 
@@ -140,7 +144,11 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
+            }
+        }
 
+        if (isset($result['entries']) && !empty($result['entries'])) {
+            foreach ($result['entries'] as &$r) {
                 $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
         }
@@ -517,8 +525,6 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
-
-                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Listing->set($result, 10080);
@@ -526,6 +532,10 @@ class Apps
 
         if (!is_array($result)) {
             $result = [];
+        }
+
+        foreach ($result as &$r) {
+            $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
         }
 
         return $result;
@@ -553,8 +563,6 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
-
-                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Listing->set($result, 10080);
@@ -562,6 +570,10 @@ class Apps
 
         if (!is_array($result)) {
             $result = [];
+        }
+
+        foreach ($result as &$r) {
+            $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
         }
 
         return $result;
@@ -1036,8 +1048,6 @@ class Apps
                 $r['title_slug'] = $slugify->slugify($r['title']);
 
                 $r['short_description'] = preg_replace('/\s+/u', ' ', $r['short_description']);
-
-                $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
             }
 
             $CACHE_Apps->set($result);
@@ -1045,6 +1055,10 @@ class Apps
 
         if (!is_array($result)) {
             $result = [];
+        }
+
+        foreach ($result as &$r) {
+            $r['time_ago'] = DateTime::getRelative(new \DateTime($r['last_update_date']));
         }
 
         return $result;
